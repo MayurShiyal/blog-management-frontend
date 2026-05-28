@@ -1,0 +1,80 @@
+<div class="modal-backdrop" (click)="cancel()"></div>
+<div
+  class="cat-modal"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="mode() === 'create' ? 'Create category' : 'Edit category'"
+>
+  <div class="cat-modal__header">
+    <h2 class="cat-modal__title">
+      <i class="bi {{ mode() === 'create' ? 'bi-plus-circle' : 'bi-pencil-square' }} me-2"></i>
+      {{ mode() === 'create' ? 'Add New Category' : 'Edit Category' }}
+    </h2>
+    <button class="modal-close-btn" (click)="cancel()" aria-label="Close" type="button">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="cat-modal__body">
+    <!-- Name -->
+    <app-input
+      [control]="form.controls.name"
+      label="Name"
+      placeholder="e.g. Technology"
+      autocomplete="off"
+    ></app-input>
+
+    <!-- Slug -->
+    <app-input
+      [control]="form.controls.slug"
+      label="Slug"
+      placeholder="e.g. technology"
+      autocomplete="off"
+    ></app-input>
+    <div class="form-text mb-3 mt-n2 small text-muted">
+      Auto-generated from name. Lowercase letters, numbers, and hyphens only.
+    </div>
+
+    <!-- Description -->
+    <app-textarea
+      [control]="form.controls.description"
+      label="Description"
+      placeholder="Brief description of this category (optional)"
+      [rows]="3"
+    ></app-textarea>
+
+    <!-- IsActive toggle -->
+    <div class="mb-4">
+      <div class="active-toggle-row">
+        <div>
+          <div class="form-label mb-0">Status</div>
+          <div class="form-text mt-0">
+            {{
+              form.controls.isActive.value
+                ? 'Category is visible to authors.'
+                : 'Category is hidden from authors.'
+            }}
+          </div>
+        </div>
+        <label class="toggle-switch" for="cat-active">
+          <input id="cat-active" type="checkbox" class="toggle-input" formControlName="isActive" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Footer buttons -->
+    <div class="cat-modal__footer">
+      <button type="button" class="btn btn-ghost" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        {{ mode() === 'create' ? 'Creating…' : 'Saving…' }}
+        } @else {
+        <i class="bi {{ mode() === 'create' ? 'bi-plus-lg' : 'bi-check-lg' }} me-1"></i>
+        {{ mode() === 'create' ? 'Create Category' : 'Save Changes' }}
+        }
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,124 @@
+// ─── Variables ─────────────────────────────────────────────────────────────
+$brand: var(--brand-primary);
+$brand-light: var(--brand-light);
+$text-dark: var(--text-dark);
+$text-muted: var(--text-muted);
+$border: var(--border-color);
+$surface: var(--surface);
+$bg-page: var(--bg-page);
+$radius-card: var(--radius-card);
+
+// ─── Backdrop ──────────────────────────────────────────────────────────────
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  backdrop-filter: blur(2px);
+}
+
+// ─── Modal container ───────────────────────────────────────────────────────
+.usr-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  background: $surface;
+  border-radius: $radius-card;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  @media (max-width: 575px) {
+    max-width: calc(100vw - 2rem);
+  }
+}
+
+// ─── Header ────────────────────────────────────────────────────────────────
+.usr-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid $border;
+}
+
+.usr-modal__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $text-dark;
+  display: flex;
+  align-items: center;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $text-muted;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+
+  &:hover {
+    background: $bg-page;
+    color: $text-dark;
+  }
+}
+
+// ─── Info strip ────────────────────────────────────────────────────────────
+.usr-modal__info-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0.75rem 1.5rem;
+  background: #f8faff;
+  border-bottom: 1px solid $border;
+}
+
+.info-strip-chip {
+  display: inline-flex;
+  align-items: center;
+  background: $brand-light;
+  color: $brand;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+// ─── Body ──────────────────────────────────────────────────────────────────
+.usr-modal__body {
+  padding: 1.5rem;
+}
+
+// ─── Footer ────────────────────────────────────────────────────────────────
+.usr-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+// ─── Ghost button ──────────────────────────────────────────────────────────
+.btn-ghost {
+  background: transparent;
+  border: 1px solid $border;
+  color: $text-muted;
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+
+  &:hover {
+    background: $bg-page;
+    color: $text-dark;
+  }
+}

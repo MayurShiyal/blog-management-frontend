@@ -1,0 +1,153 @@
+<app-category-stats
+  [totalCount]="totalCount()"
+  [activeCount]="activeCount()"
+  [inactiveCount]="inactiveCount()"
+  [statusFilter]="statusFilter()"
+  (filterChange)="setStatusFilter($event)"
+></app-category-stats>
+
+<div class="bg-white border border-light-subtle rounded-3 shadow-sm overflow-hidden w-100 mt-4">
+  <div class="d-flex align-items-center gap-3 p-3 border-bottom bg-white flex-wrap">
+    <div class="position-relative flex-grow-1" style="min-width: 200px; max-width: 380px">
+      <i
+        class="bi bi-search text-muted position-absolute start-0 top-50 translate-middle-y ms-3 text-sm pointer-events-none"
+      ></i>
+      <input
+        type="search"
+        class="form-control text-sm bg-light-subtle border-light-subtle"
+        style="padding-left: 2.25rem !important"
+        placeholder="Search categories…"
+        [formControl]="searchControl"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="ms-auto d-flex align-items-center gap-3 flex-wrap">
+      <div>
+        <select
+          class="form-select filter-select text-sm fw-medium"
+          style="min-width: 130px; height: 36px"
+          aria-label="Filter by status"
+          [value]="statusFilter()"
+          (change)="onDropdownFilterChange($event)"
+        >
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      @if (isAdmin()) {
+      <button
+        class="btn btn-primary d-flex align-items-center gap-1 text-decoration-none py-2 px-3 text-sm rounded-3 whitespace-nowrap"
+        (click)="openCreateModal()"
+      >
+        <i class="bi bi-plus-lg me-1"></i>
+        <span>Add Category</span>
+      </button>
+      }
+
+      <span class="text-muted text-xs">
+        {{ totalCount() }} result{{ totalCount() !== 1 ? 's' : '' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="w-100 overflow-x-auto">
+    @if (loading()) {
+    <div
+      class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5"
+    >
+      <div
+        class="spinner-border spinner-border-sm text-primary me-2"
+        role="status"
+        aria-hidden="true"
+      ></div>
+      Loading categories…
+    </div>
+    } @else if (categories().length === 0) {
+    <div
+      class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 px-3"
+    >
+      <i class="bi bi-inbox display-4 mb-2 opacity-50"></i>
+      <p class="text-center m-0 lh-base" style="max-width: 340px">
+        @if (searchQuery() && statusFilter() !== 'all') { No {{ statusFilter() }} categories match
+        "<strong>{{ searchQuery() }}</strong
+        >" } @else if (searchQuery()) { No categories match "<strong>{{ searchQuery() }}</strong
+        >" } @else if (statusFilter() !== 'all') { No {{ statusFilter() }} categories found. } @else
+        { No categories yet. Click <strong>Add Category</strong> to create one. }
+      </p>
+    </div>
+    } @else {
+    <app-category-table
+      [categories]="categories()"
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [isAdmin]="isAdmin()"
+      (editClicked)="openEditModal($event)"
+      (deleteClicked)="confirmDelete($event)"
+      (toggleClicked)="toggleStatus($event)"
+    ></app-category-table>
+    }
+  </div>
+
+  @if (totalPages() > 1) {
+  <div
+    class="d-flex align-items-center justify-content-between p-3 border-top bg-light-subtle flex-wrap gap-2"
+  >
+    <span class="text-muted text-xs"> Page {{ pageNumber() }} of {{ totalPages() }} </span>
+    <div class="d-flex gap-1">
+      <button
+        class="page-btn"
+        [disabled]="pageNumber() === 1"
+        (click)="goToPage(pageNumber() - 1)"
+        type="button"
+      >
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      @for (p of pages(); track p) {
+      <button
+        class="page-btn"
+        [class.page-btn--active]="p === pageNumber()"
+        (click)="goToPage(p)"
+        type="button"
+      >
+        {{ p }}
+      </button>
+      }
+
+      <button
+        class="page-btn"
+        [disabled]="pageNumber() === totalPages()"
+        (click)="goToPage(pageNumber() + 1)"
+        type="button"
+      >
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+  }
+</div>
+@if (modalOpen()) {
+<app-category-form-modal
+  [mode]="modalMode()"
+  [loading]="formLoading()"
+  [category]="editingCategory()"
+  (submitted)="onFormSubmitted($event)"
+  (cancelled)="closeModal()"
+></app-category-form-modal>
+}
+
+<app-delete-modal
+  [show]="deleteOpen()"
+  title="Delete Category"
+  [message]="
+    'Are you sure you want to delete \'' +
+    deleteTargetName() +
+    '\'? This action cannot be undone. Note: Categories used by existing blog posts cannot be deleted.'
+  "
+  [loading]="deleteLoading()"
+  (confirm)="executeDelete()"
+  (cancel)="cancelDelete()"
+></app-delete-modal>

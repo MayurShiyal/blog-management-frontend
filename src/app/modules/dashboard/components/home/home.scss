@@ -1,0 +1,6 @@
+.admin-nav-item {
+  transition: background 0.15s;
+  &:hover {
+    background: var(--bg-page);
+  }
+}

@@ -1,0 +1,28 @@
+@if (show) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header border-0 bg-light rounded-top-4 py-3">
+          <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill"></i> {{ title }}
+          </h5>
+          <button type="button" class="btn-close" (click)="onCancel()" [disabled]="loading" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-4">
+          <p class="mb-0 text-muted fs-6 lh-base">{{ message }}</p>
+        </div>
+        <div class="modal-footer border-0 bg-light rounded-bottom-4 py-3">
+          <button type="button" class="btn btn-outline-secondary px-4 py-2 fw-semibold rounded-3" (click)="onCancel()" [disabled]="loading">Cancel</button>
+          <button type="button" class="btn btn-danger px-4 py-2 fw-semibold rounded-3 d-flex align-items-center gap-2" (click)="onConfirm()" [disabled]="loading">
+            @if (loading) {
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Deleting...
+            } @else {
+              Delete
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

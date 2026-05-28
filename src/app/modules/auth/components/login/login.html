@@ -1,0 +1,87 @@
+<div class="d-flex d-lg-none align-items-center gap-2 mb-4">
+  <div
+    class="auth-brand-mark d-flex align-items-center justify-content-center fw-bold fs-5 text-white"
+  >
+    B
+  </div>
+  <span class="mobile-brand-title fw-semibold fs-6"> Blog Management </span>
+</div>
+
+<h2 class="signin-title mb-1 fw-bold">@if (isAdminPortal()) { Admin Portal } @else { Sign in }</h2>
+<p class="text-muted small mb-4">
+  @if (isAdminPortal()) { Enter administrator credentials to access dashboard } @else { Enter your
+  credentials to access your account }
+</p>
+
+@if (serverMsg()) {
+<div
+  class="alert alert-{{ serverMsg()!.type }} d-flex align-items-center gap-2 mb-4 animate-fade-in"
+  role="alert"
+>
+  <i
+    class="bi {{
+      serverMsg()!.type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'
+    }}"
+  ></i>
+  <span>{{ serverMsg()!.text }}</span>
+</div>
+}
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <app-email
+    [control]="form.controls.email"
+    label="Email Address"
+    placeholder="your@email.com"
+  ></app-email>
+
+  <app-password
+    [control]="form.controls.password"
+    label="Password"
+    placeholder="Your password"
+    [showForgotLink]="!isAdminPortal()"
+    [forgotLink]="routes.AUTH.FORGOT_PASSWORD.ABSOLUTE"
+  >
+  </app-password>
+
+  <button
+    type="submit"
+    class="btn btn-primary w-100 py-2 mb-4 fw-semibold shadow-sm"
+    [disabled]="loading()"
+  >
+    @if (loading()) {
+    <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+    Signing in… } @else { Sign In }
+  </button>
+
+  @if (!isAdminPortal()) {
+  <div class="d-flex align-items-center text-center my-4">
+    <hr class="flex-grow-1 m-0 text-muted opacity-25" />
+    <span class="px-3 text-muted small">or</span>
+    <hr class="flex-grow-1 m-0 text-muted opacity-25" />
+  </div>
+
+  <div class="d-flex flex-column gap-2 text-center">
+    <p class="mb-0 text-muted small">
+      Don't have an account?
+      <a
+        [routerLink]="routes.AUTH.REGISTER.ABSOLUTE"
+        class="fw-semibold text-decoration-none text-primary"
+      >
+        Create one
+      </a>
+    </p>
+  </div>
+  } @else {
+  <div class="d-flex flex-column gap-2 text-center">
+    <p class="mb-0 text-muted small">
+      Are you an author/visitor?
+      <a
+        [routerLink]="routes.AUTH.LOGIN.ABSOLUTE"
+        class="fw-semibold text-decoration-none text-primary"
+      >
+        Author Portal
+      </a>
+    </p>
+  </div>
+  }
+</form>

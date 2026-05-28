@@ -1,0 +1,45 @@
+.auth-hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
+}
+
+.auth-hero-grid {
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hero-content {
+  max-width: 420px;
+}
+
+.auth-brand-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.hero-title {
+  font-size: 2.75rem;
+  line-height: 1.15;
+  font-family: var(--font-display);
+}
+
+.feature-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.auth-panel {
+  max-width: 480px;
+}
+
+.form-title {
+  font-size: 1.625rem;
+  letter-spacing: -0.02em;
+}

@@ -1,0 +1,24 @@
+<div class="mb-3">
+  @if (label) {
+  <label [for]="id" class="form-label">{{ label }}</label>
+  }
+  <textarea
+    [id]="id"
+    [rows]="rows"
+    [class.is-invalid]="control.invalid && control.touched"
+    [placeholder]="placeholder"
+    [formControl]="control"
+    [maxlength]="maxlength !== undefined ? maxlength : null"
+    class="form-control rounded-3"
+  ></textarea>
+  @if (control.invalid && control.touched) {
+  <div class="invalid-feedback">
+    @if (control.errors?.['required']) {
+    {{ label || 'Field' }} is required. } @else if (control.errors?.['minlength']) {
+    {{ label || 'Field' }} must be at least
+    {{ control.errors?.['minlength'].requiredLength }} characters. } @else if
+    (control.errors?.['maxlength']) { {{ label || 'Field' }} cannot exceed
+    {{ control.errors?.['maxlength'].requiredLength }} characters. }
+  </div>
+  }
+</div>

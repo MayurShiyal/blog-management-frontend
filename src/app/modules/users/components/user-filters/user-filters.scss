@@ -1,0 +1,167 @@
+// ─── Variables ─────────────────────────────────────────────────────────────
+$brand: var(--brand-primary);
+$brand-light: var(--brand-light);
+$accent: var(--brand-accent);
+$text-dark: var(--text-dark);
+$text-muted: var(--text-muted);
+$border: var(--border-color);
+$surface: var(--surface);
+$bg-page: var(--bg-page);
+$success: var(--success);
+
+// ─── Toolbar wrapper ───────────────────────────────────────────────────────
+.table-toolbar {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid $border;
+}
+
+// ─── Search ────────────────────────────────────────────────────────────────
+.search-wrap {
+  position: relative;
+  flex: 0 0 280px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $text-muted;
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.search-input {
+  padding-left: 2.25rem !important;
+  height: 40px;
+  font-size: 0.875rem;
+}
+
+// ─── Filters section ──────────────────────────────────────────────────────
+.toolbar-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  flex: 1;
+}
+
+// ─── Dropdown filters ─────────────────────────────────────────────────────
+.dropdown-filter-wrap {
+  display: flex;
+  align-items: center;
+}
+.filter-select {
+  /* Force hide the default browser arrow for modern browsers */
+  appearance: none !important;
+  -webkit-appearance: none !important; /* Safari/Chrome */
+  -moz-appearance: none !important; /* Firefox */
+}
+
+/* Extra safety for older versions of Internet Explorer / Edge */
+.filter-select::-ms-expand {
+  display: none;
+}
+.filter-select {
+  height: 36px;
+  padding: 0 2rem 0 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background-color: $surface;
+  color: $text-dark;
+  cursor: pointer;
+  min-width: 130px;
+  appearance: auto;
+  transition: border-color 0.15s;
+
+  &:focus {
+    outline: none;
+    border-color: $brand;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+}
+
+// ─── Button filter groups ─────────────────────────────────────────────────
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.filter-btn {
+  border: none;
+  background: transparent;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: $text-dark;
+  }
+
+  &--active {
+    background: $surface;
+    color: $text-dark;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &--blue {
+    &.filter-btn--active {
+      color: #2563eb;
+    }
+  }
+  &--purple {
+    &.filter-btn--active {
+      color: #7c3aed;
+    }
+  }
+  &--green {
+    &.filter-btn--active {
+      color: #16a34a;
+    }
+  }
+  &--gray {
+    &.filter-btn--active {
+      color: $text-muted;
+    }
+  }
+}
+
+// ─── Result count ─────────────────────────────────────────────────────────
+.result-count {
+  font-size: 0.8125rem;
+  color: $text-muted;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────
+@media (max-width: 767px) {
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-wrap {
+    flex: none;
+    width: 100%;
+  }
+  .toolbar-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

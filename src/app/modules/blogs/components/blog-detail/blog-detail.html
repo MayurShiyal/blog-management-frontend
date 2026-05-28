@@ -1,0 +1,238 @@
+@if (loading()) {
+<div class="detail-card-skeleton p-4 border rounded-3 bg-white shadow-sm">
+  <div class="skeleton-banner mb-4 bg-secondary-subtle rounded-2"></div>
+  <div class="skeleton-title mb-2 bg-secondary-subtle rounded-1 w-70"></div>
+  <div class="skeleton-title-short mb-4 bg-secondary-subtle rounded-1 w-45"></div>
+  <div class="skeleton-meta mb-4 bg-secondary-subtle rounded-2 w-100"></div>
+  <div class="skeleton-text mb-2 bg-secondary-subtle rounded-1 w-100"></div>
+  <div class="skeleton-text mb-2 bg-secondary-subtle rounded-1 w-100"></div>
+  <div class="skeleton-text mb-2 bg-secondary-subtle rounded-1 w-100"></div>
+  <div class="skeleton-text-last mb-2 bg-secondary-subtle rounded-1 w-60"></div>
+</div>
+} @else if (errorMsg()) {
+<div
+  class="custom-radius p-5 text-center bg-white border border-danger-subtle rounded-3 shadow-sm mx-auto my-5 w-100"
+  style="max-width: 500px"
+>
+  <div class="mb-3 text-danger">
+    <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+  </div>
+  <h3 class="h4 fw-bold text-dark-emphasis mb-2">Unable to load article</h3>
+  <p class="text-muted mb-4 fs-6">{{ errorMsg() }}</p>
+  <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="btn btn-primary">
+    <i class="bi bi-arrow-left me-2"></i> Return to Blog List
+  </a>
+</div>
+} @else {
+<article
+  class="blog-detail-card border rounded-3 bg-white shadow-sm overflow-hidden mb-4 custom-shadow custom-radius"
+>
+  <div
+    class="blog-detail-hero position-relative d-flex align-items-center justify-content-between text-center overflow-hidden"
+  >
+    @if (blog()?.thumbnailUrl) {
+    <img
+      [src]="blog()?.thumbnailUrl"
+      alt="Thumbnail for {{ blog()?.title }}"
+      class="w-100 h-100 object-fit-cover"
+    />
+    } @else {
+    <div class="d-flex flex-column align-items-center gap-3 text-primary p-4 m-auto">
+      <div>
+        <i class="bi bi-journal-text fs-1"></i>
+      </div>
+      <div class="blog-placeholder-text fw-extrabold m-auto line-height-13 opacity-95">
+        {{ blog()?.title }}
+      </div>
+    </div>
+    }
+    <div
+      class="blog-detail-hero__overlay position-absolute inset-0 d-flex align-items-end justify-content-between p-3 p-sm-4 z-2"
+    >
+      <span
+        class="badge-status px-3 py-1 rounded-pill shadow-sm text-uppercase text-xs tracking-wider {{
+          getStatusClass(blog()?.status)
+        }}"
+      >
+        {{ getStatusLabel(blog()?.status) }}
+      </span>
+    </div>
+  </div>
+
+  <div class="p-4 p-md-5">
+    @if (blog()?.status === 'Rejected' && blog()?.rejectionReason) {
+    <div class="alert alert-danger border-start border-danger border-4 p-3 rounded mb-4 shadow-sm">
+      <div class="d-flex gap-2">
+        <i class="bi bi-x-circle-fill text-danger fs-5 mt-1"></i>
+        <div>
+          <h5 class="fw-bold text-danger h6 mb-1">Rejection Reason</h5>
+          <p class="mb-0 text-dark font-monospace small" style="white-space: pre-wrap">
+            {{ blog()?.rejectionReason }}
+          </p>
+        </div>
+      </div>
+    </div>
+    }
+
+    <h1 class="blog-detail-title fw-extrabold text-dark mb-4 lh-sm letter-spacing-neg2">
+      {{ blog()?.title }}
+    </h1>
+
+    <div
+      class="pb-4 border-bottom mb-4 d-flex flex-wrap align-items-center justify-content-between gap-3"
+    >
+      <div class="d-flex align-items-center gap-3">
+        <div
+          class="author-avatar-large d-flex align-items-center justify-content-center fw-bold bg-primary-subtle text-primary border border-2 border-white shadow-sm rounded-circle"
+        >
+          {{ blog()?.authorName?.charAt(0) | uppercase }}
+        </div>
+        <div>
+          <div class="text-muted small lh-sm text-xs">Written by</div>
+          <div class="fw-bold text-dark-emphasis lh-sm text-sm">
+            {{ blog()?.authorName || 'Anonymous' }}
+          </div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-4 text-muted small">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-calendar3"></i>
+          <span>{{ blog()?.publishedAt || blog()?.createdAt | date : 'mediumDate' }}</span>
+        </div>
+        @if (blog()?.updatedAt) {
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-pencil"></i>
+          <span>Updated {{ blog()?.updatedAt | date : 'shortTime' }}</span>
+        </div>
+        }
+      </div>
+    </div>
+
+    @if (blog()?.shortDescription) {
+    <div
+      class="p-4 rounded-3 bg-body-tertiary border-start border-primary border-4 mb-4 text-secondary-emphasis fst-italic lh-base text-md"
+    >
+      {{ blog()?.shortDescription }}
+    </div>
+    }
+
+    <div class="blog-detail-content text-dark-emphasis text-md">
+      {{ blog()?.content }}
+    </div>
+  </div>
+
+  <div
+    class="bg-light p-4 border-top d-flex justify-content-between align-items-center flex-wrap gap-3"
+  >
+    <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Back to list
+    </a>
+
+    <div class="d-flex gap-2">
+      @if (isAdmin()) { @if (blog()?.status === 'PendingApproval') {
+      <button class="btn btn-success" (click)="approveBlog()">
+        <i class="bi bi-check-circle me-1"></i> Approve
+      </button>
+      <button class="btn btn-warning text-white" (click)="openRejectModal()">
+        <i class="bi bi-x-circle me-1"></i> Reject
+      </button>
+      }
+      <button class="btn btn-danger" (click)="confirmDelete()">
+        <i class="bi bi-trash me-1"></i> Delete
+      </button>
+      } @else if (isEditable()) {
+      <a [routerLink]="routes.BLOG.EDIT.ABSOLUTE(blog()!.id)" class="btn btn-primary">
+        <i class="bi bi-pencil-square me-1"></i> Edit Article
+      </a>
+      }
+    </div>
+  </div>
+</article>
+} @if (rejectOpen()) {
+<div class="modal-backdrop position-fixed inset-0" (click)="closeRejectModal()"></div>
+<div
+  class="cat-modal position-fixed start-50 top-50 translate-middle bg-white shadow-lg overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Reject submission"
+>
+  <div
+    class="d-flex align-items-center p-3 px-4 border-bottom bg-danger-subtle border-danger-subtle"
+  >
+    <h2 class="flex-grow-1 fs-5 fw-bold text-danger mb-0">
+      <i class="bi bi-x-circle-fill me-2"></i>
+      Reject Submission
+    </h2>
+    <button
+      class="btn btn-light text-muted p-1 px-2 border-0 rounded-2 lh-1"
+      (click)="closeRejectModal()"
+      aria-label="Close"
+      type="button"
+    >
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <form [formGroup]="rejectForm" (ngSubmit)="submitRejection()" novalidate class="p-4">
+    <p class="mb-3">
+      Are you sure you want to reject <strong>"{{ blog()?.title }}"</strong>? Please provide a clear
+      rejection reason for the author.
+    </p>
+
+    <div class="mb-3">
+      <label class="form-label" for="reject-reason"
+        >Rejection Reason <span class="text-danger">*</span></label
+      >
+      <textarea
+        id="reject-reason"
+        class="form-control"
+        [class.is-invalid]="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched"
+        formControlName="reason"
+        rows="3"
+        placeholder="Please explain why this post is rejected (minimum 5 characters)..."
+        maxlength="300"
+      ></textarea>
+      @if (rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched) {
+      <div class="invalid-feedback">
+        @if (rejectForm.get('reason')?.errors?.['required']) { A reason is required. } @else if
+        (rejectForm.get('reason')?.errors?.['minlength']) { Reason must be at least 5 characters. }
+        @else { Reason cannot exceed 300 characters. }
+      </div>
+      }
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <button
+        type="button"
+        class="btn btn-link text-decoration-none text-primary fw-bold"
+        (click)="closeRejectModal()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-danger px-3 fw-bold rounded-3"
+        [disabled]="rejectLoading()"
+      >
+        @if (rejectLoading()) {
+        <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        Rejecting… } @else {
+        <i class="bi bi-x-circle-fill me-1"></i> Reject Post }
+      </button>
+    </div>
+  </form>
+</div>
+}
+
+<app-delete-modal
+  [show]="deleteOpen()"
+  title="Delete Article"
+  [message]="
+    'Are you sure you want to permanently delete \'' +
+    (blog()?.title || 'this article') +
+    '\'? This action is irreversible.'
+  "
+  [loading]="deleteLoading()"
+  (confirm)="executeDelete()"
+  (cancel)="cancelDelete()"
+></app-delete-modal>

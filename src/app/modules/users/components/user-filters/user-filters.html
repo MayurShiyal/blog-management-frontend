@@ -1,0 +1,44 @@
+<div class="table-toolbar">
+  <div class="search-wrap">
+    <i class="bi bi-search search-icon"></i>
+    <input
+      type="search"
+      class="form-control search-input"
+      placeholder="Search by name or email…"
+      [formControl]="searchControl()"
+      autocomplete="off"
+    />
+  </div>
+
+  <div class="toolbar-filters">
+    <!-- Role dropdown -->
+    <div class="dropdown-filter-wrap">
+      <select
+        class="form-select filter-select"
+        aria-label="Filter by role"
+        [value]="roleFilter()"
+        (change)="onRoleDropdown($event)"
+      >
+        <option value="">All Roles</option>
+        <option value="Author">Author</option>
+        <option value="Visitor">Visitor</option>
+      </select>
+    </div>
+
+    <!-- Status dropdown -->
+    <div class="dropdown-filter-wrap">
+      <select
+        class="form-select filter-select"
+        aria-label="Filter by status"
+        [value]="statusFilter()"
+        (change)="onStatusDropdown($event)"
+      >
+        <option value="">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+
+    <span class="result-count">{{ totalCount() }} result{{ totalCount() !== 1 ? 's' : '' }}</span>
+  </div>
+</div>

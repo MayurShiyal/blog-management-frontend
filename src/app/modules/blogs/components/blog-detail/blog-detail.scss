@@ -1,0 +1,166 @@
+// Unused Core Shell/Sidebar/Toast styles dropped as they were not matching structural bindings present in template markup.
+
+// --- Global Layout Helpers ---
+.custom-radius {
+  border-radius: 16px !important;
+}
+.custom-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.text-xs {
+  font-size: 0.725rem;
+}
+.text-sm {
+  font-size: 0.925rem;
+}
+.text-md {
+  font-size: 1.05rem;
+}
+.tracking-wider {
+  letter-spacing: 0.03em;
+}
+.fw-extrabold {
+  font-weight: 800;
+}
+.line-height-13 {
+  line-height: 1.3;
+}
+.letter-spacing-neg2 {
+  letter-spacing: -0.02em;
+}
+
+// --- Loading Skeletons ---
+.detail-card-skeleton {
+  animation: pulseShimmer 1.5s infinite ease-in-out;
+}
+.skeleton-banner {
+  height: 250px;
+}
+.skeleton-title {
+  height: 28px;
+}
+.skeleton-title-short {
+  height: 20px;
+}
+.skeleton-meta {
+  height: 40px;
+}
+.skeleton-text {
+  height: 16px;
+}
+
+@keyframes pulseShimmer {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+// --- Blog Details Core Elements ---
+.blog-detail-hero {
+  height: 380px;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+
+  @media (max-width: 575px) {
+    height: 220px;
+  }
+}
+
+.blog-placeholder-text {
+  max-width: 600px;
+  font-size: 1.5rem;
+  @media (max-width: 575px) {
+    font-size: 1.1rem;
+  }
+}
+
+.blog-detail-hero__overlay {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+.category-badge {
+  backdrop-filter: blur(4px);
+}
+
+// Dynamic Backend Classes Configuration
+.status-published {
+  background: #dcfce7 !important;
+  color: var(--bs-success) !important;
+}
+.status-pending {
+  background: #fffbeb !important;
+  color: #d97706 !important;
+}
+.status-rejected {
+  background: #fef2f2 !important;
+  color: var(--bs-danger) !important;
+}
+.status-draft {
+  background: #f3f4f6 !important;
+  color: var(--bs-secondary-color) !important;
+}
+
+.blog-detail-title {
+  font-size: 2.25rem;
+  @media (max-width: 575px) {
+    font-size: 1.6rem;
+  }
+}
+
+.author-avatar-large {
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+}
+
+// --- Article Contents Custom Typography ---
+.blog-detail-content {
+  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+  font-size: 1.1rem;
+  line-height: 1.85;
+  white-space: pre-wrap;
+
+  p {
+    margin-bottom: 1.5rem;
+  }
+  blockquote {
+    border-left: 4px solid #cbd5e1;
+    padding-left: 1.25rem;
+    font-style: italic;
+    color: #475569;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 575px) {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+}
+
+// --- Modals Layout Override ---
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 300;
+}
+
+.cat-modal {
+  z-index: 301;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 16px;
+  max-height: 90vh;
+
+  @media (max-width: 575px) {
+    max-width: calc(100% - 2rem);
+    margin: 0 1rem;
+  }
+}

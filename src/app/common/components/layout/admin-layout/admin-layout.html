@@ -1,0 +1,37 @@
+<app-toast [toasts]="toastService.toasts()" (dismiss)="toastService.dismiss($event)"></app-toast>
+
+<div class="admin-shell">
+  @if (isAdmin()) {
+  <app-admin-sidebar
+    [user]="user()"
+    [isOpen]="sidebarOpen()"
+    (closeSidebar)="toggleSidebar()"
+    (logoutClicked)="logout()"
+  />
+  } @else {
+  <app-author-sidebar
+    [user]="user()"
+    [isOpen]="sidebarOpen()"
+    (closeSidebar)="toggleSidebar()"
+    (logoutClicked)="logout()"
+  />
+  } @if (sidebarOpen()) {
+  <div class="sidebar-overlay" (click)="toggleSidebar()"></div>
+  }
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="topbar__hamburger d-lg-none" (click)="toggleSidebar()" aria-label="Open menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar__title">
+        <h1 class="page-title">{{ layoutService.title() }}</h1>
+        <p class="page-subtitle">{{ layoutService.subtitle() }}</p>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <router-outlet />
+    </div>
+  </div>
+</div>

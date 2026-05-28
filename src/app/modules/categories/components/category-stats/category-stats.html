@@ -1,0 +1,33 @@
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon--primary"><i class="bi bi-tags-fill"></i></div>
+    <div>
+      <div class="stat-value">{{ totalCount() }}</div>
+      <div class="stat-label">Total Categories</div>
+    </div>
+  </div>
+
+  <div
+    class="stat-card stat-card--clickable"
+    [class.stat-card--active-filter]="statusFilter() === 'active'"
+    (click)="setFilter(statusFilter() === 'active' ? 'all' : 'active')"
+  >
+    <div class="stat-icon stat-icon--success"><i class="bi bi-check-circle-fill"></i></div>
+    <div>
+      <div class="stat-value">{{ activeCount() }}</div>
+      <div class="stat-label">Active</div>
+    </div>
+  </div>
+
+  <div
+    class="stat-card stat-card--clickable"
+    [class.stat-card--inactive-filter]="statusFilter() === 'inactive'"
+    (click)="setFilter(statusFilter() === 'inactive' ? 'all' : 'inactive')"
+  >
+    <div class="stat-icon stat-icon--muted"><i class="bi bi-dash-circle-fill"></i></div>
+    <div>
+      <div class="stat-value">{{ inactiveCount() }}</div>
+      <div class="stat-label">Inactive</div>
+    </div>
+  </div>
+</div>

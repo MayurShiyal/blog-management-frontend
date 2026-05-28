@@ -1,0 +1,22 @@
+<div class="toast-container" aria-live="polite">
+  @for (toast of toasts; track toast.id) {
+
+  <div class="dash-toast dash-toast--{{ toast.type }}" role="alert">
+    <i
+      class="bi toast-icon"
+      [class.bi-check-circle-fill]="toast.type === 'success'"
+      [class.bi-exclamation-triangle-fill]="toast.type === 'warning'"
+      [class.bi-x-circle-fill]="toast.type === 'danger'"
+    ></i>
+
+    <span class="toast-msg">
+      {{ toast.message }}
+    </span>
+
+    <button type="button" class="toast-close" (click)="onDismiss(toast.id)" aria-label="Dismiss">
+      &times;
+    </button>
+  </div>
+
+  }
+</div>

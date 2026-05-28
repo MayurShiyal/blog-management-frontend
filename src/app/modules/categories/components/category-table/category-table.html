@@ -1,0 +1,79 @@
+<table class="cat-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Slug</th>
+      <th>Description</th>
+      <th>Status</th>
+      <th>Created</th>
+      @if (isAdmin()) {
+      <th class="text-end">Actions</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (cat of categories(); track cat.id; let i = $index) {
+    <tr>
+      <td class="row-num">{{ (pageNumber() - 1) * pageSize() + i + 1 }}</td>
+      <td>
+        <span class="cat-name">{{ cat.name }}</span>
+      </td>
+      <td>
+        <code class="slug-badge">{{ cat.slug }}</code>
+      </td>
+      <td class="desc-cell">
+        @if (cat.description) {
+        <span class="desc-text" [title]="cat.description">{{ cat.description }}</span>
+        } @else {
+        <span class="text-muted fst-italic" style="font-size: 0.8rem">—</span>
+        }
+      </td>
+      <td>
+        <div class="toggle-wrapper">
+          <label
+            class="tbl-toggle"
+            [class.tbl-toggle--disabled]="!isAdmin()"
+            [title]="isAdmin() ? 'Click to toggle status' : ''"
+          >
+            <input
+              type="checkbox"
+              class="tbl-toggle__input"
+              [checked]="cat.isActive"
+              [disabled]="!isAdmin()"
+              (change)="isAdmin() && toggleClicked.emit(cat)"
+            />
+            <span class="tbl-toggle__slider"></span>
+          </label>
+          <span class="tbl-toggle__label" [class.tbl-toggle__label--active]="cat.isActive">
+            {{ cat.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </td>
+      <td class="date-cell">{{ cat.createdAt | date : 'MMM d, y' }}</td>
+      @if (isAdmin()) {
+      <td class="action-cell">
+        <div class="action-btns">
+          <button
+            class="action-btn action-btn--edit"
+            (click)="editClicked.emit(cat)"
+            title="Edit"
+            type="button"
+          >
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          <button
+            class="action-btn action-btn--delete"
+            (click)="deleteClicked.emit(cat)"
+            title="Delete"
+            type="button"
+          >
+            <i class="bi bi-trash3-fill"></i>
+          </button>
+        </div>
+      </td>
+      }
+    </tr>
+    }
+  </tbody>
+</table>

@@ -1,0 +1,264 @@
+// Layout Variable Brand Token Configurations
+$brand: var(--brand-primary, #6366f1);
+$brand-dark: var(--brand-primary-dark, #4f46e5);
+$brand-light: var(--brand-light, rgba(99, 102, 241, 0.1));
+$accent: var(--brand-accent, #6366f1);
+$border: var(--border-color, #e2e8f0);
+$danger: var(--danger, #ef4444);
+
+// General Core Typography Rules
+.text-xs {
+  font-size: 0.75rem !important;
+}
+.text-sm {
+  font-size: 0.875rem !important;
+}
+
+// --- Sub-component Table Style Injector Overrides ---
+// Controls nested properties generated deep within <app-user-table>
+::ng-deep {
+  .usr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    min-width: 900px; // Fix: Enforces desktop horizontal wrap limits inside overflow frames
+
+    th {
+      padding: 0.75rem 1.25rem;
+      background: #f8faff;
+      color: var(--bs-secondary-color);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid $border;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.875rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--bs-body-color);
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      transition: background 0.1s;
+      &:hover {
+        background: #fafbff;
+      }
+      &:last-child td {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .row-num {
+    color: var(--bs-secondary-color);
+    font-size: 0.8rem;
+    width: 40px;
+  }
+
+  // User details alignment rows
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-cell__avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: $brand-light;
+    color: $brand;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .user-cell__name {
+    font-weight: 600;
+    color: var(--bs-body-color);
+  }
+
+  .email-cell {
+    color: var(--bs-secondary-color);
+    font-size: 0.8125rem;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: 767px) {
+      max-width: 150px;
+    }
+  }
+
+  .date-cell {
+    color: var(--bs-secondary-color);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  // --- Specialized Badges ---
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    &--author {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+    &--visitor {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+  }
+
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    &--yes {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+    &--no {
+      background: #fef3c7;
+      color: #d97706;
+    }
+  }
+
+  // --- Custom Inline Action Triggers ---
+  .action-btns {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.15s;
+
+    &--edit {
+      background: #eff6ff;
+      color: #2563eb;
+      &:hover {
+        background: #dbeafe;
+      }
+    }
+
+    &--delete {
+      background: #fef2f2;
+      color: $danger;
+      &:hover {
+        background: #fee2e2;
+      }
+    }
+  }
+
+  // --- Status Toggle Switch ---
+  .status-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-input {
+    display: none;
+  }
+
+  .toggle-slider {
+    width: 38px;
+    height: 22px;
+    background: #cbd5e1;
+    border-radius: 999px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .toggle-input:checked + .toggle-slider {
+    background: #16a34a;
+    &::after {
+      transform: translateX(16px);
+    }
+  }
+
+  .toggle-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--bs-secondary-color);
+    min-width: 52px;
+  }
+}
+
+// --- Pagination Bars Control ---
+.page-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 0.5rem;
+  border: 1px solid $border;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--bs-body-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: $accent;
+    color: $accent;
+  }
+  &--active {
+    background: $brand;
+    border-color: $brand;
+    color: #fff;
+    &:hover {
+      background: $brand-dark;
+      border-color: $brand-dark;
+      color: #fff;
+    }
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}

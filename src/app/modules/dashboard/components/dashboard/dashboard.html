@@ -1,0 +1,214 @@
+<section class="section">
+  <div class="summary-grid">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--users">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="stat-card__body">
+        <div class="stat-card__label">Total Users</div>
+        @if (loadingSummary()) {
+        <div class="stat-skeleton"></div>
+        } @else {
+        <div class="stat-card__value">{{ summary()?.totalUsers ?? 0 }}</div>
+        }
+      </div>
+      <a [routerLink]="routes.USERS.LIST.ABSOLUTE" class="stat-card__link" title="Manage users">
+        <i class="bi bi-arrow-right-circle"></i>
+      </a>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--blogs">
+        <i class="bi bi-file-earmark-richtext-fill"></i>
+      </div>
+      <div class="stat-card__body">
+        <div class="stat-card__label">Total Blogs</div>
+        @if (loadingSummary()) {
+        <div class="stat-skeleton"></div>
+        } @else {
+        <div class="stat-card__value">{{ summary()?.totalBlogs ?? 0 }}</div>
+        }
+      </div>
+      <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="stat-card__link" title="Manage blogs">
+        <i class="bi bi-arrow-right-circle"></i>
+      </a>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--categories">
+        <i class="bi bi-tags-fill"></i>
+      </div>
+      <div class="stat-card__body">
+        <div class="stat-card__label">Total Categories</div>
+        @if (loadingSummary()) {
+        <div class="stat-skeleton"></div>
+        } @else {
+        <div class="stat-card__value">{{ summary()?.totalCategories ?? 0 }}</div>
+        }
+      </div>
+      <a
+        [routerLink]="routes.CATEGORIES.LIST.ABSOLUTE"
+        class="stat-card__link"
+        title="Manage categories"
+      >
+        <i class="bi bi-arrow-right-circle"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="charts-grid">
+    <!-- User status doughnut -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <div class="chart-card__title"><i class="bi bi-people me-2"></i>User Status</div>
+      </div>
+      @if (loadingStatus()) {
+      <div class="chart-loading">
+        <div class="spinner-ring"></div>
+      </div>
+      } @else if (status()) {
+      <div class="doughnut-wrap">
+        <div class="doughnut-canvas-wrap">
+          <canvas #userDoughnutCanvas></canvas>
+          <div class="doughnut-center-label">
+            <div class="doughnut-pct">{{ userActivePercent() }}%</div>
+            <div class="doughnut-sub">Active</div>
+          </div>
+        </div>
+        <div class="doughnut-legend">
+          <div class="legend-item">
+            <span class="legend-dot legend-dot--primary"></span>
+            <span class="legend-text">Active</span>
+            <span class="legend-count">{{ status()!.users.active }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot legend-dot--muted"></span>
+            <span class="legend-text">Inactive</span>
+            <span class="legend-count">{{ status()!.users.inactive }}</span>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <div class="no-data">No data available</div>
+      }
+    </div>
+
+    <!-- Category status doughnut -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <div class="chart-card__title"><i class="bi bi-tags me-2"></i>Category Status</div>
+      </div>
+      @if (loadingStatus()) {
+      <div class="chart-loading">
+        <div class="spinner-ring"></div>
+      </div>
+      } @else if (status()) {
+      <div class="doughnut-wrap">
+        <div class="doughnut-canvas-wrap">
+          <canvas #categoryDoughnutCanvas></canvas>
+          <div class="doughnut-center-label">
+            <div class="doughnut-pct">{{ categoryActivePercent() }}%</div>
+            <div class="doughnut-sub">Active</div>
+          </div>
+        </div>
+        <div class="doughnut-legend">
+          <div class="legend-item">
+            <span class="legend-dot legend-dot--accent"></span>
+            <span class="legend-text">Active</span>
+            <span class="legend-count">{{ status()!.categories.active }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot legend-dot--muted"></span>
+            <span class="legend-text">Inactive</span>
+            <span class="legend-count">{{ status()!.categories.inactive }}</span>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <div class="no-data">No data available</div>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="table-card">
+    <div class="table-card__header">
+      <div class="table-card__title">
+        <i class="bi bi-clock-history me-2"></i>Latest Published Blogs
+      </div>
+      <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="view-all-link">
+        View all <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    @if (loadingBlogs()) {
+    <div class="table-loading">
+      @for (_ of [1,2,3,4,5]; track $index) {
+      <div class="row-skeleton"></div>
+      }
+    </div>
+    } @else if (latestBlogs().length === 0) {
+    <div class="no-data no-data--padded">
+      <i class="bi bi-file-earmark-x" style="font-size: 2rem; color: var(--text-muted)"></i>
+      <p class="mt-2 mb-0" style="color: var(--text-muted)">No published blogs yet.</p>
+    </div>
+    } @else {
+    <div class="blogs-table-wrap">
+      <table class="blogs-table">
+        <thead>
+          <tr>
+            <th class="th-title">Title</th>
+            <th class="th-author">Author</th>
+            <th class="th-date">Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (blog of latestBlogs(); track blog.id) {
+          <tr class="blog-row" [routerLink]="routes.BLOG.DETAIL.ABSOLUTE(blog.id)">
+            <td class="td-title">
+              <span class="blog-title-text">{{ blog.title }}</span>
+            </td>
+            <td class="td-author">
+              <div class="author-chip">
+                <div class="author-avatar">{{ blog.authorName.charAt(0) | uppercase }}</div>
+                <span>{{ blog.authorName }}</span>
+              </div>
+            </td>
+            <td class="td-date">{{ formatDate(blog.createdAt) }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+</section>
+
+<section class="section">
+  <div class="chart-card chart-card--full">
+    <div class="chart-card__header">
+      <div class="chart-card__title">
+        <i class="bi bi-bar-chart-fill me-2"></i>Monthly Blog Activity
+      </div>
+      <span class="chart-subtitle">Last 12 months</span>
+    </div>
+
+    @if (loadingBlogs()) {
+    <div class="chart-loading chart-loading--tall">
+      <div class="spinner-ring"></div>
+    </div>
+    } @else if (monthlyData().length === 0) {
+    <div class="no-data no-data--padded">
+      <i class="bi bi-bar-chart" style="font-size: 2rem; color: var(--text-muted)"></i>
+      <p class="mt-2 mb-0" style="color: var(--text-muted)">No monthly data available.</p>
+    </div>
+    } @else {
+    <div class="bar-canvas-wrap">
+      <canvas #monthlyBarCanvas></canvas>
+    </div>
+    }
+  </div>
+</section>

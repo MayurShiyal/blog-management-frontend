@@ -1,0 +1,47 @@
+<div class="modal-backdrop" (click)="cancel()"></div>
+<div class="usr-modal" role="dialog" aria-modal="true" aria-label="Edit user">
+  <div class="usr-modal__header">
+    <h2 class="usr-modal__title"><i class="bi bi-pencil-square me-2"></i>Edit User</h2>
+    <button class="modal-close-btn" (click)="cancel()" aria-label="Close" type="button">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <!-- Read-only info -->
+  <div class="usr-modal__info-strip">
+    <span class="info-strip-chip"><i class="bi bi-envelope me-1"></i>{{ user().email }}</span>
+    <span class="info-strip-chip">
+      <i class="bi {{ user().role === 'Author' ? 'bi-pen' : 'bi-eye' }} me-1"></i>
+      {{ user().role }}
+    </span>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="usr-modal__body">
+    <!-- First Name -->
+    <app-input
+      [control]="form.controls.firstName"
+      label="First Name"
+      placeholder="e.g. John"
+      autocomplete="off"
+    ></app-input>
+
+    <!-- Last Name -->
+    <app-input
+      [control]="form.controls.lastName"
+      label="Last Name"
+      placeholder="e.g. Doe"
+      autocomplete="off"
+    ></app-input>
+
+    <!-- Footer buttons -->
+    <div class="usr-modal__footer">
+      <button type="button" class="btn btn-ghost" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        Saving… } @else {
+        <i class="bi bi-check-lg me-1"></i> Save Changes }
+      </button>
+    </div>
+  </form>
+</div>

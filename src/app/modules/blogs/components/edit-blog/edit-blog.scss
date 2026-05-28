@@ -1,0 +1,60 @@
+// Layout Variable Token Identifiers
+$accent: var(--brand-accent, #6366f1);
+$border: var(--border-color, #e2e8f0);
+$danger: var(--brand-danger, #ef4444);
+
+.text-xs {
+  font-size: 0.75rem !important;
+}
+.text-sm {
+  font-size: 0.875rem !important;
+}
+
+.form-control,
+.form-select,
+.form-control-custom {
+  border-color: $border;
+  border-radius: 8px;
+  padding: 0.6rem 0.875rem;
+  transition: all 0.15s ease-in-out;
+
+  &:focus {
+    border-color: $accent !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+  }
+
+  &.is-invalid {
+    border-color: $danger !important;
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+    }
+  }
+
+  &:disabled {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
+    border-color: #e2e8f0 !important;
+    cursor: not-allowed !important;
+  }
+
+  ::placeholder {
+    color: #94a3b8;
+    opacity: 0.8;
+  }
+}
+
+textarea.form-control {
+  line-height: 1.6;
+}
+
+.btn-draft {
+  border-color: #94a3b8;
+  color: #475569;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #475569;
+    color: #1e293b;
+  }
+}

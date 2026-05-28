@@ -1,0 +1,70 @@
+<div class="d-flex d-lg-none align-items-center gap-2 mb-4">
+  <div
+    class="auth-brand-mark d-flex align-items-center justify-content-center fw-bold fs-5 text-white"
+  >
+    B
+  </div>
+  <span class="mobile-brand-title fw-semibold fs-6"> Blog Management </span>
+</div>
+
+<div class="text-center">
+  @if (state() === 'loading') {
+  <div
+    class="d-flex align-items-center justify-content-center mx-auto mb-3"
+    style="width: 72px; height: 72px"
+  >
+    <div
+      class="spinner-border text-primary"
+      style="width: 3rem; height: 3rem; stroke-width: 3px"
+      role="status"
+    >
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <h2 class="h5 fw-bold text-dark my-3">Verifying your email…</h2>
+  <p class="text-muted small mb-2">{{ message() }}</p>
+  } @if (state() === 'success') {
+  <div
+    class="d-flex align-items-center justify-content-center mx-auto mb-3"
+    style="width: 72px; height: 72px"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#d1fae5" />
+      <path
+        d="M7 12.5l3.5 3.5 6-7"
+        stroke="#059669"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </div>
+  <h2 class="h5 fw-bold text-dark my-3">Email Verified!</h2>
+  <p class="text-muted small mb-2">{{ message() }}</p>
+  <p class="text-muted-50 small mb-4" style="font-size: 0.8125rem">
+    Redirecting you to login in a moment…
+  </p>
+  <a
+    [routerLink]="routes.AUTH.LOGIN.ABSOLUTE"
+    class="btn btn-primary px-4 py-2 fw-semibold shadow-sm w-100"
+    >Go to Login</a
+  >
+  } @if (state() === 'error') {
+  <div
+    class="d-flex align-items-center justify-content-center mx-auto mb-3"
+    style="width: 72px; height: 72px"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" fill="#fee2e2" />
+      <path d="M12 8v4m0 4h.01" stroke="#dc2626" stroke-width="2.2" stroke-linecap="round" />
+    </svg>
+  </div>
+  <h2 class="h5 fw-bold text-dark my-3">Verification Failed</h2>
+  <p class="text-muted small mb-4">{{ message() }}</p>
+  <a
+    [routerLink]="routes.AUTH.LOGIN.ABSOLUTE"
+    class="btn btn-outline-primary px-4 py-2 fw-semibold w-100"
+    >Back to Login</a
+  >
+  }
+</div>

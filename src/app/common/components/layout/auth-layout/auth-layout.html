@@ -1,0 +1,42 @@
+<div class="auth-page min-vh-100 row g-0">
+  <div
+    class="auth-hero col-lg-6 d-none d-lg-flex align-items-center p-5 text-white overflow-hidden position-relative"
+  >
+    <div class="auth-hero-grid position-absolute inset-0 opacity-5"></div>
+
+    <div class="hero-content position-relative z-1">
+      <div class="d-flex align-items-center gap-3 mb-5">
+        <div class="auth-brand-mark d-flex align-items-center justify-content-center fw-bold fs-5">
+          B
+        </div>
+        <span class="brand-title fw-semibold"> Blog Management </span>
+      </div>
+
+      <h1 class="hero-title mb-4 fst-italic">Welcome back, writer.</h1>
+
+      <p class="hero-description lh-lg opacity-75">
+        Sign in to continue your journey — manage posts, engage readers, and share your voice.
+      </p>
+
+      <div class="mt-5 d-flex flex-column gap-3">
+        @for (item of [ { icon: 'bi-bar-chart-line', label: 'Track your post analytics' }, { icon:
+        'bi-chat-dots', label: 'Manage reader comments' }, { icon: 'bi-bookmark-star', label: 'Save
+        drafts and continue later' } ]; track item.label) {
+        <div class="d-flex align-items-center gap-3 opacity-75">
+          <div class="feature-icon d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi {{ item.icon }}"></i>
+          </div>
+          <span class="feature-text">{{ item.label }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center p-3 p-sm-4 py-5">
+    <div class="auth-panel w-100">
+      <router-outlet />
+    </div>
+  </div>
+</div>

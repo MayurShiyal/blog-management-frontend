@@ -1,0 +1,661 @@
+<div class="d-flex gap-3 flex-wrap">
+  <div
+    class="flex-fill bg-white border border-light-subtle rounded-3 p-3 d-flex align-items-center gap-3 shadow-sm"
+    style="min-width: 140px"
+  >
+    <div
+      class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 bg-primary-subtle text-primary"
+      style="width: 40px; height: 40px; font-size: 1.125rem"
+    >
+      <i class="bi bi-journal-text"></i>
+    </div>
+    <div>
+      <div class="fs-4 fw-bold lh-1 text-dark">{{ totalCount() }}</div>
+      <div class="text-muted small mt-1" style="font-size: 0.75rem">Total Blogs</div>
+    </div>
+  </div>
+  <div
+    class="flex-fill bg-white border border-light-subtle rounded-3 p-3 d-flex align-items-center gap-3 shadow-sm"
+    style="min-width: 140px"
+  >
+    <div
+      class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 bg-success-subtle text-success"
+      style="width: 40px; height: 40px; font-size: 1.125rem"
+    >
+      <i class="bi bi-check-circle-fill"></i>
+    </div>
+    <div>
+      <div class="fs-4 fw-bold lh-1 text-dark">{{ publishedCount() }}</div>
+      <div class="text-muted small mt-1" style="font-size: 0.75rem">Published</div>
+    </div>
+  </div>
+  <div
+    class="flex-fill bg-white border border-light-subtle rounded-3 p-3 d-flex align-items-center gap-3 shadow-sm"
+    style="min-width: 140px"
+  >
+    <div
+      class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 text-warning bg-warning-subtle"
+      style="width: 40px; height: 40px; font-size: 1.125rem"
+    >
+      <i class="bi bi-hourglass-split"></i>
+    </div>
+    <div>
+      <div class="fs-4 fw-bold lh-1 text-dark">{{ pendingCount() }}</div>
+      <div class="text-muted small mt-1" style="font-size: 0.75rem">Pending Approval</div>
+    </div>
+  </div>
+  @if (isAuthor()) {
+  <div
+    class="flex-fill bg-white border border-light-subtle rounded-3 p-3 d-flex align-items-center gap-3 shadow-sm"
+    style="min-width: 140px"
+  >
+    <div
+      class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 bg-info-subtle text-info"
+      style="width: 40px; height: 40px; font-size: 1.125rem"
+    >
+      <i class="bi bi-pencil-square"></i>
+    </div>
+    <div>
+      <div class="fs-4 fw-bold lh-1 text-dark">{{ draftCount() }}</div>
+      <div class="text-muted small mt-1" style="font-size: 0.75rem">Drafts</div>
+    </div>
+  </div>
+  }
+  <div
+    class="flex-fill bg-white border border-light-subtle rounded-3 p-3 d-flex align-items-center gap-3 shadow-sm"
+    style="min-width: 140px"
+  >
+    <div
+      class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 bg-danger-subtle text-danger"
+      style="width: 40px; height: 40px; font-size: 1.125rem"
+    >
+      <i class="bi bi-x-circle-fill"></i>
+    </div>
+    <div>
+      <div class="fs-4 fw-bold lh-1 text-dark">{{ rejectedCount() }}</div>
+      <div class="text-muted small mt-1" style="font-size: 0.75rem">Rejected</div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-white border border-light-subtle rounded-3 shadow-sm overflow-hidden w-100 mt-4">
+  @if (isAuthor()) {
+  <div class="d-flex gap-3 px-4 bg-white border-bottom">
+    <button
+      class="blog-tab-btn border-0 bg-transparent py-3 px-1 fw-semibold text-muted text-sm position-relative"
+      [class.blog-tab-btn--active]="authorTab() === 'mine'"
+      (click)="onTabChange('mine')"
+      type="button"
+    >
+      <i class="bi bi-folder-symlink me-1"></i> My Articles
+    </button>
+  </div>
+  }
+
+  <div class="d-flex align-items-center gap-3 p-3 border-bottom flex-wrap bg-white">
+    <div class="d-flex flex-wrap gap-2 align-items-center w-100">
+      <div class="position-relative flex-grow-1" style="min-width: 200px; max-width: 300px">
+        <i
+          class="bi bi-search text-muted position-absolute start-0 top-50 translate-middle-y ms-3 text-sm pointer-events-none"
+        ></i>
+        <input
+          type="search"
+          class="form-control text-sm bg-light-subtle border-light-subtle"
+          style="padding-left: 2.25rem !important"
+          placeholder="Search blogs..."
+          [formControl]="searchControl"
+          autocomplete="off"
+        />
+      </div>
+
+      <div>
+        <select
+          class="form-select text-sm"
+          (change)="onCategoryChange($any($event.target).value)"
+          [value]="categoryFilter() ?? ''"
+          style="min-width: 150px"
+        >
+          <option value="">All Categories</option>
+          @for (cat of categories(); track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+          }
+        </select>
+      </div>
+
+      @if (isAdmin() || (isAuthor() && authorTab() === 'mine')) {
+      <div>
+        <select
+          class="form-select text-sm"
+          (change)="onStatusChange($any($event.target).value)"
+          [value]="statusFilter()"
+          style="min-width: 150px"
+        >
+          <option value="">All Statuses</option>
+          @if (!isAdmin()) {
+          <option value="Draft">Draft</option>
+          }
+          <option value="PendingApproval">Pending Approval</option>
+          <option value="Published">Published</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+      } @if (isAdmin() && authorOptions().length > 0) {
+      <div>
+        <select
+          class="form-select text-sm"
+          (change)="onAuthorChange($any($event.target).value)"
+          [value]="authorFilter()"
+          style="min-width: 170px"
+        >
+          <option value="">All Authors</option>
+          @for (author of authorOptions(); track author.id) {
+          <option [value]="author.id">{{ author.name }}</option>
+          }
+        </select>
+      </div>
+      }
+
+      <div class="d-flex align-items-center gap-2 ms-sm-auto flex-wrap">
+        <select
+          class="form-select text-sm"
+          (change)="onSortChange($any($event.target).value)"
+          [value]="sortBy()"
+          style="min-width: 140px"
+        >
+          <option value="createdAt">Date Created</option>
+          <option value="title">Title</option>
+          <option value="status">Status</option>
+        </select>
+        <button
+          class="btn btn-outline-secondary d-flex align-items-center justify-content-center p-0 rounded-3"
+          style="width: 38px; height: 38px"
+          (click)="sortDesc.set(!sortDesc()); loadBlogs()"
+          [title]="sortDesc() ? 'Sort Descending' : 'Sort Ascending'"
+          type="button"
+        >
+          <i class="bi {{ sortDesc() ? 'bi-sort-down-alt' : 'bi-sort-up' }}"></i>
+        </button>
+
+        <div class="d-flex border rounded-2 overflow-hidden" role="group" aria-label="View mode">
+          <button
+            class="view-toggle-btn border-0 bg-white py-2 px-3 text-muted text-sm lh-1"
+            [class.view-toggle-btn--active]="viewMode() === 'grid'"
+            (click)="setViewMode('grid')"
+            title="Grid View"
+            type="button"
+          >
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+          </button>
+          <button
+            class="view-toggle-btn border-0 bg-white py-2 px-3 text-muted text-sm lh-1 border-start border-light-subtle"
+            [class.view-toggle-btn--active]="viewMode() === 'list'"
+            (click)="setViewMode('list')"
+            title="List View"
+            type="button"
+          >
+            <i class="bi bi-list-ul"></i>
+          </button>
+        </div>
+
+        @if (isAuthor()) {
+        <a
+          [routerLink]="routes.BLOG.CREATE.ABSOLUTE"
+          class="btn btn-primary d-flex align-items-center gap-1 text-decoration-none py-2 px-3 text-sm rounded-3 whitespace-nowrap"
+        >
+          <i class="bi bi-plus-lg"></i>
+          <span>Create Blog</span>
+        </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="px-4 py-2 border-bottom d-flex justify-content-between align-items-center bg-light-subtle"
+  >
+    <span class="text-muted text-xs">
+      {{ totalCount() }} blog post{{ totalCount() !== 1 ? 's' : '' }} found @if (isAdmin() &&
+      authorFilter()) {
+      <span class="badge bg-primary ms-2 fw-normal text-xs">
+        Filtered by author
+        <button
+          class="btn-close btn-close-white ms-1"
+          style="font-size: 0.5rem"
+          (click)="onAuthorChange('')"
+          aria-label="Clear author filter"
+        ></button>
+      </span>
+      }
+    </span>
+    <span class="text-muted text-xs"> Page {{ pageNumber() }} of {{ totalPages() || 1 }} </span>
+  </div>
+
+  @if (viewMode() === 'grid') {
+  <div class="p-4">
+    @if (loading()) {
+    <div class="py-5 text-center w-100">
+      <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+      <span class="text-muted text-sm">Loading blog posts…</span>
+    </div>
+    } @else if (blogs().length === 0) {
+    <div class="py-5 text-center w-100">
+      <i class="bi bi-inbox display-3 text-muted mb-3 d-block"></i>
+      <p class="lead text-muted text-sm">
+        @if (searchQuery()) { No blog posts match "<strong>{{ searchQuery() }}</strong
+        >" } @else { No blog posts found. @if (isAuthor() && authorTab() === 'mine') { Click
+        <strong>Create Blog</strong> to publish your first article! } }
+      </p>
+    </div>
+    } @else {
+    <div class="row g-4">
+      @for (blog of blogs(); track blog.id) {
+      <div class="col-12 col-md-6 col-lg-4">
+        <div
+          class="blog-card bg-white border border-light-subtle rounded-3 overflow-hidden d-flex flex-column h-100 shadow-sm"
+        >
+          <div
+            class="blog-card__image-container position-relative overflow-hidden d-flex align-items-center justify-content-center"
+            style="height: 180px"
+          >
+            @if (blog.thumbnailUrl) {
+            <img
+              [src]="blog.thumbnailUrl"
+              class="blog-card__img w-100 h-100 object-fit-cover"
+              alt="Blog thumbnail"
+            />
+            } @else {
+            <div class="d-flex flex-column align-items-center gap-2 text-primary opacity-85">
+              <span class="fs-1 lh-1"><i class="bi bi-image"></i></span>
+              <span class="fw-bold text-sm tracking-wider">{{
+                blog.title.slice(0, 2) | uppercase
+              }}</span>
+            </div>
+            }
+            <!-- <span
+              class="position-absolute bg-dark bg-opacity-75 text-white text-xs fw-semibold px-2 py-1 rounded-pill z-2 tracking-wide"
+              style="top: 12px; left: 12px; backdrop-filter: blur(4px)"
+              [title]="blog.categoryNames?.join(', ') || 'Uncategorized'"
+              >{{ getCategoryLabel(blog) }}</span
+            > -->
+            <span
+              class="position-absolute text-xs fw-semibold px-2 py-1 rounded-pill z-2 tracking-wider text-uppercase shadow-sm bg-status {{
+                getStatusClass(blog.status)
+              }}"
+              style="top: 12px; right: 12px"
+            >
+              {{ getStatusLabel(blog.status) }}
+            </span>
+          </div>
+
+          <div class="p-3 d-flex flex-column flex-grow-1">
+            <h3 class="blog-card__title h6 fw-bold mb-2 lh-base text-dark">
+              <a
+                [routerLink]="routes.BLOG.DETAIL.ABSOLUTE(blog.id)"
+                class="text-decoration-none text-dark hover-primary"
+              >
+                {{ blog.title }}
+              </a>
+            </h3>
+            <p class="blog-card__description text-muted text-xs mb-3 flex-grow-1 lh-sm">
+              {{ blog.shortDescription || 'No description available for this post.' }}
+            </p>
+
+            @if (blog.status === 'Rejected' && blog.rejectionReason) {
+            <div
+              class="p-2 mb-3 rounded text-danger bg-danger-subtle text-xs border border-danger-subtle"
+            >
+              <strong style="font-size: 0.75rem; text-transform: uppercase"
+                ><i class="bi bi-x-circle-fill me-1"></i>Rejection Reason:</strong
+              >
+              <div class="text-dark-emphasis mt-1">{{ blog.rejectionReason }}</div>
+            </div>
+            }
+
+            <div class="d-flex align-items-center gap-2 pt-2 border-top">
+              <div
+                class="meta-avatar d-flex align-items-center justify-content-center fw-semibold text-xs text-primary bg-primary-subtle border border-white rounded-circle shadow-sm"
+                style="width: 28px; height: 28px"
+              >
+                {{ blog.authorName?.charAt(0) || 'U' | uppercase }}
+              </div>
+              <div>
+                <span class="d-block text-dark fw-medium text-xs">{{
+                  blog.authorName || 'Unknown Author'
+                }}</span>
+                <span class="text-muted text-xs" style="font-size: 0.725rem">{{
+                  blog.createdAt | date : 'MMM d, y'
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="p-3 border-top bg-light-subtle d-flex align-items-center justify-content-between"
+          >
+            <a
+              [routerLink]="routes.BLOG.DETAIL.ABSOLUTE(blog.id)"
+              class="btn btn-sm btn-link text-primary text-decoration-none p-1 d-flex align-items-center"
+              title="View details"
+            >
+              <i class="bi bi-eye me-1 fs-5"></i>
+            </a>
+
+            <div class="d-flex gap-1">
+              @if (isEditable(blog) && isAuthor()) {
+              <a
+                [routerLink]="routes.BLOG.EDIT.ABSOLUTE(blog.id)"
+                class="btn btn-sm btn-outline-primary"
+                title="Edit Draft"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              } @if (isAuthor() || isAdmin()) {
+              <button
+                class="btn btn-sm btn-outline-danger"
+                (click)="confirmDelete(blog)"
+                title="Delete Article"
+                type="button"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+              } @if (canAdminModerate(blog)) {
+              <button
+                class="btn btn-sm btn-success"
+                (click)="approveBlog(blog)"
+                title="Approve & Publish"
+                type="button"
+              >
+                <i class="bi bi-check-lg"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="openRejectModal(blog)"
+                title="Reject"
+                type="button"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  } @if (viewMode() === 'list') {
+  <div class="table-wrapper w-100 overflow-x-auto">
+    @if (loading()) {
+    <div class="py-5 text-center">
+      <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+      <span class="text-muted text-sm">Loading blog posts…</span>
+    </div>
+    } @else if (blogs().length === 0) {
+    <div class="py-5 text-center">
+      <i class="bi bi-inbox display-3 text-muted mb-3 d-block"></i>
+      <p class="lead text-muted text-sm">
+        @if (searchQuery()) { No blog posts match "<strong>{{ searchQuery() }}</strong
+        >" } @else { No blog posts found. @if (isAuthor() && authorTab() === 'mine') { Click
+        <strong>Create Blog</strong> to publish your first article! } }
+      </p>
+    </div>
+    } @else {
+    <table class="blog-list-table w-100 border-collapse">
+      <thead>
+        <tr>
+          <th style="width: 40%">Title</th>
+          <th>Author</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (blog of blogs(); track blog.id) {
+        <tr class="blog-list-row">
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              @if (blog.thumbnailUrl) {
+              <img
+                [src]="blog.thumbnailUrl"
+                alt=""
+                class="rounded object-fit-cover flex-shrink-0"
+                style="width: 44px; height: 44px"
+              />
+              } @else {
+              <div
+                class="rounded d-flex align-items-center justify-content-center bg-light border flex-shrink-0"
+                style="width: 44px; height: 44px"
+              >
+                <span class="fw-bold text-muted" style="font-size: 0.7rem">{{
+                  blog.title.slice(0, 2) | uppercase
+                }}</span>
+              </div>
+              }
+              <div class="overflow-hidden">
+                <a
+                  [routerLink]="routes.BLOG.DETAIL.ABSOLUTE(blog.id)"
+                  class="fw-semibold text-dark text-decoration-none list-title"
+                >
+                  {{ blog.title }}
+                </a>
+                @if (blog.shortDescription) {
+                <div class="text-muted text-xs list-desc mt-1">{{ blog.shortDescription }}</div>
+                }
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="d-flex align-items-center justify-content-center fw-semibold text-primary bg-primary-subtle border border-white rounded-circle shadow-sm"
+                style="width: 26px; height: 26px; font-size: 0.7rem"
+              >
+                {{ blog.authorName?.charAt(0) || 'U' | uppercase }}
+              </div>
+              <span class="text-xs">{{ blog.authorName || 'Unknown' }}</span>
+            </div>
+          </td>
+          <!-- <td>
+            <span
+              class="badge bg-light text-dark border text-xs fw-normal"
+              [title]="blog.categoryNames?.join(', ') || 'Uncategorized'"
+            >
+              {{ getCategoryLabel(blog) }}
+            </span>
+          </td> -->
+          <td>
+            <span
+              class="badge-status-list rounded-pill text-xs fw-semibold px-2 py-1 text-center bg-status {{
+                getStatusClass(blog.status)
+              }}"
+            >
+              {{ getStatusLabel(blog.status) }}
+            </span>
+          </td>
+          <td class="text-muted text-xs">{{ blog.createdAt | date : 'MMM d, y' }}</td>
+          <td>
+            <div class="d-flex align-items-center justify-content-end gap-1">
+              <a [routerLink]="routes.BLOG.DETAIL.ABSOLUTE(blog.id)" class="action-btn" title="View"
+                ><i class="bi bi-eye"></i
+              ></a>
+              @if (isEditable(blog) && isAuthor()) {
+              <a
+                [routerLink]="routes.BLOG.EDIT.ABSOLUTE(blog.id)"
+                class="action-btn action-btn--edit"
+                title="Edit Draft"
+                ><i class="bi bi-pencil-fill"></i
+              ></a>
+              } @if (isAuthor() || isAdmin()) {
+              <button
+                class="action-btn action-btn--delete"
+                (click)="confirmDelete(blog)"
+                title="Delete"
+                type="button"
+              >
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+              } @if (canAdminModerate(blog)) {
+              <button
+                class="action-btn action-btn--approve"
+                (click)="approveBlog(blog)"
+                title="Approve"
+                type="button"
+              >
+                <i class="bi bi-check-lg"></i>
+              </button>
+              <button
+                class="action-btn action-btn--reject"
+                (click)="openRejectModal(blog)"
+                title="Reject"
+                type="button"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+              }
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    }
+  </div>
+  } @if (totalPages() > 1 && !loading()) {
+  <div
+    class="d-flex align-items-center justify-content-between gap-2 p-3 border-top bg-light-subtle flex-wrap"
+  >
+    <span class="text-muted text-xs"> Page {{ pageNumber() }} of {{ totalPages() }} </span>
+    <div class="d-flex gap-1">
+      <button
+        class="page-btn"
+        [disabled]="pageNumber() === 1"
+        (click)="goToPage(1)"
+        type="button"
+        title="First page"
+      >
+        <i class="bi bi-chevron-double-left"></i>
+      </button>
+      <button
+        class="page-btn"
+        [disabled]="pageNumber() === 1"
+        (click)="goToPage(pageNumber() - 1)"
+        type="button"
+      >
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      @for (p of pages(); track p) {
+      <button
+        class="page-btn"
+        [class.page-btn--active]="p === pageNumber()"
+        (click)="goToPage(p)"
+        type="button"
+      >
+        {{ p }}
+      </button>
+      }
+      <button
+        class="page-btn"
+        [disabled]="pageNumber() === totalPages()"
+        (click)="goToPage(pageNumber() + 1)"
+        type="button"
+      >
+        <i class="bi bi-chevron-right"></i>
+      </button>
+      <button
+        class="page-btn"
+        [disabled]="pageNumber() === totalPages()"
+        (click)="goToPage(totalPages())"
+        type="button"
+        title="Last page"
+      >
+        <i class="bi bi-chevron-double-right"></i>
+      </button>
+    </div>
+  </div>
+  }
+</div>
+
+@if (rejectOpen()) {
+<div class="modal-backdrop" (click)="closeRejectModal()"></div>
+<div
+  class="cat-modal overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Reject submission"
+>
+  <div
+    class="d-flex align-items-center p-3 px-4 border-bottom bg-danger-subtle border-danger-subtle"
+  >
+    <h2 class="flex-grow-1 fs-5 fw-bold text-danger mb-0">
+      <i class="bi bi-x-circle-fill me-2"></i> Reject Submission
+    </h2>
+    <button class="modal-close-btn" (click)="closeRejectModal()" aria-label="Close" type="button">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <form [formGroup]="rejectForm" (ngSubmit)="submitRejection()" novalidate class="p-4">
+    <p class="mb-3 text-sm">
+      Are you sure you want to reject <strong>"{{ rejectTargetTitle() }}"</strong>? Please provide a
+      clear rejection reason for the author.
+    </p>
+
+    <div class="mb-3">
+      <label class="form-label text-sm fw-medium" for="reject-reason"
+        >Rejection Reason <span class="text-danger">*</span></label
+      >
+      <textarea
+        id="reject-reason"
+        class="form-control text-sm"
+        [class.is-invalid]="rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched"
+        formControlName="reason"
+        rows="3"
+        placeholder="Please explain why this post is rejected (minimum 5 characters)..."
+        maxlength="300"
+      ></textarea>
+      @if (rejectForm.get('reason')?.invalid && rejectForm.get('reason')?.touched) {
+      <div class="invalid-feedback text-xs">
+        @if (rejectForm.get('reason')?.errors?.['required']) { A reason is required. } @else if
+        (rejectForm.get('reason')?.errors?.['minlength']) { Reason must be at least 5 characters. }
+        @else { Reason cannot exceed 300 characters. }
+      </div>
+      }
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <button
+        type="button"
+        class="btn btn-light border text-sm fw-semibold"
+        (click)="closeRejectModal()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-danger text-sm fw-semibold px-3"
+        [disabled]="rejectLoading()"
+      >
+        @if (rejectLoading()) {
+        <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Rejecting… }
+        @else { <i class="bi bi-x-circle-fill me-1"></i> Reject Post }
+      </button>
+    </div>
+  </form>
+</div>
+}
+
+<app-delete-modal
+  [show]="deleteOpen()"
+  title="Delete Article"
+  [message]="
+    'Are you sure you want to permanently delete \'' +
+    deleteTargetTitle() +
+    '\'? This action is irreversible.'
+  "
+  [loading]="deleteLoading()"
+  (confirm)="executeDelete()"
+  (cancel)="cancelDelete()"
+></app-delete-modal>

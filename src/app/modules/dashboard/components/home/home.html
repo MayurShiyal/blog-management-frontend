@@ -1,0 +1,190 @@
+<div class="d-flex align-items-center justify-content-center py-5">
+  <div class="text-center" style="max-width: 560px">
+    <div
+      class="mb-4"
+      style="
+        width: 80px;
+        height: 80px;
+        background: var(--brand-light);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+      "
+    >
+      <i class="bi bi-check2-circle" style="font-size: 2.5rem; color: var(--brand-primary)"></i>
+    </div>
+    <h2 class="mb-2" style="font-weight: 700; letter-spacing: -0.02em">
+      Welcome@if (user()?.firstName) {, {{ user()?.firstName }}}!
+    </h2>
+    <p class="mb-4" style="color: var(--text-muted)">
+      You are successfully authenticated as <strong>{{ user()?.role }}</strong>.
+    </p>
+
+    <!-- User info cards -->
+    <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
+      <div class="p-3 text-start rounded-3 border" style="min-width: 180px; background: #fff">
+        <div
+          style="
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+          "
+        >
+          Email
+        </div>
+        <div style="font-weight: 600; font-size: 0.9rem; word-break: break-all">
+          {{ user()?.email }}
+        </div>
+      </div>
+      <div class="p-3 text-start rounded-3 border" style="min-width: 140px; background: #fff">
+        <div
+          style="
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+          "
+        >
+          Role
+        </div>
+        <div style="font-weight: 600; font-size: 0.9rem">{{ user()?.role }}</div>
+      </div>
+    </div>
+
+    <!-- Admin / Author quick-links -->
+    @if (isAdmin() || user()?.role === 'Author') {
+    <div
+      class="text-start"
+      style="
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+      "
+    >
+      <div
+        style="
+          padding: 0.875rem 1.125rem;
+          border-bottom: 1px solid var(--border-color);
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: var(--text-muted);
+        "
+      >
+        {{ isAdmin() ? 'Admin Panel' : 'Author Panel' }}
+      </div>
+
+      @if (isAdmin()) {
+      <!-- Manage Categories -->
+      <a
+        [routerLink]="routes.CATEGORIES.LIST.ABSOLUTE"
+        class="d-flex align-items-center gap-3 px-4 py-3 text-decoration-none admin-nav-item border-bottom"
+      >
+        <div
+          style="
+            width: 36px;
+            height: 36px;
+            background: var(--brand-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          "
+        >
+          <i class="bi bi-tags-fill" style="color: var(--brand-primary)"></i>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark)">
+            Manage Categories
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted)">
+            Create, edit and organise blog categories
+          </div>
+        </div>
+        <i
+          class="bi bi-chevron-right ms-auto"
+          style="color: var(--text-muted); font-size: 0.8rem"
+        ></i>
+      </a>
+
+      <!-- Manage Users -->
+      <a
+        [routerLink]="routes.USERS.LIST.ABSOLUTE"
+        class="d-flex align-items-center gap-3 px-4 py-3 text-decoration-none admin-nav-item border-bottom"
+      >
+        <div
+          style="
+            width: 36px;
+            height: 36px;
+            background: var(--brand-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          "
+        >
+          <i class="bi bi-people-fill" style="color: var(--brand-primary)"></i>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark)">
+            Manage Users
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted)">
+            View, edit and manage user accounts
+          </div>
+        </div>
+        <i
+          class="bi bi-chevron-right ms-auto"
+          style="color: var(--text-muted); font-size: 0.8rem"
+        ></i>
+      </a>
+      }
+
+      <a
+        [routerLink]="routes.BLOG.LIST.ABSOLUTE"
+        class="d-flex align-items-center gap-3 px-4 py-3 text-decoration-none admin-nav-item"
+      >
+        <div
+          style="
+            width: 36px;
+            height: 36px;
+            background: var(--brand-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          "
+        >
+          <i class="bi bi-file-earmark-richtext-fill" style="color: var(--brand-primary)"></i>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark)">
+            Manage Blogs
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted)">
+            {{
+              isAdmin()
+                ? 'Review and moderate blog submissions'
+                : 'Create and manage your blog posts'
+            }}
+          </div>
+        </div>
+        <i
+          class="bi bi-chevron-right ms-auto"
+          style="color: var(--text-muted); font-size: 0.8rem"
+        ></i>
+      </a>
+    </div>
+    }
+  </div>
+</div>

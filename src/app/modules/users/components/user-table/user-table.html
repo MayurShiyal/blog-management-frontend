@@ -1,0 +1,90 @@
+<table class="usr-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Verified</th>
+      <th>Status</th>
+      <th>Joined</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (u of users(); track u.id; let i = $index) {
+    <tr>
+      <td class="row-num">{{ (pageNumber() - 1) * pageSize() + i + 1 }}</td>
+
+      <td>
+        <div class="user-cell">
+          <div class="user-cell__avatar">{{ u.firstName?.charAt(0) | uppercase }}</div>
+          <div class="user-cell__info">
+            <span class="user-cell__name">{{ u.fullName }}</span>
+          </div>
+        </div>
+      </td>
+
+      <td class="email-cell">{{ u.email }}</td>
+
+      <td>
+        <span class="role-badge role-badge--{{ u.role | lowercase }}">
+          <i class="bi {{ u.role === 'Author' ? 'bi-pen' : 'bi-eye' }} me-1"></i>
+          {{ u.role }}
+        </span>
+      </td>
+
+      <td>
+        @if (u.isVerified) {
+        <span class="verified-badge verified-badge--yes">
+          <i class="bi bi-patch-check-fill me-1"></i>Verified
+        </span>
+        } @else {
+        <span class="verified-badge verified-badge--no">
+          <i class="bi bi-patch-exclamation me-1"></i>Unverified
+        </span>
+        }
+      </td>
+
+      <td>
+        <label
+          class="status-toggle"
+          [title]="u.status === 'Active' ? 'Click to deactivate' : 'Click to activate'"
+        >
+          <input
+            type="checkbox"
+            class="toggle-input"
+            [checked]="u.status === 'Active'"
+            (change)="toggleClicked.emit(u)"
+          />
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">{{ u.status }}</span>
+        </label>
+      </td>
+
+      <td class="date-cell">{{ u.createdAt | date : 'dd MMM yyyy' }}</td>
+
+      <td class="actions-cell">
+        <div class="action-btns">
+          <button
+            type="button"
+            class="action-btn action-btn--edit"
+            (click)="editClicked.emit(u)"
+            title="Edit user"
+          >
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button
+            type="button"
+            class="action-btn action-btn--delete"
+            (click)="deleteClicked.emit(u)"
+            title="Delete user"
+          >
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>

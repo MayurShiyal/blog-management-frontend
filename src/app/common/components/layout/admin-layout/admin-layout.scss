@@ -1,0 +1,250 @@
+$brand: var(--brand-primary);
+$brand-dark: var(--brand-primary-dark);
+$brand-light: var(--brand-light);
+$accent: var(--brand-accent);
+$text-dark: var(--text-dark);
+$text-muted: var(--text-muted);
+$border: var(--border-color);
+$surface: var(--surface);
+$bg-page: var(--bg-page);
+$danger: var(--danger);
+$success: var(--success);
+$radius-card: var(--radius-card);
+$shadow-card: var(--shadow-card);
+
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  background: $bg-page;
+  position: relative;
+}
+app-admin-sidebar,
+app-author-sidebar {
+  display: block;
+  flex-shrink: 0;
+
+  @media (max-width: 991px) {
+    display: contents;
+  }
+}
+$sidebar-w: 240px;
+
+.sidebar {
+  width: $sidebar-w;
+  min-height: 100vh;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 200;
+  transition: transform 0.25s ease;
+
+  @media (max-width: 991px) {
+    position: fixed;
+    inset: 0;
+    width: $sidebar-w;
+    transform: translateX(-100%);
+    &--open {
+      transform: translateX(0);
+    }
+  }
+}
+
+.sidebar-overlay {
+  display: none;
+  @media (max-width: 991px) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 199;
+  }
+}
+
+.sidebar__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  background: $brand;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.sidebar__close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  &:hover {
+    color: #e2e8f0;
+  }
+}
+
+.sidebar__nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.625rem 0.875rem;
+  border-radius: 10px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #e2e8f0;
+  }
+
+  &--active {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+  }
+}
+
+.sidebar__footer {
+  padding: 1rem 0.75rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.5rem;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: $brand;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  overflow: hidden;
+}
+.user-name {
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-role {
+  color: #64748b;
+  font-size: 0.7rem;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.75rem;
+  background: $surface;
+  border-bottom: 1px solid $border;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar__hamburger {
+  background: none;
+  border: none;
+  color: $text-dark;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  &:hover {
+    background: $bg-page;
+  }
+}
+
+.topbar__title {
+  flex: 1;
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 0.8125rem;
+  color: $text-muted;
+  margin: 2px 0 0;
+}
+
+.page-body {
+  flex: 1;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+@media (max-width: 767px) {
+  .page-body {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
