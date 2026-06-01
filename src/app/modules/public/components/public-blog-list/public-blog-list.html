@@ -1,0 +1,345 @@
+<div class="blog-listing-page">
+
+  <!-- ── Hero Section ── -->
+  <section class="blog-hero">
+    <div class="blog-hero__inner">
+      <div class="container-xl px-3 px-md-4">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <div class="blog-hero__badge mb-3">
+              <i class="bi bi-stars me-1"></i> Welcome to BlogSpace
+            </div>
+            <h1 class="blog-hero__title fw-bold mb-3">
+              Ideas Worth<br />
+              <span class="blog-hero__accent">Reading</span>
+            </h1>
+            <p class="blog-hero__subtitle mb-4">
+              Discover thoughtful articles, in-depth tutorials, and compelling stories from our community of writers.
+            </p>
+            <!-- Hero Search -->
+            <div class="blog-hero__search position-relative">
+              <i class="bi bi-search blog-hero__search-icon"></i>
+              <input
+                type="text"
+                class="form-control blog-hero__search-input"
+                placeholder="Search articles, topics, authors..."
+                [formControl]="searchControl"
+              />
+              @if (searchControl.value) {
+                <button
+                  class="blog-hero__search-clear btn p-0 border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-3"
+                  (click)="searchControl.setValue('')"
+                  type="button"
+                  aria-label="Clear search"
+                >
+                  <i class="bi bi-x-circle text-muted"></i>
+                </button>
+              }
+            </div>
+          </div>
+          <div class="col-lg-6 d-none d-lg-flex justify-content-end">
+            <div class="blog-hero__illustration">
+              <div class="hero-card-stack">
+                <div class="hero-card hero-card--1">
+                  <div class="hero-card__thumb bg-primary-subtle"></div>
+                  <div class="hero-card__lines">
+                    <div class="hero-line hero-line--lg bg-secondary-subtle"></div>
+                    <div class="hero-line hero-line--sm bg-secondary-subtle"></div>
+                  </div>
+                </div>
+                <div class="hero-card hero-card--2">
+                  <div class="hero-card__thumb" style="background:linear-gradient(135deg,#ddd6fe,#c7d2fe)"></div>
+                  <div class="hero-card__lines">
+                    <div class="hero-line hero-line--lg bg-secondary-subtle"></div>
+                    <div class="hero-line hero-line--sm bg-secondary-subtle"></div>
+                  </div>
+                </div>
+                <div class="hero-card hero-card--3">
+                  <div class="hero-card__thumb" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8)"></div>
+                  <div class="hero-card__lines">
+                    <div class="hero-line hero-line--lg bg-secondary-subtle"></div>
+                    <div class="hero-line hero-line--sm bg-secondary-subtle"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Blog Content Area ── -->
+  <div class="container-xl px-3 px-md-4 py-5">
+
+    <!-- ── Filters Row ── -->
+    <div class="blog-filters d-flex align-items-center gap-3 flex-wrap mb-5">
+      <div class="blog-filters__label text-muted small fw-medium d-none d-sm-block">Filter by:</div>
+
+      <!-- Multi-select Category Dropdown -->
+      <div class="category-multiselect position-relative">
+        <button
+          class="category-toggle btn d-flex align-items-center gap-2"
+          [class.category-toggle--active]="selectedCategoryIds().length > 0"
+          (click)="toggleCategoryDropdown()"
+          type="button"
+        >
+          <i class="bi bi-tag"></i>
+          <span>{{ selectedCategoryLabel() }}</span>
+          @if (selectedCategoryIds().length > 0) {
+            <span class="category-badge badge rounded-pill">{{ selectedCategoryIds().length }}</span>
+          }
+          <i class="bi ms-1" [class.bi-chevron-down]="!categoryDropdownOpen()" [class.bi-chevron-up]="categoryDropdownOpen()"></i>
+        </button>
+
+        @if (categoryDropdownOpen()) {
+          <div class="category-dropdown bg-white border border-light-subtle rounded-3 shadow">
+            <!-- All option -->
+            <div class="category-option category-option--all d-flex align-items-center gap-2 px-3 py-2 border-bottom border-light-subtle">
+              <input
+                type="checkbox"
+                class="form-check-input m-0"
+                id="cat-all"
+                [checked]="selectedCategoryIds().length === 0"
+                (change)="clearCategories()"
+              />
+              <label class="form-check-label small fw-semibold w-100 cursor-pointer" for="cat-all">
+                <i class="bi bi-grid me-1 text-muted"></i>All Topics
+              </label>
+            </div>
+            <!-- Category list -->
+            <div class="category-list">
+              @for (cat of categories(); track cat.id) {
+                <div class="category-option d-flex align-items-center gap-2 px-3 py-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input m-0"
+                    [id]="'cat-' + cat.id"
+                    [checked]="isCategorySelected(cat.id)"
+                    (change)="toggleCategory(cat.id)"
+                  />
+                  <label class="form-check-label small w-100 cursor-pointer" [for]="'cat-' + cat.id">{{ cat.name }}</label>
+                </div>
+              }
+              @if (categories().length === 0) {
+                <div class="px-3 py-3 text-muted small text-center">
+                  <i class="bi bi-tag-slash d-block mb-1"></i>No categories available
+                </div>
+              }
+            </div>
+            <!-- Actions -->
+            <div class="d-flex gap-2 px-3 py-2 border-top border-light-subtle">
+              <button class="btn btn-primary btn-sm flex-grow-1" (click)="applyCategories()" type="button">
+                Apply Filter
+              </button>
+              @if (selectedCategoryIds().length > 0) {
+                <button class="btn btn-outline-secondary btn-sm" (click)="clearCategories(); applyCategories()" type="button">
+                  Clear
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Active filter pills -->
+      @for (catId of selectedCategoryIds(); track catId) {
+        <span class="filter-pill d-flex align-items-center gap-1">
+          {{ getCategoryName(catId) }}
+          <button
+            class="btn p-0 border-0 bg-transparent filter-pill__remove"
+            (click)="toggleCategory(catId); resetAndLoad()"
+            aria-label="Remove filter"
+            type="button"
+          >
+            <i class="bi bi-x"></i>
+          </button>
+        </span>
+      }
+
+      <!-- Results count -->
+      @if (!initialLoading() && totalCount() > 0) {
+        <span class="ms-auto text-muted small">
+          {{ blogs().length }} of {{ totalCount() }} articles
+        </span>
+      }
+    </div>
+
+    <!-- ── Initial Loading ── -->
+    @if (initialLoading()) {
+      <div class="row g-4">
+        @for (item of [1,2,3]; track item) {
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="blog-skeleton rounded-4 bg-white shadow-sm overflow-hidden">
+              <div class="skeleton-thumb"></div>
+              <div class="p-4">
+                <div class="skeleton-bar w-25 mb-3"></div>
+                <div class="skeleton-bar w-75 mb-2"></div>
+                <div class="skeleton-bar w-50 mb-4"></div>
+                <div class="skeleton-bar w-100 mb-1"></div>
+                <div class="skeleton-bar w-100 mb-1"></div>
+                <div class="skeleton-bar w-60 mb-4"></div>
+                <div class="d-flex justify-content-between">
+                  <div class="skeleton-bar w-25"></div>
+                  <div class="skeleton-bar w-25"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+    } @else if (blogs().length === 0 && !loading()) {
+      <!-- ── Empty State ── -->
+      <div class="empty-blogs text-center py-5">
+        <div class="empty-blogs__icon mb-4">
+          <i class="bi bi-journal-x"></i>
+        </div>
+        <h3 class="fw-bold text-dark mb-2">No Articles Found</h3>
+        <p class="text-muted mb-4">
+          @if (searchQuery() || selectedCategoryIds().length > 0) {
+            No articles match your current search or filters. Try adjusting your criteria.
+          } @else {
+            No published articles available yet. Check back soon!
+          }
+        </p>
+        @if (searchQuery() || selectedCategoryIds().length > 0) {
+          <button class="btn btn-outline-primary btn-sm" (click)="searchControl.setValue(''); clearCategories(); resetAndLoad()" type="button">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Clear Filters
+          </button>
+        }
+      </div>
+
+    } @else {
+      <!-- ── Blog Grid ── -->
+      <div class="row g-4">
+        @for (blog of blogs(); track blog.id) {
+          <div class="col-12 col-md-6 col-lg-4">
+            <article class="blog-card h-100 d-flex flex-column">
+              <!-- Thumbnail -->
+              <a [routerLink]="routes.PUBLIC.BLOG_DETAIL.ABSOLUTE(blog.id)" class="blog-card__thumb-link text-decoration-none">
+                <div class="blog-card__thumb">
+                  @if (blog.thumbnailUrl) {
+                    <img [src]="blog.thumbnailUrl" [alt]="blog.title" class="blog-card__thumb-img" />
+                  } @else {
+                    <div class="blog-card__thumb-placeholder d-flex align-items-center justify-content-center">
+                      <i class="bi bi-journal-richtext"></i>
+                    </div>
+                  }
+                </div>
+              </a>
+
+              <div class="blog-card__body p-4 d-flex flex-column flex-grow-1">
+                <!-- Categories -->
+                @if (blog.categoryNames && blog.categoryNames.length > 0) {
+                  <div class="d-flex flex-wrap gap-1 mb-3">
+                    @for (cat of blog.categoryNames.slice(0, 2); track cat) {
+                      <span class="blog-category-chip">{{ cat }}</span>
+                    }
+                    @if (blog.categoryNames.length > 2) {
+                      <span class="blog-category-chip blog-category-chip--more">+{{ blog.categoryNames.length - 2 }}</span>
+                    }
+                  </div>
+                }
+
+                <!-- Title -->
+                <h2 class="blog-card__title mb-2">
+                  <a [routerLink]="routes.PUBLIC.BLOG_DETAIL.ABSOLUTE(blog.id)" class="text-decoration-none text-dark">
+                    {{ blog.title }}
+                  </a>
+                </h2>
+
+                <!-- Excerpt -->
+                <p class="blog-card__excerpt text-muted mb-3 flex-grow-1">{{ getExcerpt(blog) }}</p>
+
+                <!-- Author + Date row -->
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <div class="blog-card__author-avatar d-flex align-items-center justify-content-center fw-bold text-white rounded-circle">
+                    {{ (blog.authorName || 'A')[0].toUpperCase() }}
+                  </div>
+                  <div class="min-w-0">
+                    @if (blog.authorName) {
+                      <div class="blog-card__author-name text-dark fw-medium small text-truncate">{{ blog.authorName }}</div>
+                    }
+                    <div class="text-muted" style="font-size:0.75rem">{{ formatDate(blog.publishedAt) }}</div>
+                  </div>
+                </div>
+
+                <!-- Divider + Actions -->
+                <div class="blog-card__footer d-flex align-items-center justify-content-between pt-3 border-top border-light-subtle">
+                  <div class="d-flex align-items-center gap-1">
+                    <!-- Like -->
+                    <button
+                      class="blog-action-btn d-flex align-items-center gap-1"
+                      [class.blog-action-btn--liked]="isLiked(blog.id)"
+                      [disabled]="isLikeLoading(blog.id)"
+                      (click)="toggleBlogLike(blog, $event)"
+                      type="button"
+                      [attr.aria-label]="isLiked(blog.id) ? 'Unlike' : 'Like'"
+                    >
+                      @if (isLikeLoading(blog.id)) {
+                        <span class="spinner-border" style="width:0.7rem;height:0.7rem;border-width:2px" role="status"></span>
+                      } @else {
+                        <i class="bi" [class.bi-heart-fill]="isLiked(blog.id)" [class.bi-heart]="!isLiked(blog.id)"></i>
+                      }
+                      <span>{{ getReactionCount(blog) }}</span>
+                    </button>
+
+                    <!-- Comment -->
+                    <button
+                      class="blog-action-btn d-flex align-items-center gap-1"
+                      (click)="openCommentDialog(blog, $event)"
+                      type="button"
+                      aria-label="View comments"
+                    >
+                      <i class="bi bi-chat"></i>
+                      <span>{{ blog.totalComments }}</span>
+                    </button>
+                  </div>
+
+                  <!-- Read More -->
+                  <a
+                    [routerLink]="routes.PUBLIC.BLOG_DETAIL.ABSOLUTE(blog.id)"
+                    class="blog-read-more d-flex align-items-center gap-1"
+                  >
+                    Read more <i class="bi bi-arrow-right"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        }
+      </div>
+
+      <!-- ── Load More / End indicator ── -->
+      <div class="text-center mt-5">
+        @if (loading()) {
+          <div class="d-flex flex-column align-items-center gap-3 text-muted">
+            <div class="blog-loading-spinner">
+              <div class="spinner-border text-primary" role="status" style="width:2rem;height:2rem">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <span class="small">Loading more articles...</span>
+          </div>
+        } @else if (allLoaded() && blogs().length > 0) {
+          <div class="end-of-feed d-flex flex-column align-items-center gap-2">
+            <div class="end-of-feed__dots d-flex gap-2">
+              <span></span><span></span><span></span>
+            </div>
+            <p class="text-muted small mb-0">You've read everything! All {{ totalCount() }} articles loaded.</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ── Comment Dialog ── -->
+@if (commentDialogBlogId()) {
+  <app-comment-dialog
+    [blogId]="commentDialogBlogId()!"
+    [blogTitle]="commentDialogBlogTitle()"
+    (close)="closeCommentDialog()"
+  />
+}

@@ -13,7 +13,7 @@ export interface UpdateCategoryRequest {
 }
 
 export interface CategoryDto {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   description?: string | null;

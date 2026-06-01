@@ -9,9 +9,8 @@ export interface GetBlogByIdDto {
   thumbnailUrl?: string | null;
   status: BlogStatus;
   rejectionReason?: string | null;
-  categoryId: number;
-  categoryIds?: number[] | null;
-  categoryName?: string | null;
+  categoryIds?: string[] | null;
+  categoryNames?: string[] | null;
   authorId: string;
   authorName?: string | null;
   createdAt: string;

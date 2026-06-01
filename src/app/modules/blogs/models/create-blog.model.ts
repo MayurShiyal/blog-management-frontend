@@ -7,7 +7,7 @@ export interface CreateBlogRequest {
   shortDescription?: string | null;
   content: string;
   thumbnailUrl?: string | null;
-  categoryIds: number[];
+  categoryIds: string[];
   status: BlogStatusEnum;
 }
 

@@ -28,7 +28,7 @@ export class BlogService {
       pageSize?: number;
       sortBy?: string;
       sortDesc?: boolean;
-      categoryId?: number;
+      categoryId?: string;
       authorId?: string;
     } = {}
   ): Observable<GetBlogsResponse> {
@@ -58,8 +58,8 @@ export class BlogService {
     if (params.sortDesc !== undefined && params.sortDesc !== null) {
       queryParts.push(`sortDesc=${params.sortDesc}`);
     }
-    if (params.categoryId !== undefined && params.categoryId !== null) {
-      queryParts.push(`categoryId=${params.categoryId}`);
+    if (params.categoryId !== undefined && params.categoryId !== null && params.categoryId.trim() !== '') {
+      queryParts.push(`categoryId=${encodeURIComponent(params.categoryId.trim())}`);
     }
     if (
       params.authorId !== undefined &&

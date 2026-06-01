@@ -1,10 +1,32 @@
 import { Routes } from '@angular/router';
-import { authGuard, adminGuard, guestGuard } from './common/guards/auth-guard';
+import { authGuard, adminGuard, guestGuard, authorOrAdminGuard } from './common/guards/auth-guard';
 import { ROUTES } from './common/constants/routes.constants';
 
 export const routes: Routes = [
-  // Redirect root to login
-  { path: '', redirectTo: ROUTES.AUTH.LOGIN.ABSOLUTE.substring(1), pathMatch: 'full' },
+  { path: '', redirectTo: ROUTES.PUBLIC.BLOGS.ABSOLUTE.substring(1), pathMatch: 'full' },
+
+  {
+    path: ROUTES.PUBLIC.ROOT,
+    loadComponent: () =>
+      import('./common/components/layout/public-layout/public-layout').then((m) => m.PublicLayout),
+    children: [
+      { path: '', redirectTo: 'blogs', pathMatch: 'full' },
+      {
+        path: 'blogs',
+        loadComponent: () =>
+          import('./modules/public/components/public-blog-list/public-blog-list').then(
+            (m) => m.PublicBlogList
+          ),
+      },
+      {
+        path: 'blogs/:id',
+        loadComponent: () =>
+          import('./modules/public/components/public-blog-detail/public-blog-detail').then(
+            (m) => m.PublicBlogDetail
+          ),
+      },
+    ],
+  },
 
   {
     path: ROUTES.AUTH.ROOT,
@@ -52,16 +74,16 @@ export const routes: Routes = [
     ],
   },
 
-  // Protected pages wrapped in AdminLayout shell
   {
     path: '',
     loadComponent: () =>
       import('./common/components/layout/admin-layout/admin-layout').then((m) => m.AdminLayout),
-    canActivate: [authGuard],
+    canActivate: [authorOrAdminGuard],
     children: [
       // Generic dashboard (redirects admins to /admin/dashboard)
       {
         path: ROUTES.DASHBOARD.HOME.PATH,
+        canActivate: [authorOrAdminGuard],
         loadComponent: () => import('./modules/dashboard/components/home/home').then((m) => m.Home),
       },
 
@@ -91,30 +113,32 @@ export const routes: Routes = [
           import('./modules/users/components/user-list/user-list').then((m) => m.UserList),
       },
 
-      // Blogs
       {
         path: ROUTES.BLOG.LIST.PATH,
+        canActivate: [authorOrAdminGuard],
         loadComponent: () =>
           import('./modules/blogs/components/blog-list/blog-list').then((m) => m.BlogList),
       },
       {
         path: ROUTES.BLOG.CREATE.PATH,
+        canActivate: [authorOrAdminGuard],
         loadComponent: () =>
           import('./modules/blogs/components/create-blog/create-blog').then((m) => m.CreateBlog),
       },
       {
         path: ROUTES.BLOG.EDIT.PATH,
+        canActivate: [authorOrAdminGuard],
         loadComponent: () =>
           import('./modules/blogs/components/edit-blog/edit-blog').then((m) => m.EditBlog),
       },
       {
         path: ROUTES.BLOG.DETAIL.PATH,
+        canActivate: [authorOrAdminGuard],
         loadComponent: () =>
           import('./modules/blogs/components/blog-detail/blog-detail').then((m) => m.BlogDetail),
       },
     ],
   },
 
-  // Wildcard
-  { path: '**', redirectTo: ROUTES.AUTH.LOGIN.ABSOLUTE.substring(1) },
+  { path: '**', redirectTo: ROUTES.PUBLIC.BLOGS.ABSOLUTE.substring(1) },
 ];

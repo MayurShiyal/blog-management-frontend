@@ -1,0 +1,185 @@
+<div class="comment-dialog-backdrop" (click)="onBackdropClick($event)">
+  <div class="comment-dialog" role="dialog" aria-modal="true">
+    <!-- Header -->
+    <div class="comment-dialog__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-chat-dots text-primary fs-5"></i>
+        <h5 class="mb-0 fw-bold fs-6">Comments</h5>
+        <span class="badge bg-primary-subtle text-primary fw-normal">{{ totalCount() }}</span>
+      </div>
+      <button class="btn-close" (click)="close.emit()" aria-label="Close"></button>
+    </div>
+
+    <!-- Add Comment -->
+    <div class="comment-dialog__add-comment px-4 py-3 border-bottom bg-light">
+      @if (isLoggedIn) {
+        <div [formGroup]="commentForm">
+          <textarea
+            formControlName="content"
+            class="form-control form-control-sm"
+            [class.is-invalid]="commentForm.get('content')?.touched && commentForm.get('content')?.invalid"
+            rows="2"
+            placeholder="Share your thoughts..."
+          ></textarea>
+          @if (commentForm.get('content')?.touched && commentForm.get('content')?.hasError('required')) {
+            <div class="text-danger" style="font-size:0.75rem">Comment cannot be empty.</div>
+          }
+          <div class="d-flex justify-content-end mt-2">
+            <button
+              class="btn btn-primary btn-sm"
+              [disabled]="commentSubmitting()"
+              (click)="submitComment()"
+              type="button"
+            >
+              @if (commentSubmitting()) {
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+              }
+              Post Comment
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="d-flex align-items-center gap-2 text-muted small">
+          <i class="bi bi-lock"></i>
+          <span>
+            <a [routerLink]="routes.AUTH.LOGIN.ABSOLUTE" class="text-primary text-decoration-none fw-semibold" (click)="close.emit()">Sign in</a>
+            to join the conversation.
+          </span>
+        </div>
+      }
+    </div>
+
+    <!-- Comments List -->
+    <div class="comment-dialog__body px-4 py-3" (scroll)="onScroll($event)">
+      @if (loading() && comments().length === 0) {
+        <app-loading message="Loading comments..." [size]="2" />
+      } @else if (comments().length === 0 && !loading()) {
+        <app-empty-state
+          icon="bi-chat-square"
+          title="No Comments Yet"
+          message="Be the first to share your thoughts on this article."
+        />
+      } @else {
+        <div class="d-flex flex-column gap-4">
+          @for (comment of comments(); track comment.id) {
+            <div class="comment-item">
+              <!-- Comment -->
+              <div class="d-flex align-items-start gap-3">
+                <div class="comment-avatar rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center text-muted fw-bold flex-shrink-0">
+                  {{ getInitials(comment.userName) }}
+                </div>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="fw-semibold text-dark small">{{ comment.userName }}</span>
+                    <span class="text-muted" style="font-size:0.7rem">{{ formatDate(comment.createdAt) }}</span>
+                  </div>
+                  <p class="mb-2 text-dark comment-content">{{ comment.content }}</p>
+
+                  <!-- Actions: Like + Reply (only for top-level comments) -->
+                  <div class="d-flex align-items-center gap-3">
+                    <button
+                      class="btn btn-link btn-sm p-0 text-muted text-decoration-none d-flex align-items-center gap-1"
+                      [disabled]="isLikeLoading(comment.id)"
+                      (click)="toggleCommentLike(comment.id)"
+                      type="button"
+                    >
+                      @if (isLikeLoading(comment.id)) {
+                        <span class="spinner-border spinner-border-sm" style="width:0.75rem;height:0.75rem" role="status"></span>
+                      } @else {
+                        <i class="bi bi-heart" style="font-size:0.8rem"></i>
+                      }
+                      <span style="font-size:0.8rem">Like</span>
+                    </button>
+
+                    <!-- Reply button only for top-level comments (not for nested replies) -->
+                    <button
+                      class="btn btn-link btn-sm p-0 text-muted text-decoration-none d-flex align-items-center gap-1"
+                      (click)="openReply(comment.id)"
+                      type="button"
+                    >
+                      <i class="bi bi-reply" style="font-size:0.8rem"></i>
+                      <span style="font-size:0.8rem">{{ replyOpenFor() === comment.id ? 'Cancel' : 'Reply' }}</span>
+                    </button>
+                  </div>
+
+                  <!-- Reply Form -->
+                  @if (replyOpenFor() === comment.id) {
+                    <div class="reply-form-wrap mt-3 ps-3 border-start border-primary border-2">
+                      @if (replyForms[comment.id]; as replyForm) {
+                        <div [formGroup]="replyForm">
+                          <textarea
+                            formControlName="content"
+                            class="form-control form-control-sm mb-2"
+                            [class.is-invalid]="replyForm.get('content')?.touched && replyForm.get('content')?.invalid"
+                            rows="2"
+                            placeholder="Write a reply..."
+                          ></textarea>
+                          @if (replyForm.get('content')?.touched && replyForm.get('content')?.hasError('required')) {
+                            <div class="text-danger" style="font-size:0.75rem">Reply cannot be empty.</div>
+                          }
+                          <div class="d-flex gap-2 mt-1">
+                            <button
+                              class="btn btn-primary btn-sm"
+                              [disabled]="replySubmitting()"
+                              (click)="submitReply(comment.id)"
+                              type="button"
+                            >
+                              @if (replySubmitting()) {
+                                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                              }
+                              Post Reply
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" (click)="cancelReply()" type="button">Cancel</button>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <!-- Nested Replies (only one level — no reply button on replies) -->
+                  @if (comment.replies && comment.replies.length > 0) {
+                    <div class="replies-list mt-3 d-flex flex-column gap-3 ps-3 border-start border-light-subtle">
+                      @for (reply of comment.replies; track reply.id) {
+                        <div class="d-flex align-items-start gap-2">
+                          <div class="comment-avatar comment-avatar--sm rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center text-primary fw-bold flex-shrink-0">
+                            {{ getInitials(reply.userName) }}
+                          </div>
+                          <div class="flex-grow-1 min-w-0">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                              <span class="fw-semibold text-dark" style="font-size:0.8125rem">{{ reply.userName }}</span>
+                              <span class="text-muted" style="font-size:0.7rem">{{ formatDate(reply.createdAt) }}</span>
+                            </div>
+                            <p class="mb-0 text-dark" style="font-size:0.875rem;line-height:1.6">{{ reply.content }}</p>
+                            <!-- No reply button for nested replies (only one level allowed) -->
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Load More / Loading -->
+        <div class="text-center mt-4">
+          @if (loading()) {
+            <div class="d-flex align-items-center justify-content-center gap-2 text-muted">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="small">Loading more comments...</span>
+            </div>
+          } @else if (!allLoaded()) {
+            <button class="btn btn-outline-secondary btn-sm" (click)="loadMoreComments()" type="button">
+              Load More Comments
+            </button>
+          } @else if (comments().length > 0) {
+            <p class="text-muted small mb-0">All {{ totalCount() }} comments loaded.</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

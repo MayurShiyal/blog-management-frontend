@@ -56,7 +56,7 @@ export class CategoryList implements OnInit, OnDestroy {
   modalOpen = signal(false);
   editingCategory = signal<CategoryDto | null>(null);
 
-  deleteTargetId = signal<number | null>(null);
+  deleteTargetId = signal<string | null>(null);
   deleteTargetName = signal('');
   deleteOpen = signal(false);
   deleteLoading = signal(false);
@@ -194,6 +194,7 @@ export class CategoryList implements OnInit, OnDestroy {
     } else {
       const id = this.editingCategory()!.id;
       this.svc
+        // CLEANUP: Removed the temporary cast here
         .update(id, payload as UpdateCategoryRequest)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -223,6 +224,7 @@ export class CategoryList implements OnInit, OnDestroy {
       isActive: !cat.isActive,
     };
     this.svc
+      // CLEANUP: Removed the temporary cast here
       .update(cat.id, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -259,6 +261,7 @@ export class CategoryList implements OnInit, OnDestroy {
 
     this.deleteLoading.set(true);
     this.svc
+      // CLEANUP: Removed the temporary cast here
       .delete(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

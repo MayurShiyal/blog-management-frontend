@@ -18,7 +18,7 @@ export class CategoryTable {
   deleteClicked = output<CategoryDto>();
   toggleClicked = output<CategoryDto>();
 
-  trackById(_: number, item: CategoryDto): number {
+  trackById(_: number, item: CategoryDto): string {
     return item.id;
   }
 }

@@ -47,7 +47,7 @@ export class CreateBlog implements OnInit, OnDestroy {
     shortDescription: ['', [Validators.maxLength(300)]],
     content: ['', [Validators.required, Validators.minLength(10)]],
     thumbnailUrl: ['', [Validators.pattern(/^https?:\/\/.*$/)]],
-    categoryIds: this.fb.nonNullable.control<number[]>([], Validators.required),
+    categoryIds: this.fb.nonNullable.control<string[]>([], Validators.required),
   });
 
   get f(): { [key: string]: AbstractControl } {
@@ -190,7 +190,7 @@ export class CreateBlog implements OnInit, OnDestroy {
 
   onCategorySelect(event: Event): void {
     const select = event.target as HTMLSelectElement;
-    const selectedId = Number(select.value);
+    const selectedId = select.value;  // keep as string (GUID)
     const current = this.form.controls.categoryIds.value ?? [];
 
     if (current.includes(selectedId)) {
@@ -201,16 +201,16 @@ export class CreateBlog implements OnInit, OnDestroy {
     select.value = '';
   }
 
-  getCategoryName(categoryId: number): string {
+  getCategoryName(categoryId: string): string {
     return this.categories().find((c) => c.id === categoryId)?.name ?? '';
   }
 
-  removeCategory(categoryId: number): void {
+  removeCategory(categoryId: string): void {
     const current = this.form.controls.categoryIds.value ?? [];
     this.form.controls.categoryIds.setValue(current.filter((id) => id !== categoryId));
   }
 
-  isCategorySelected(categoryId: number): boolean {
+  isCategorySelected(categoryId: string): boolean {
     return this.form.controls.categoryIds.value.includes(categoryId);
   }
 

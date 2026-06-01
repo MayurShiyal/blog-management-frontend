@@ -7,8 +7,7 @@ export interface UpdateBlogRequest {
   shortDescription?: string | null;
   content?: string | null;
   thumbnailUrl?: string | null;
-  categoryId?: number | null;
-  categoryIds?: number[] | null;
+  categoryIds?: string[] | null;
   status?: BlogStatusEnum | null;
 }
 

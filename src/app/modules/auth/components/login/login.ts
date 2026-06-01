@@ -69,8 +69,23 @@ export class Login implements OnInit {
               : 'Login successful! Redirecting…';
             this.serverMsg.set({ type: 'success', text: welcomeMsg });
 
-            const targetRoute =
-              role === 'Admin' ? ROUTES.DASHBOARD.ADMIN.ABSOLUTE : ROUTES.DASHBOARD.HOME.ABSOLUTE;
+            // Check for returnUrl first
+            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+            if (returnUrl) {
+              setTimeout(() => this.router.navigateByUrl(returnUrl), 800);
+              return;
+            }
+
+            // Role-based redirect
+            let targetRoute: string;
+            if (role === 'Admin') {
+              targetRoute = ROUTES.DASHBOARD.ADMIN.ABSOLUTE;
+            } else if (role === 'Author') {
+              targetRoute = ROUTES.DASHBOARD.HOME.ABSOLUTE;
+            } else {
+              // Visitor/Customer → public blogs
+              targetRoute = ROUTES.PUBLIC.BLOGS.ABSOLUTE;
+            }
             setTimeout(() => this.router.navigate([targetRoute]), 800);
           } else {
             this.serverMsg.set({ type: 'danger', text: res.message });

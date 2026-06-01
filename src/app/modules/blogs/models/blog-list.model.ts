@@ -9,7 +9,7 @@ export interface BlogListItemDto {
   thumbnailUrl?: string | null;
   status: BlogStatus;
   rejectionReason?: string | null;
-  categoryIds?: number[] | null;
+  categoryIds?: string[] | null;
   categoryNames?: string[] | null;
   authorId: string;
   authorName?: string | null;

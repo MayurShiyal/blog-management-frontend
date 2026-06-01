@@ -55,7 +55,7 @@ export class BlogList implements OnInit, OnDestroy {
   categories = signal<CategoryDto[]>([]);
   searchControl = new FormControl<string>('');
   searchQuery = signal('');
-  categoryFilter = signal<number | null>(null);
+  categoryFilter = signal<string | null>(null);
   statusFilter = signal<string>('');
   sortBy = signal<string>('createdAt');
   sortDesc = signal<boolean>(true);
@@ -263,7 +263,8 @@ export class BlogList implements OnInit, OnDestroy {
     if (!catId || catId === '') {
       this.categoryFilter.set(null);
     } else {
-      this.categoryFilter.set(parseInt(catId, 10));
+      // FIXED: Removed parseInt() to support string/guid IDs directly
+      this.categoryFilter.set(catId);
     }
     this.pageNumber.set(1);
     this.loadBlogs();

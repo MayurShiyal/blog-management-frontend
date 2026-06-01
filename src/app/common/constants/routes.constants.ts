@@ -62,6 +62,17 @@ export const ROUTES = {
       ABSOLUTE: (id: string | number) => `/blogs/${id}`,
     },
   },
+  PUBLIC: {
+    ROOT: 'public',
+    BLOGS: {
+      PATH: 'public/blogs',
+      ABSOLUTE: '/public/blogs',
+    },
+    BLOG_DETAIL: {
+      PATH: 'public/blogs/:id',
+      ABSOLUTE: (id: string | number) => `/public/blogs/${id}`,
+    },
+  },
 } as const;
 
 export const APP_ROUTES = {

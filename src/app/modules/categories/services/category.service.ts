@@ -33,7 +33,8 @@ export class CategoryService {
     return this.api.get<CategoryResponse>(`${this.base}/active`);
   }
   
-  getById(id: number): Observable<CategoryResponse> {
+  // FIXED: id type changed from number to string
+  getById(id: string): Observable<CategoryResponse> {
     return this.api.get<CategoryResponse>(`${this.base}/${id}`);
   }
 
@@ -41,11 +42,13 @@ export class CategoryService {
     return this.api.post<CategoryResponse>(this.base, payload);
   }
 
-  update(id: number, payload: UpdateCategoryRequest): Observable<CategoryResponse> {
+  // FIXED: id type changed from number to string
+  update(id: string, payload: UpdateCategoryRequest): Observable<CategoryResponse> {
     return this.api.put<CategoryResponse>(`${this.base}/${id}`, payload);
   }
 
-  delete(id: number): Observable<CategoryResponse> {
+  // FIXED: id type changed from number to string
+  delete(id: string): Observable<CategoryResponse> {
     return this.api.delete<CategoryResponse>(`${this.base}/${id}`);
   }
 }
