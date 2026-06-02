@@ -7,15 +7,17 @@ import {
   OnDestroy,
   signal,
   inject,
+  computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { CommentService } from '../../services/comment.service';
 import { PublicBlogService } from '../../../public/services/public-blog.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { LoadingComponent } from '../../../../common/components/loading/loading';
 import { EmptyStateComponent } from '../../../../common/components/empty-state/empty-state';
@@ -31,12 +33,18 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
 export class CommentDialogComponent implements OnInit, OnDestroy {
   @Input() blogId!: string;
   @Input() blogTitle: string = '';
+  @Input() initialCommentLikedMap: Record<string, boolean> = {};
+  @Input() initialCommentReactionCountMap: Record<string, number> = {};
   @Output() close = new EventEmitter<void>();
   @Output() commentCountChanged = new EventEmitter<number>();
+  @Output() commentLikeStateChanged = new EventEmitter<{
+    likedMap: Record<string, boolean>;
+    countMap: Record<string, number>;
+  }>();
 
   private readonly commentSvc = inject(CommentService);
   private readonly publicBlogSvc = inject(PublicBlogService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -50,6 +58,13 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   totalCount = signal(0);
   allLoaded = signal(false);
 
+  commentsLimit = signal<number>(3);
+  expandedReplies = signal<Record<string, { visible: boolean; limit: number }>>({});
+
+  visibleComments = computed(() => {
+    return this.comments().slice(0, this.commentsLimit());
+  });
+
   commentForm = this.fb.group({
     content: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(1000)]],
   });
@@ -60,10 +75,12 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   replySubmitting = signal(false);
 
   commentLikeLoading = signal<Record<string, boolean>>({});
+  commentLikedMap = signal<Record<string, boolean>>({});
+  commentReactionCountMap = signal<Record<string, number>>({});
 
-  get isLoggedIn(): boolean {
-    return this.storage.isLoggedIn();
-  }
+  readonly isLoggedIn = toSignal(this.authState.isLoggedIn$, {
+    initialValue: this.authState.isLoggedIn,
+  });
 
   getInitials(name: string): string {
     return name
@@ -86,12 +103,64 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (Object.keys(this.initialCommentLikedMap).length > 0) {
+      this.commentLikedMap.set({ ...this.initialCommentLikedMap });
+    }
+    if (Object.keys(this.initialCommentReactionCountMap).length > 0) {
+      this.commentReactionCountMap.set({ ...this.initialCommentReactionCountMap });
+    }
     this.loadComments(true);
   }
 
   ngOnDestroy(): void {
+    this.commentLikeStateChanged.emit({
+      likedMap: this.commentLikedMap(),
+      countMap: this.commentReactionCountMap(),
+    });
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  showMoreComments(): void {
+    const proposedLimit = this.commentsLimit() + 10;
+    this.commentsLimit.set(proposedLimit);
+
+    if (proposedLimit >= this.comments().length && !this.allLoaded()) {
+      this.loadMoreComments();
+    }
+  }
+
+  toggleRepliesVisibility(commentId: string): void {
+    this.expandedReplies.update((state) => {
+      const current = state[commentId];
+      return {
+        ...state,
+        [commentId]: {
+          visible: current ? !current.visible : true,
+          limit: current ? current.limit : 3,
+        },
+      };
+    });
+  }
+
+  showMoreReplies(commentId: string, maxCount: number): void {
+    this.expandedReplies.update((state) => ({
+      ...state,
+      [commentId]: {
+        visible: true,
+        limit: maxCount,
+      },
+    }));
+  }
+
+  getReplyState(commentId: string) {
+    return this.expandedReplies()[commentId] || { visible: false, limit: 3 };
+  }
+
+  getVisibleReplies(comment: CommentDto): any[] {
+    const state = this.getReplyState(comment.id);
+    const repliesArray = comment.replies ?? [];
+    return repliesArray.slice(0, state.limit);
   }
 
   loadComments(reset = false): void {
@@ -102,6 +171,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
       this.pageNumber.set(1);
       this.comments.set([]);
       this.allLoaded.set(false);
+      this.commentsLimit.set(3); // Reset bounds view configuration on flush
     }
 
     this.loading.set(true);
@@ -113,18 +183,29 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
           this.loading.set(false);
           if (res.status) {
             const incoming = res.items ?? [];
+            const sortedIncoming = [...incoming].sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
             if (reset || this.pageNumber() === 1) {
-              // Sort latest first
-              this.comments.set([...incoming].sort(
-                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-              ));
+              this.comments.set(sortedIncoming);
+              const likedMap: Record<string, boolean> = {};
+              const countMap: Record<string, number> = {};
+              sortedIncoming.forEach((c) => {
+                likedMap[c.id] = c.isLikedByCurrentUser ?? false;
+                countMap[c.id] = c.totalReactions ?? 0;
+              });
+              this.commentLikedMap.set(likedMap);
+              this.commentReactionCountMap.set(countMap);
             } else {
-              this.comments.update((existing) => [
-                ...existing,
-                ...[...incoming].sort(
-                  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                ),
-              ]);
+              this.comments.update((existing) => [...existing, ...sortedIncoming]);
+              const newLiked: Record<string, boolean> = {};
+              const newCounts: Record<string, number> = {};
+              sortedIncoming.forEach((c) => {
+                newLiked[c.id] = c.isLikedByCurrentUser ?? false;
+                newCounts[c.id] = c.totalReactions ?? 0;
+              });
+              this.commentLikedMap.update((m) => ({ ...m, ...newLiked }));
+              this.commentReactionCountMap.update((m) => ({ ...m, ...newCounts }));
             }
             this.totalCount.set(res.totalCount ?? 0);
             const loaded = this.comments().length;
@@ -148,7 +229,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   }
 
   submitComment(): void {
-    if (!this.isLoggedIn) {
+    if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
         queryParams: { returnUrl: this.router.url },
       });
@@ -185,7 +266,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   }
 
   openReply(commentId: string): void {
-    if (!this.isLoggedIn) {
+    if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
         queryParams: { returnUrl: this.router.url },
       });
@@ -242,7 +323,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   }
 
   toggleCommentLike(commentId: string): void {
-    if (!this.isLoggedIn) {
+    if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
         queryParams: { returnUrl: this.router.url },
       });
@@ -253,7 +334,16 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
     const current = this.commentLikeLoading();
     if (current[commentId]) return;
 
+    const prevLiked = !!this.commentLikedMap()[commentId];
+    const prevCount = this.commentReactionCountMap()[commentId] ?? 0;
+
+    this.commentLikedMap.update((m) => ({ ...m, [commentId]: !prevLiked }));
+    this.commentReactionCountMap.update((m) => ({
+      ...m,
+      [commentId]: prevLiked ? prevCount - 1 : prevCount + 1,
+    }));
     this.commentLikeLoading.update((s) => ({ ...s, [commentId]: true }));
+
     this.publicBlogSvc
       .reactToComment(commentId)
       .pipe(takeUntil(this.destroy$))
@@ -261,14 +351,28 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.commentLikeLoading.update((s) => ({ ...s, [commentId]: false }));
           if (!res.status) {
+            this.commentLikedMap.update((m) => ({ ...m, [commentId]: prevLiked }));
+            this.commentReactionCountMap.update((m) => ({ ...m, [commentId]: prevCount }));
             this.toast.show('danger', res.message || 'Failed to toggle reaction.');
+          } else if (res.data) {
+            this.commentLikedMap.update((m) => ({ ...m, [commentId]: res.data!.isActive }));
           }
         },
         error: (err) => {
           this.commentLikeLoading.update((s) => ({ ...s, [commentId]: false }));
+          this.commentLikedMap.update((m) => ({ ...m, [commentId]: prevLiked }));
+          this.commentReactionCountMap.update((m) => ({ ...m, [commentId]: prevCount }));
           this.toast.show('danger', this.extractError(err));
         },
       });
+  }
+
+  isCommentLiked(commentId: string): boolean {
+    return !!this.commentLikedMap()[commentId];
+  }
+
+  getCommentReactionCount(commentId: string): number {
+    return this.commentReactionCountMap()[commentId] ?? 0;
   }
 
   isLikeLoading(commentId: string): boolean {

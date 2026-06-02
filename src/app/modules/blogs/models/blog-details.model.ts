@@ -16,6 +16,8 @@ export interface GetBlogByIdDto {
   createdAt: string;
   updatedAt?: string | null;
   publishedAt?: string | null;
+  totalComments?: number;
+  totalReactions?: number;
 }
 
 export interface GetBlogByIdResponse {

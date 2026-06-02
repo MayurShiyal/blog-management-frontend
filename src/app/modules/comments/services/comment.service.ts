@@ -15,11 +15,7 @@ export class CommentService {
   private readonly blogsBase = '/api/blogs';
   private readonly commentsBase = '/api/comments';
 
-  getComments(
-    blogId: string,
-    pageNumber = 1,
-    pageSize = 10
-  ): Observable<GetCommentsResponse> {
+  getComments(blogId: string, pageNumber = 1, pageSize = 10): Observable<GetCommentsResponse> {
     return this.api.get<GetCommentsResponse>(
       `${this.blogsBase}/${blogId}/comments?pageNumber=${pageNumber}&pageSize=${pageSize}`
     );
@@ -30,6 +26,10 @@ export class CommentService {
   }
 
   addReply(payload: AddReplyRequest): Observable<AddReplyResponse> {
-    return this.api.post<AddReplyResponse>(`${this.commentsBase}/reply`, payload);
+    return this.api.post<AddReplyResponse>(`${this.commentsBase}/`, {
+      blogId: payload.blogId,
+      content: payload.content,
+      parentCommentId: payload.parentCommentId,
+    });
   }
 }

@@ -1,11 +1,12 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { PublicBlogService } from '../../services/public-blog.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { LoadingComponent } from '../../../../common/components/loading/loading';
 import { CommentDialogComponent } from '../../../comments/components/comment-dialog/comment-dialog';
@@ -14,18 +15,13 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
 
 @Component({
   selector: 'app-public-blog-detail',
-  imports: [
-    CommonModule,
-    RouterLink,
-    LoadingComponent,
-    CommentDialogComponent,
-  ],
+  imports: [CommonModule, RouterLink, LoadingComponent, CommentDialogComponent],
   templateUrl: './public-blog-detail.html',
   styleUrl: './public-blog-detail.scss',
 })
 export class PublicBlogDetail implements OnInit, OnDestroy {
   private readonly publicBlogSvc = inject(PublicBlogService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly toast = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -38,18 +34,26 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
   loading = signal(true);
   errorMsg = signal<string | null>(null);
 
-  // Reaction state
   blogReactionCount = signal(0);
   blogLiked = signal(false);
   reactionLoading = signal(false);
 
-  // Comment count
   commentCount = signal(0);
 
-  // Comment dialog
   commentDialogOpen = signal(false);
 
-  isLoggedIn = computed(() => this.storage.isLoggedIn());
+  commentLikedMapCache: Record<string, boolean> = {};
+  commentCountMapCache: Record<string, number> = {};
+
+  onCommentLikeStateChanged(event: {
+    likedMap: Record<string, boolean>;
+    countMap: Record<string, number>;
+  }): void {
+    this.commentLikedMapCache = event.likedMap;
+    this.commentCountMapCache = event.countMap;
+  }
+
+  isLoggedIn = toSignal(this.authState.isLoggedIn$, { initialValue: this.authState.isLoggedIn });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -57,6 +61,11 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
       this.errorMsg.set('Blog ID is missing.');
       this.loading.set(false);
       return;
+    }
+
+    const navState = history.state as { isLiked?: boolean };
+    if (typeof navState?.isLiked === 'boolean') {
+      this.blogLiked.set(navState.isLiked);
     }
 
     this.loadBlog(id);
@@ -81,6 +90,7 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
             this.blog.set(res.data);
             this.blogReactionCount.set(res.data.totalReactions);
             this.commentCount.set(res.data.totalComments);
+            this.blogLiked.set(res.data.isLiked ?? false);
           } else {
             this.errorMsg.set(res.message || 'Failed to load blog.');
           }
@@ -92,13 +102,11 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
       });
   }
 
-  /** Sanitize HTML content for safe rendering */
   getSafeContent(content: string | null | undefined): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(content ?? '');
   }
 
   toggleBlogReaction(): void {
-    // Redirect to login if not authenticated — do not silently fail
     if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
         queryParams: { returnUrl: this.router.url },
@@ -134,7 +142,6 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
           this.blogLiked.set(prevLiked);
           this.blogReactionCount.set(prevCount);
 
-          // Handle 401 Unauthorized — redirect to login
           const httpErr = err as { status?: number };
           if (httpErr?.status === 401) {
             this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
@@ -148,7 +155,6 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
   }
 
   openCommentDialog(): void {
-    // Redirect to login if not authenticated — do not silently fail
     if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
         queryParams: { returnUrl: this.router.url },

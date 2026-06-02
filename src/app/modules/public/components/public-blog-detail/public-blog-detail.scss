@@ -9,7 +9,9 @@
   background-size: 200% 100%;
   animation: skeletonWave 1.6s ease-in-out infinite;
 
-  @media (max-width: 575px) { height: 220px; }
+  @media (max-width: 575px) {
+    height: 220px;
+  }
 }
 
 .skeleton-bar {
@@ -20,22 +22,43 @@
   animation: skeletonWave 1.6s ease-in-out infinite;
   margin-bottom: 0.75rem;
 
-  &.w-25 { width: 25%; }
-  &.w-40 { width: 40%; }
-  &.w-60 { width: 60%; }
-  &.w-75 { width: 75%; }
-  &.w-80 { width: 80%; }
-  &.w-100 { width: 100%; }
+  &.w-25 {
+    width: 25%;
+  }
+  &.w-40 {
+    width: 40%;
+  }
+  &.w-60 {
+    width: 60%;
+  }
+  &.w-75 {
+    width: 75%;
+  }
+  &.w-80 {
+    width: 80%;
+  }
+  &.w-100 {
+    width: 100%;
+  }
 }
 
 @keyframes shimmer {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes skeletonWave {
-  0% { background-position: 200% center; }
-  100% { background-position: -200% center; }
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
 }
 
 // ── Error ──────────────────────────────────────────────────
@@ -59,8 +82,12 @@
   overflow: hidden;
   background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 60%, #ddd6fe 100%);
 
-  @media (max-width: 991px) { height: 300px; }
-  @media (max-width: 575px) { height: 220px; }
+  @media (max-width: 991px) {
+    height: 300px;
+  }
+  @media (max-width: 575px) {
+    height: 220px;
+  }
 
   &__img {
     width: 100%;
@@ -72,7 +99,7 @@
   &__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.15) 100%);
+    background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.15) 100%);
   }
 
   &__placeholder {
@@ -95,8 +122,12 @@
     letter-spacing: -0.025em;
     line-height: 1.2;
 
-    @media (max-width: 991px) { font-size: 1.75rem; }
-    @media (max-width: 575px) { font-size: 1.5rem; }
+    @media (max-width: 991px) {
+      font-size: 1.75rem;
+    }
+    @media (max-width: 575px) {
+      font-size: 1.5rem;
+    }
   }
 
   &__lead {
@@ -115,14 +146,20 @@
     line-height: 1.85;
     color: #1e293b;
 
-    @media (max-width: 575px) { font-size: 1rem; }
+    @media (max-width: 575px) {
+      font-size: 1rem;
+    }
 
-    // Style inner HTML elements
     p {
       margin-bottom: 1.5rem;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       font-family: var(--font-body);
       font-weight: 700;
       letter-spacing: -0.01em;
@@ -137,7 +174,9 @@
       text-underline-offset: 3px;
       transition: color 0.15s;
 
-      &:hover { color: var(--brand-primary-dark); }
+      &:hover {
+        color: var(--brand-primary-dark);
+      }
     }
 
     img {
@@ -179,14 +218,16 @@
       }
     }
 
-    ul, ol {
+    ul,
+    ol {
       margin-bottom: 1.5rem;
       padding-left: 1.75rem;
 
-      li { margin-bottom: 0.5rem; }
+      li {
+        margin-bottom: 0.5rem;
+      }
     }
 
-    // Fallback for plain text content
     white-space: pre-wrap;
   }
 }
@@ -250,17 +291,8 @@
     }
   }
 
-  &:disabled { opacity: 0.6; cursor: not-allowed; }
-}
-
-// ── Sidebar ──────────────────────────────────────────────
-.blog-sidebar__card {
-  border: 1px solid var(--border-color);
-}
-
-.sidebar-info-icon {
-  width: 36px;
-  height: 36px;
-  font-size: 0.875rem;
-  flex-shrink: 0;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }

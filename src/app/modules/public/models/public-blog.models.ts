@@ -7,8 +7,9 @@ export interface PublicBlogListItemDto {
   thumbnailUrl?: string | null;
   categoryIds: string[];
   categoryNames: string[];
-  authorId: string;
   authorName?: string | null;
+  isLiked: boolean;
+  createdBy: string;
   publishedAt?: string | null;
   totalComments: number;
   totalReactions: number;
@@ -32,8 +33,8 @@ export interface PublicBlogDetailDto {
   thumbnailUrl?: string | null;
   categoryIds: string[];
   categoryNames: string[];
-  authorId: string;
   authorName?: string | null;
+  isLiked: boolean; 
   publishedAt?: string | null;
   totalComments: number;
   totalReactions: number;

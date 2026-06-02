@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ROUTES } from '../../../../common/constants/routes.constants';
@@ -13,25 +13,23 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
   styleUrl: './home.scss',
 })
 export class Home implements OnInit {
-  private readonly storage = inject(StorageService);
-  private readonly auth    = inject(AuthService);
-  private readonly router  = inject(Router);
-  private readonly layout  = inject(LayoutService);
+  private readonly authState = inject(AuthStateService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly layout = inject(LayoutService);
 
   readonly routes = ROUTES;
 
-  user    = signal<{ firstName?: string; email?: string; role?: string } | null>(null);
-  isAdmin = computed(() => this.storage.isAdmin());
+  user = computed(() => this.authState.currentUser);
+  isAdmin = computed(() => this.authState.isAdmin);
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }
-    this.user.set(this.storage.getUser<{ firstName: string; email: string; role: string }>());
 
-    // Redirect admins directly to the full dashboard
-    if (this.storage.isAdmin()) {
+    if (this.authState.isAdmin) {
       this.router.navigate([ROUTES.DASHBOARD.ADMIN.ABSOLUTE]);
       return;
     }
@@ -44,4 +42,3 @@ export class Home implements OnInit {
     this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
   }
 }
-

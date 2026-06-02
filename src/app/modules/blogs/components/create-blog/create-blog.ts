@@ -1,12 +1,11 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { BlogService } from '../../services/blog.service';
 import { CategoryService } from '../../../categories/services/category.service';
-import { StorageService } from '../../../../common/services/storage';
-import { AuthService } from '../../../auth/services/auth.service';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { InputComponent } from '../../../../common/components/text-fields/input/input';
@@ -25,8 +24,7 @@ export class CreateBlog implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly blogSvc = inject(BlogService);
   private readonly catSvc = inject(CategoryService);
-  private readonly storage = inject(StorageService);
-  private readonly auth = inject(AuthService);
+  private readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
   private readonly layout = inject(LayoutService);
   private readonly toast = inject(ToastService);
@@ -41,12 +39,17 @@ export class CreateBlog implements OnInit, OnDestroy {
   formLoading = signal(false);
   draftLoading = signal(false);
 
+  categoryDropdownOpen = signal(false);
+
+  thumbnailPreview = signal<string | null>(null);
+  thumbnailFile = signal<File | null>(null);
+
   form = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(150)]],
     slug: ['', [Validators.required, Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)]],
     shortDescription: ['', [Validators.maxLength(300)]],
     content: ['', [Validators.required, Validators.minLength(10)]],
-    thumbnailUrl: ['', [Validators.pattern(/^https?:\/\/.*$/)]],
+    thumbnailUrl: [''],
     categoryIds: this.fb.nonNullable.control<string[]>([], Validators.required),
   });
 
@@ -54,17 +57,27 @@ export class CreateBlog implements OnInit, OnDestroy {
     return this.form.controls;
   }
 
+  get selectedCategoryLabel(): string {
+    const ids = this.form.controls.categoryIds.value;
+    if (!ids || ids.length === 0) return 'Select categories';
+    if (ids.length === 1) {
+      const cat = this.categories().find((c) => c.id === ids[0]);
+      return cat?.name ?? '1 selected';
+    }
+    return `${ids.length} categories selected`;
+  }
+
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }
 
-    const currentUser = this.storage.getUser<{ firstName: string; email: string; role: string }>();
+    const currentUser = this.authState.currentUser;
     this.user.set(currentUser);
-    this.isAdmin.set(this.storage.isAdmin());
+    this.isAdmin.set(this.authState.isAdmin);
 
-    if (currentUser?.role !== 'Author' && !this.storage.isAdmin()) {
+    if (currentUser?.role !== 'Author' && !this.authState.isAdmin) {
       this.toast.show('danger', 'Only Authors can create new blogs.');
       this.router.navigate([ROUTES.BLOG.LIST.ABSOLUTE]);
       return;
@@ -104,6 +117,72 @@ export class CreateBlog implements OnInit, OnDestroy {
         error: (err) =>
           this.toast.show('danger', 'Failed to load categories: ' + this.extractError(err)),
       });
+  }
+
+  toggleCategoryDropdown(): void {
+    this.categoryDropdownOpen.update((v) => !v);
+  }
+
+  isCategorySelected(categoryId: string): boolean {
+    return this.form.controls.categoryIds.value.includes(categoryId);
+  }
+
+  toggleCategory(categoryId: string): void {
+    const current = this.form.controls.categoryIds.value ?? [];
+    if (current.includes(categoryId)) {
+      this.form.controls.categoryIds.setValue(current.filter((id) => id !== categoryId));
+    } else {
+      this.form.controls.categoryIds.setValue([...current, categoryId]);
+    }
+  }
+
+  removeCategory(categoryId: string): void {
+    const current = this.form.controls.categoryIds.value ?? [];
+    this.form.controls.categoryIds.setValue(current.filter((id) => id !== categoryId));
+  }
+
+  getCategoryName(categoryId: string): string {
+    return this.categories().find((c) => c.id === categoryId)?.name ?? '';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.category-multiselect-wrap')) {
+      this.categoryDropdownOpen.set(false);
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.toast.show('danger', 'Please select a valid image file.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.toast.show('danger', 'Image must be smaller than 5MB.');
+      return;
+    }
+
+    this.thumbnailFile.set(file);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      this.thumbnailPreview.set(dataUrl);
+      this.form.controls.thumbnailUrl.setValue(dataUrl);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeThumbnail(): void {
+    this.thumbnailFile.set(null);
+    this.thumbnailPreview.set(null);
+    this.form.controls.thumbnailUrl.setValue('');
   }
 
   saveAsDraft(): void {
@@ -186,32 +265,6 @@ export class CreateBlog implements OnInit, OnDestroy {
           this.toast.show('danger', this.extractError(err));
         },
       });
-  }
-
-  onCategorySelect(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const selectedId = select.value;  // keep as string (GUID)
-    const current = this.form.controls.categoryIds.value ?? [];
-
-    if (current.includes(selectedId)) {
-      this.form.controls.categoryIds.setValue(current.filter((id) => id !== selectedId));
-    } else {
-      this.form.controls.categoryIds.setValue([...current, selectedId]);
-    }
-    select.value = '';
-  }
-
-  getCategoryName(categoryId: string): string {
-    return this.categories().find((c) => c.id === categoryId)?.name ?? '';
-  }
-
-  removeCategory(categoryId: string): void {
-    const current = this.form.controls.categoryIds.value ?? [];
-    this.form.controls.categoryIds.setValue(current.filter((id) => id !== categoryId));
-  }
-
-  isCategorySelected(categoryId: string): boolean {
-    return this.form.controls.categoryIds.value.includes(categoryId);
   }
 
   toSlug(val: string): string {

@@ -1,11 +1,12 @@
-import { Component, inject, HostListener, signal } from '@angular/core';
+import { Component, inject, HostListener, computed, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../toast/toast';
-import { StorageService } from '../../../services/storage';
+import { AuthStateService } from '../../../services/auth-state.service';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { ROUTES } from '../../../constants/routes.constants';
+
 
 @Component({
   selector: 'app-public-layout',
@@ -15,7 +16,7 @@ import { ROUTES } from '../../../constants/routes.constants';
 })
 export class PublicLayout {
   readonly toastService = inject(ToastService);
-  readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
@@ -24,21 +25,16 @@ export class PublicLayout {
 
   profileMenuOpen = signal(false);
 
-  isLoggedIn(): boolean {
-    return this.storage.isLoggedIn();
-  }
-
-  getUser(): { firstName?: string; email?: string } | null {
-    return this.storage.getUser<{ firstName?: string; email?: string }>();
-  }
+  isLoggedIn = computed(() => this.authState.isLoggedIn);
+  currentUser = computed(() => this.authState.currentUser);
 
   getUserInitial(): string {
-    const user = this.getUser();
+    const user = this.authState.currentUser;
     return (user?.firstName?.[0] ?? user?.email?.[0] ?? 'U').toUpperCase();
   }
 
   getUserDisplayName(): string {
-    const user = this.getUser();
+    const user = this.authState.currentUser;
     return user?.firstName ?? user?.email ?? 'User';
   }
 

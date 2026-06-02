@@ -18,6 +18,8 @@ export interface CommentDto {
   createdAt: string;
   updatedAt?: string | null;
   replies: CommentReplyDto[];
+  totalReactions?: number;
+  isLikedByCurrentUser?: boolean;
 }
 
 export interface GetCommentsResponse {
@@ -32,6 +34,7 @@ export interface GetCommentsResponse {
 export interface AddCommentRequest {
   blogId: string;
   content: string;
+  parentCommentId?: string | null;
 }
 
 export interface AddCommentResponse {
@@ -40,6 +43,7 @@ export interface AddCommentResponse {
   data?: CommentDto | null;
 }
 
+// Reply is same endpoint with parentCommentId set
 export interface AddReplyRequest {
   blogId: string;
   parentCommentId: string;

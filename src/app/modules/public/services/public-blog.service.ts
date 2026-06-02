@@ -24,8 +24,7 @@ export class PublicBlogService {
     if (params.search && params.search.trim()) {
       queryParts.push(`search=${encodeURIComponent(params.search.trim())}`);
     }
-    // Backend supports single categoryId — send first selected or none
-    if (params.categoryIds && params.categoryIds.length === 1) {
+    if (params.categoryIds && params.categoryIds.length >= 1) {
       queryParts.push(`categoryId=${encodeURIComponent(params.categoryIds[0])}`);
     }
     if (params.pageNumber !== undefined) {
@@ -40,14 +39,14 @@ export class PublicBlogService {
   }
 
   getPublicBlogById(id: string): Observable<GetPublicBlogByIdResponse> {
-    return this.api.get<GetPublicBlogByIdResponse>(`${this.base}/${id}`);
+    return this.api.get<GetPublicBlogByIdResponse>(`${this.base}/public/${id}`);
   }
 
   reactToBlog(blogId: string): Observable<ReactToBlogResponse> {
-    return this.api.post<ReactToBlogResponse>(`${this.reactionsBase}/blog/${blogId}`, {});
+    return this.api.post<ReactToBlogResponse>(this.reactionsBase, { blogId });
   }
 
   reactToComment(commentId: string): Observable<ReactToCommentResponse> {
-    return this.api.post<ReactToCommentResponse>(`${this.reactionsBase}/comment/${commentId}`, {});
+    return this.api.post<ReactToCommentResponse>(this.reactionsBase, { commentId });
   }
 }

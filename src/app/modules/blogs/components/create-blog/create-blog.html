@@ -53,29 +53,64 @@
         </h2>
 
         <div class="mb-3">
-          <label class="form-label text-dark fw-bold text-xs mb-2" for="blog-category">
+          <label class="form-label text-dark fw-bold text-xs mb-2">
             Categories <span class="text-danger">*</span>
           </label>
 
-          <select
-            id="blog-category"
-            class="form-select form-control-custom text-sm"
-            (change)="onCategorySelect($event)"
-          >
-            <option value="" disabled selected>Select Categories</option>
-            @for (cat of categories(); track cat.id) {
-            <option [value]="cat.id">
-              {{ isCategorySelected(cat.id) ? '✔ ' : '' }}{{ cat.name }}
-            </option>
+          <div class="category-multiselect-wrap position-relative">
+            <button
+              type="button"
+              class="category-dropdown-trigger form-control d-flex align-items-center justify-content-between text-start"
+              [class.is-invalid]="f['categoryIds'].invalid && f['categoryIds'].touched"
+              (click)="toggleCategoryDropdown()"
+            >
+              <span
+                class="text-truncate small"
+                [class.text-muted]="!form.controls.categoryIds.value.length"
+              >
+                {{ selectedCategoryLabel }}
+              </span>
+              <i
+                class="bi ms-2 flex-shrink-0"
+                [class.bi-chevron-down]="!categoryDropdownOpen()"
+                [class.bi-chevron-up]="categoryDropdownOpen()"
+              ></i>
+            </button>
+
+            @if (categoryDropdownOpen()) {
+            <div
+              class="category-dropdown-panel border border-light-subtle rounded-3 shadow bg-white"
+            >
+              @if (categories().length === 0) {
+              <div class="px-3 py-3 text-muted small text-center">
+                <i class="bi bi-tag-slash d-block mb-1"></i>No active categories available
+              </div>
+              } @else {
+              <div class="category-dropdown-list">
+                @for (cat of categories(); track cat.id) {
+                <label
+                  class="category-dropdown-item d-flex align-items-center gap-2 px-3 py-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    class="form-check-input m-0 flex-shrink-0"
+                    [checked]="isCategorySelected(cat.id)"
+                    (change)="toggleCategory(cat.id)"
+                  />
+                  <span class="small">{{ cat.name }}</span>
+                </label>
+                }
+              </div>
+              }
+            </div>
             }
-          </select>
+          </div>
 
           @if (f['categoryIds'].invalid && f['categoryIds'].touched) {
           <div class="invalid-feedback d-block text-xs">At least one category is required.</div>
-          }
-
-          <div class="d-flex flex-wrap gap-2 mt-3">
-            @for (catId of f['categoryIds'].value; track catId) {
+          } @if (form.controls.categoryIds.value.length > 0) {
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            @for (catId of form.controls.categoryIds.value; track catId) {
             <span class="badge bg-primary d-flex align-items-center gap-2 px-3 py-2 text-xs">
               {{ getCategoryName(catId) }}
               <button
@@ -87,25 +122,55 @@
             </span>
             }
           </div>
+          }
         </div>
 
-        <app-input
-          [control]="form.controls.thumbnailUrl"
-          label="Thumbnail Image URL"
-          placeholder="e.g. https://example.com/image.jpg"
-          autocomplete="off"
-        ></app-input>
+        <div class="mb-3">
+          <label class="form-label text-dark fw-bold text-xs mb-2">Thumbnail Image</label>
 
-        @if (f['thumbnailUrl'].value && f['thumbnailUrl'].valid) {
-        <div class="mt-n2 mb-3 text-center border p-1 rounded bg-light">
-          <img
-            [src]="f['thumbnailUrl'].value"
-            alt="Thumbnail preview"
-            style="max-height: 100px; max-width: 100%; object-fit: contain"
+          @if (!thumbnailPreview()) {
+          <label
+            class="thumbnail-upload-zone d-flex flex-column align-items-center justify-content-center gap-2 border-2 border-dashed rounded-3 p-4 cursor-pointer text-center"
+            for="thumbnail-upload"
+          >
+            <i class="bi bi-cloud-arrow-up fs-3 text-primary"></i>
+            <div>
+              <div class="small fw-semibold text-dark">Click to upload image</div>
+              <div class="text-muted" style="font-size: 0.75rem">PNG, JPG, GIF up to 5MB</div>
+            </div>
+          </label>
+          <input
+            id="thumbnail-upload"
+            type="file"
+            accept="image/*"
+            class="d-none"
+            (change)="onFileSelected($event)"
           />
-          <div class="text-muted text-xs" style="font-size: 0.7rem">Live Preview</div>
+          } @else {
+          <div class="thumbnail-preview-wrap position-relative rounded-3 overflow-hidden border">
+            <img
+              [src]="thumbnailPreview()"
+              alt="Thumbnail preview"
+              class="thumbnail-preview-img w-100"
+            />
+            <button
+              type="button"
+              class="thumbnail-remove-btn position-absolute top-0 end-0 m-2 btn btn-sm btn-danger rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 28px; height: 28px"
+              (click)="removeThumbnail()"
+              title="Remove image"
+            >
+              <i class="bi bi-x"></i>
+            </button>
+            <div
+              class="thumbnail-preview-label text-center py-1 text-muted bg-light"
+              style="font-size: 0.7rem"
+            >
+              {{ thumbnailFile()?.name }}
+            </div>
+          </div>
+          }
         </div>
-        }
 
         <app-textarea
           [control]="form.controls.shortDescription"
@@ -120,7 +185,10 @@
 
         <div class="mt-auto pt-3 border-top">
           <div class="d-flex gap-2 mb-2">
-            <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="btn btn-outline-secondary flex-grow-1 text-sm py-2">
+            <a
+              [routerLink]="routes.BLOG.LIST.ABSOLUTE"
+              class="btn btn-outline-secondary flex-grow-1 text-sm py-2"
+            >
               <i class="bi bi-x-lg me-1"></i>Cancel
             </a>
             <button

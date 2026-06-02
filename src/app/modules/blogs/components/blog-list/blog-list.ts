@@ -6,7 +6,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { BlogService } from '../../services/blog.service';
 import { CategoryService } from '../../../categories/services/category.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { BlogListItemDto, BlogStatus, BlogStatusEnum } from '../../models/blog.models';
 import { CategoryDto } from '../../../categories/models/category.models';
@@ -32,7 +32,7 @@ export class BlogList implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly blogSvc = inject(BlogService);
   private readonly catSvc = inject(CategoryService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly layout = inject(LayoutService);
@@ -41,9 +41,9 @@ export class BlogList implements OnInit, OnDestroy {
 
   readonly routes = ROUTES;
 
-  user = signal<{ firstName?: string; email?: string; role?: string } | null>(null);
-  isAdmin = computed(() => this.storage.isAdmin());
-  isAuthor = computed(() => this.user()?.role === 'Author');
+  user = computed(() => this.authState.currentUser);
+  isAdmin = computed(() => this.authState.isAdmin);
+  isAuthor = computed(() => this.authState.role === 'Author');
 
   blogs = signal<BlogListItemDto[]>([]);
   totalCount = signal(0);
@@ -64,7 +64,6 @@ export class BlogList implements OnInit, OnDestroy {
   authorFilter = signal<string>('');
 
   viewMode = signal<ViewMode>('grid');
-
   authorTab = signal<'mine' | 'public'>('mine');
 
   publishedCount = signal(0);
@@ -113,11 +112,10 @@ export class BlogList implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }
-    this.user.set(this.storage.getUser<{ firstName: string; email: string; role: string }>());
 
     if (this.isAuthor()) {
       this.authorTab.set('mine');
@@ -126,7 +124,6 @@ export class BlogList implements OnInit, OnDestroy {
     }
 
     this.updateHeader();
-
     this.loadCategories();
 
     this.searchControl.valueChanges
@@ -162,6 +159,7 @@ export class BlogList implements OnInit, OnDestroy {
   }
 
   loadBlogs(): void {
+    if (this.loading()) return;
     this.loading.set(true);
 
     const isMine = this.isAuthor() && this.authorTab() === 'mine';
@@ -173,7 +171,7 @@ export class BlogList implements OnInit, OnDestroy {
         status: (() => {
           const s = this.statusFilter() || undefined;
           if (this.isAdmin() && (s === 'Draft' || !s)) {
-            return s === 'Draft' ? undefined : s;
+            return s === 'Draft' ? undefined : s;  
           }
           return s;
         })(),
@@ -230,10 +228,7 @@ export class BlogList implements OnInit, OnDestroy {
 
   updateStats(items: BlogListItemDto[]): void {
     const visibleItems = this.isAdmin() ? items.filter((x) => x.status !== 'Draft') : items;
-    let pub = 0,
-      pend = 0,
-      rej = 0,
-      draft = 0;
+    let pub = 0, pend = 0, rej = 0, draft = 0;
     visibleItems.forEach((x) => {
       if (x.status === 'Published') pub++;
       else if (x.status === 'PendingApproval') pend++;
@@ -260,12 +255,7 @@ export class BlogList implements OnInit, OnDestroy {
   }
 
   onCategoryChange(catId: string): void {
-    if (!catId || catId === '') {
-      this.categoryFilter.set(null);
-    } else {
-      // FIXED: Removed parseInt() to support string/guid IDs directly
-      this.categoryFilter.set(catId);
-    }
+    this.categoryFilter.set(catId || null);
     this.pageNumber.set(1);
     this.loadBlogs();
   }
@@ -442,31 +432,21 @@ export class BlogList implements OnInit, OnDestroy {
 
   getStatusClass(status: BlogStatus): string {
     switch (status) {
-      case 'Published':
-        return 'status-published';
-      case 'PendingApproval':
-        return 'status-pending';
-      case 'Rejected':
-        return 'status-rejected';
-      case 'Draft':
-        return 'status-draft';
-      default:
-        return 'status-draft';
+      case 'Published': return 'status-published';
+      case 'PendingApproval': return 'status-pending';
+      case 'Rejected': return 'status-rejected';
+      case 'Draft': return 'status-draft';
+      default: return 'status-draft';
     }
   }
 
   getStatusLabel(status: BlogStatus): string {
     switch (status) {
-      case 'Published':
-        return 'Published';
-      case 'PendingApproval':
-        return 'Pending Approval';
-      case 'Rejected':
-        return 'Rejected';
-      case 'Draft':
-        return 'Draft';
-      default:
-        return status;
+      case 'Published': return 'Published';
+      case 'PendingApproval': return 'Pending Approval';
+      case 'Rejected': return 'Rejected';
+      case 'Draft': return 'Draft';
+      default: return status;
     }
   }
 

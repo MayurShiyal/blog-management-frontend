@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { CategoryService } from '../../services/category.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { DeleteModal } from '../../../../common/components/delete-modal/delete-modal';
@@ -33,7 +33,7 @@ export type StatusFilter = 'all' | 'active' | 'inactive';
 export class CategoryList implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly svc = inject(CategoryService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
   private readonly layout = inject(LayoutService);
   private readonly toast = inject(ToastService);
@@ -61,7 +61,7 @@ export class CategoryList implements OnInit, OnDestroy {
   deleteOpen = signal(false);
   deleteLoading = signal(false);
 
-  isAdmin = computed(() => this.storage.isAdmin());
+  isAdmin = computed(() => this.authState.isAdmin);
 
   pages = computed(() => {
     const tp = this.totalPages();
@@ -72,7 +72,7 @@ export class CategoryList implements OnInit, OnDestroy {
   searchControl = this.fb.control<string>('');
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }

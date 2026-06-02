@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: ROUTES.PUBLIC.ROOT,
     loadComponent: () =>
-      import('./common/components/layout/public-layout/public-layout').then((m) => m.PublicLayout),
+      import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
     children: [
       { path: '', redirectTo: 'blogs', pathMatch: 'full' },
       {
@@ -80,14 +80,12 @@ export const routes: Routes = [
       import('./common/components/layout/admin-layout/admin-layout').then((m) => m.AdminLayout),
     canActivate: [authorOrAdminGuard],
     children: [
-      // Generic dashboard (redirects admins to /admin/dashboard)
       {
         path: ROUTES.DASHBOARD.HOME.PATH,
         canActivate: [authorOrAdminGuard],
         loadComponent: () => import('./modules/dashboard/components/home/home').then((m) => m.Home),
       },
 
-      // Admin Dashboard
       {
         path: ROUTES.DASHBOARD.ADMIN.PATH,
         canActivate: [adminGuard],
@@ -95,7 +93,6 @@ export const routes: Routes = [
           import('./modules/dashboard/components/dashboard/dashboard').then((m) => m.Dashboard),
       },
 
-      // Admin Category management
       {
         path: ROUTES.CATEGORIES.LIST.PATH,
         canActivate: [adminGuard],
@@ -105,7 +102,6 @@ export const routes: Routes = [
           ),
       },
 
-      // Admin User management
       {
         path: ROUTES.USERS.LIST.PATH,
         canActivate: [adminGuard],

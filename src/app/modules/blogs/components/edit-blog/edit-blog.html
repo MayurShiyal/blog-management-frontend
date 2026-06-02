@@ -11,7 +11,7 @@
 >
   <i class="bi bi-slash-circle-fill text-danger fs-3 mt-1"></i>
   <div>
-    <h4 class="alert-heading h5 fw-bold text-danger mb-1">Blog Post Rejected — Editing Disabled</h4>
+    <h4 class="alert-heading h5 fw-bold text-danger mb-1">Blog Post Rejected</h4>
     <p class="mb-2 text-dark-emphasis text-sm">
       This article was reviewed and rejected by the administration team.
     </p>
@@ -24,15 +24,17 @@
     </div>
     }
     <div class="mt-3 d-flex gap-2 flex-wrap">
-      <a [routerLink]="routes.BLOG.CREATE.ABSOLUTE" class="btn btn-sm btn-outline-danger text-xs fw-semibold">
+      <a
+        [routerLink]="routes.BLOG.CREATE.ABSOLUTE"
+        class="btn btn-sm btn-outline-danger text-xs fw-semibold"
+      >
         <i class="bi bi-plus-lg me-1"></i> Create New Post
       </a>
       <a
         [routerLink]="routes.BLOG.LIST.ABSOLUTE"
         class="btn btn-sm btn-link text-decoration-none text-danger fw-semibold text-xs"
+        >Back to My Blogs</a
       >
-        Back to My Blogs
-      </a>
     </div>
   </div>
 </div>
@@ -44,8 +46,7 @@
   <div>
     <h4 class="alert-heading h5 fw-bold text-info-emphasis mb-1">Read-Only View</h4>
     <p class="mb-0 text-dark-emphasis text-sm">
-      Admins cannot edit blog content. You can approve or reject this blog from the
-      <strong>Blog Management</strong> page when it is in <strong>Pending Approval</strong> status.
+      Admins cannot edit blog content. Approve or reject from the Blog Management page.
     </p>
   </div>
 </div>
@@ -58,25 +59,15 @@
     <h4 class="alert-heading h5 fw-bold text-warning-emphasis mb-1">Post is Locked</h4>
     <p class="mb-0 text-dark-emphasis text-sm">
       This post is currently <strong>{{ blog()?.status }}</strong
-      >. Only <strong>Draft</strong> blogs can be edited. Once submitted, they are locked during
-      review.
+      >. Only <strong>Draft</strong> blogs can be edited.
     </p>
-  </div>
-</div>
-} @if (isEditable() && blog()?.status === 'Draft') {
-<div
-  class="alert alert-light border border-secondary-subtle p-3 rounded-3 mb-4 d-flex align-items-center gap-3"
->
-  <i class="bi bi-pencil-square text-secondary fs-5"></i>
-  <div class="text-xs text-dark-emphasis">
-    <strong>Draft Mode</strong> — You can save changes to continue later, or submit for Admin
-    approval when ready.
   </div>
 </div>
 }
 
 <div class="bg-white border border-light-subtle rounded-3 shadow-sm p-4 w-100">
   <form [formGroup]="form" novalidate class="row g-4">
+    <!-- ── Left Column ── -->
     <div class="col-12 col-lg-8">
       <div class="p-3 bg-white border rounded-3 mb-4 h-100">
         <h2 class="h5 pb-2 border-bottom mb-3 text-dark-emphasis fw-bold">
@@ -90,7 +81,6 @@
           [maxlength]="150"
           autocomplete="off"
         ></app-input>
-
         <app-input
           [control]="form.controls.slug"
           label="Slug"
@@ -100,7 +90,6 @@
         <div class="form-text mb-3 mt-n2 text-muted text-xs">
           Auto-generated from title. Lowercase letters, numbers, and hyphens only.
         </div>
-
         <app-textarea
           [control]="form.controls.content"
           label="Body Content"
@@ -110,37 +99,74 @@
       </div>
     </div>
 
+    <!-- ── Right Column ── -->
     <div class="col-12 col-lg-4">
       <div class="p-3 bg-white border rounded-3 h-100 d-flex flex-column">
         <h2 class="h5 pb-2 border-bottom mb-3 text-dark-emphasis fw-bold">
           <i class="bi bi-sliders2 me-2"></i>Publishing Settings
         </h2>
 
+        <!-- Category Multi-Select -->
         <div class="mb-3">
-          <label class="form-label text-dark fw-bold text-xs mb-2" for="blog-category">
+          <label class="form-label text-dark fw-bold text-xs mb-2">
             Categories <span class="text-danger">*</span>
           </label>
 
-          <select
-            id="blog-category"
-            class="form-select form-control-custom text-sm"
-            (change)="onCategorySelect($event)"
-            [disabled]="!isEditable()"
-          >
-            <option value="" disabled selected>Select Categories</option>
-            @for (cat of categories(); track cat.id) {
-            <option [value]="cat.id">
-              {{ isCategorySelected(cat.id) ? '✔ ' : '' }}{{ cat.name }}
-            </option>
+          <div class="category-multiselect-wrap position-relative">
+            <button
+              type="button"
+              class="category-dropdown-trigger form-control d-flex align-items-center justify-content-between text-start"
+              [class.is-invalid]="f['categoryIds'].invalid && f['categoryIds'].touched"
+              [disabled]="!isEditable()"
+              (click)="toggleCategoryDropdown()"
+            >
+              <span
+                class="text-truncate small"
+                [class.text-muted]="!form.controls.categoryIds.value.length"
+              >
+                {{ selectedCategoryLabel }}
+              </span>
+              <i
+                class="bi ms-2 flex-shrink-0"
+                [class.bi-chevron-down]="!categoryDropdownOpen()"
+                [class.bi-chevron-up]="categoryDropdownOpen()"
+              ></i>
+            </button>
+
+            @if (categoryDropdownOpen()) {
+            <div
+              class="category-dropdown-panel border border-light-subtle rounded-3 shadow bg-white"
+            >
+              @if (categories().length === 0) {
+              <div class="px-3 py-3 text-muted small text-center">
+                <i class="bi bi-tag-slash d-block mb-1"></i>No categories
+              </div>
+              } @else {
+              <div class="category-dropdown-list">
+                @for (cat of categories(); track cat.id) {
+                <label
+                  class="category-dropdown-item d-flex align-items-center gap-2 px-3 py-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    class="form-check-input m-0 flex-shrink-0"
+                    [checked]="isCategorySelected(cat.id)"
+                    (change)="toggleCategory(cat.id)"
+                  />
+                  <span class="small">{{ cat.name }}</span>
+                </label>
+                }
+              </div>
+              }
+            </div>
             }
-          </select>
+          </div>
 
           @if (f['categoryIds'].invalid && f['categoryIds'].touched) {
           <div class="invalid-feedback d-block text-xs">At least one category is required.</div>
-          }
-
-          <div class="d-flex flex-wrap gap-2 mt-3">
-            @for (catId of f['categoryIds'].value; track catId) {
+          } @if (form.controls.categoryIds.value.length > 0) {
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            @for (catId of form.controls.categoryIds.value; track catId) {
             <span class="badge bg-primary d-flex align-items-center gap-2 px-3 py-2 text-xs">
               {{ getCategoryName(catId) }}
               @if (isEditable()) {
@@ -154,25 +180,66 @@
             </span>
             }
           </div>
+          }
         </div>
 
-        <app-input
-          [control]="form.controls.thumbnailUrl"
-          label="Thumbnail Image URL"
-          placeholder="e.g. https://example.com/image.jpg"
-          autocomplete="off"
-        ></app-input>
+        <!-- Thumbnail Image -->
+        <div class="mb-3">
+          <label class="form-label text-dark fw-bold text-xs mb-2">Thumbnail Image</label>
 
-        @if (f['thumbnailUrl'].value && f['thumbnailUrl'].valid) {
-        <div class="mt-n2 mb-3 text-center border p-1 rounded bg-light">
-          <img
-            [src]="f['thumbnailUrl'].value"
-            alt="Thumbnail preview"
-            style="max-height: 100px; max-width: 100%; object-fit: contain"
+          @if (!thumbnailPreview()) { @if (isEditable()) {
+          <label
+            class="thumbnail-upload-zone d-flex flex-column align-items-center justify-content-center gap-2 border-2 border-dashed rounded-3 p-4 cursor-pointer text-center"
+            for="thumbnail-upload-edit"
+          >
+            <i class="bi bi-cloud-arrow-up fs-3 text-primary"></i>
+            <div>
+              <div class="small fw-semibold text-dark">Click to upload image</div>
+              <div class="text-muted" style="font-size: 0.75rem">PNG, JPG, GIF up to 5MB</div>
+            </div>
+          </label>
+          <input
+            id="thumbnail-upload-edit"
+            type="file"
+            accept="image/*"
+            class="d-none"
+            (change)="onFileSelected($event)"
           />
-          <div class="text-muted text-xs" style="font-size: 0.7rem">Live Preview</div>
+          } @else {
+          <div
+            class="thumbnail-upload-zone d-flex flex-column align-items-center justify-content-center gap-2 border-2 border-dashed rounded-3 p-4 text-center text-muted"
+          >
+            <i class="bi bi-image fs-3"></i>
+            <span class="small">No thumbnail</span>
+          </div>
+          } } @else {
+          <div class="thumbnail-preview-wrap position-relative rounded-3 overflow-hidden border">
+            <img
+              [src]="thumbnailPreview()"
+              alt="Thumbnail preview"
+              class="thumbnail-preview-img w-100"
+            />
+            @if (isEditable()) {
+            <button
+              type="button"
+              class="thumbnail-remove-btn position-absolute top-0 end-0 m-2 btn btn-sm btn-danger rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 28px; height: 28px"
+              (click)="removeThumbnail()"
+              title="Remove image"
+            >
+              <i class="bi bi-x"></i>
+            </button>
+            } @if (thumbnailFile()) {
+            <div
+              class="thumbnail-preview-label text-center py-1 text-muted bg-light"
+              style="font-size: 0.7rem"
+            >
+              {{ thumbnailFile()?.name }}
+            </div>
+            }
+          </div>
+          }
         </div>
-        }
 
         <app-textarea
           [control]="form.controls.shortDescription"
@@ -188,7 +255,10 @@
         @if (isEditable()) {
         <div class="mt-auto pt-3 border-top">
           <div class="d-flex gap-2 mb-2">
-            <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="btn btn-outline-secondary flex-grow-1 text-sm py-2">
+            <a
+              [routerLink]="routes.BLOG.LIST.ABSOLUTE"
+              class="btn btn-outline-secondary flex-grow-1 text-sm py-2"
+            >
               <i class="bi bi-x-lg me-1"></i>Cancel
             </a>
             <button
@@ -198,9 +268,8 @@
               [disabled]="draftLoading() || formLoading()"
             >
               @if (draftLoading()) {
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-              Saving… } @else {
-              <i class="bi bi-floppy me-1"></i> Save Draft }
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Saving…
+              } @else { <i class="bi bi-floppy me-1"></i> Save Draft }
             </button>
           </div>
           <button
@@ -210,28 +279,16 @@
             [disabled]="formLoading() || draftLoading()"
           >
             @if (formLoading()) {
-            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-            Submitting… } @else {
-            <i class="bi bi-send-fill me-1"></i> Submit for Approval }
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span
+            >Submitting… } @else { <i class="bi bi-send-fill me-1"></i> Submit for Approval }
           </button>
-
-          <div class="mt-3 d-flex flex-column gap-2">
-            <div
-              class="alert alert-light py-2 px-3 mb-0 border text-xs"
-              style="font-size: 0.775rem"
-            >
-              <i class="bi bi-floppy text-secondary me-1"></i>
-              <strong>Save Draft</strong> — keeps editable without submitting.
-            </div>
-            <div class="alert alert-info py-2 px-3 mb-0 text-xs" style="font-size: 0.775rem">
-              <i class="bi bi-send-fill me-1"></i>
-              <strong>Submit</strong> — sends to Admin for review. Blog will be locked.
-            </div>
-          </div>
         </div>
         } @else {
         <div class="mt-auto pt-3 border-top">
-          <a [routerLink]="routes.BLOG.LIST.ABSOLUTE" class="btn btn-outline-secondary w-100 text-sm py-2">
+          <a
+            [routerLink]="routes.BLOG.LIST.ABSOLUTE"
+            class="btn btn-outline-secondary w-100 text-sm py-2"
+          >
             <i class="bi bi-arrow-left me-1"></i> Back to Blogs
           </a>
         </div>

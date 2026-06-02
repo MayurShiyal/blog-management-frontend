@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
-import { StorageService } from '../services/storage';
+import { AuthStateService } from '../services/auth-state.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const storage = inject(StorageService);
-  const token   = storage.getToken();
-  if (token) {
+  const authState = inject(AuthStateService);
+  const token = authState.getToken();
+  if (token && !req.headers.has('Authorization')) {
     const authReq = req.clone({
       setHeaders: { Authorization: `Bearer ${token}` },
     });

@@ -5,7 +5,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 import { BlogService } from '../../services/blog.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
@@ -22,7 +22,7 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
 export class BlogDetail implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly blogSvc = inject(BlogService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -33,7 +33,7 @@ export class BlogDetail implements OnInit, OnDestroy {
   readonly routes = ROUTES;
 
   user = signal<{ firstName?: string; email?: string; role?: string } | null>(null);
-  isAdmin = computed(() => this.storage.isAdmin());
+  isAdmin = computed(() => this.authState.isAdmin);
 
   blog = signal<GetBlogByIdDto | null>(null);
   loading = signal(true);
@@ -49,12 +49,12 @@ export class BlogDetail implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }
 
-    this.user.set(this.storage.getUser<{ firstName: string; email: string; role: string }>());
+    this.user.set(this.authState.currentUser);
 
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {

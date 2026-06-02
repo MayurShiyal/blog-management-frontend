@@ -15,7 +15,7 @@ import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { Chart, registerables } from 'chart.js';
 
 import { DashboardService } from '../../services/dashboard.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
@@ -39,7 +39,7 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
 export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   readonly routes = ROUTES;
   private readonly svc = inject(DashboardService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly layout = inject(LayoutService);
@@ -59,7 +59,7 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   status = signal<DashboardStatusDto | null>(null);
   blogsData = signal<DashboardBlogsDto | null>(null);
 
-  isAdmin = computed(() => this.storage.isAdmin());
+  isAdmin = computed(() => this.authState.isAdmin);
 
   latestBlogs = computed<LatestBlogItemDto[]>(() => this.blogsData()?.latestBlogs ?? []);
 
@@ -71,11 +71,11 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   private monthlyChart?: Chart;
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }
-    const currentUser = this.storage.getUser<{ firstName: string; email: string; role: string }>();
+    const currentUser = this.authState.currentUser;
     this.user.set(currentUser);
     this.layout.setHeader('Dashboard', `Welcome back, ${currentUser?.firstName ?? ''}!`, true, () =>
       this.loadAll()

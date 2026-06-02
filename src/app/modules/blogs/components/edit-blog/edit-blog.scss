@@ -1,60 +1,40 @@
-// Layout Variable Token Identifiers
-$accent: var(--brand-accent, #6366f1);
-$border: var(--border-color, #e2e8f0);
-$danger: var(--brand-danger, #ef4444);
+.category-dropdown-trigger {
+  cursor: pointer;
+  min-height: 42px;
+  background: white;
 
-.text-xs {
-  font-size: 0.75rem !important;
-}
-.text-sm {
-  font-size: 0.875rem !important;
+  &:hover { border-color: var(--brand-accent, #6366f1); }
+  &.is-invalid { border-color: var(--danger, #dc2626); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
-.form-control,
-.form-select,
-.form-control-custom {
-  border-color: $border;
-  border-radius: 8px;
-  padding: 0.6rem 0.875rem;
-  transition: all 0.15s ease-in-out;
-
-  &:focus {
-    border-color: $accent !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
-  }
-
-  &.is-invalid {
-    border-color: $danger !important;
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
-    }
-  }
-
-  &:disabled {
-    background-color: #f8fafc !important;
-    color: #64748b !important;
-    border-color: #e2e8f0 !important;
-    cursor: not-allowed !important;
-  }
-
-  ::placeholder {
-    color: #94a3b8;
-    opacity: 0.8;
-  }
+.category-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
-textarea.form-control {
-  line-height: 1.6;
+.category-dropdown-item {
+  cursor: pointer;
+  transition: background 0.15s;
+  &:hover { background: #f8f9ff; }
 }
 
-.btn-draft {
-  border-color: #94a3b8;
-  color: #475569;
-  transition: all 0.15s;
-
-  &:hover:not(:disabled) {
-    background: #f1f5f9;
-    border-color: #475569;
-    color: #1e293b;
-  }
+.thumbnail-upload-zone {
+  min-height: 120px;
+  border-color: #c7d2fe;
+  background: #f8f9ff;
+  transition: border-color 0.2s, background 0.2s;
+  &:hover { border-color: var(--brand-primary, #3730a3); background: #eef2ff; }
 }
+
+.thumbnail-preview-img {
+  max-height: 160px;
+  object-fit: cover;
+}
+
+.cursor-pointer { cursor: pointer; }

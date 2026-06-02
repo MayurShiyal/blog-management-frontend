@@ -78,3 +78,19 @@
 .min-w-0 {
   min-width: 0;
 }
+
+.reply-item-node {
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.style-see-more-link {
+  font-size: 0.78rem !important;
+  color: var(--brand-primary, #4f46e5) !important;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.85;
+    text-decoration: underline !important;
+  }
+}

@@ -1,112 +1,59 @@
-// Layout Token Mappings
-$brand: var(--brand-primary, #6366f1);
-$accent: var(--brand-accent, #6366f1);
-$border: var(--border-color, #e2e8f0);
-$danger: var(--danger, #ef4444);
+// Category dropdown
+.category-dropdown-trigger {
+  cursor: pointer;
+  min-height: 42px;
+  background: white;
 
-// General Typography Overrides
-.text-xs {
-  font-size: 0.75rem !important;
-}
-.text-sm {
-  font-size: 0.875rem !important;
-}
-
-// --- Global Form Control Structural Customizations ---
-// Applied to inputs rendered natively or directly wrapped inside <app-input>/<app-textarea> structures
-.form-control,
-.form-select,
-.form-control-custom {
-  border-color: $border;
-  border-radius: 8px;
-  padding: 0.6rem 0.875rem;
-  transition: all 0.15s ease-in-out;
-
-  &:focus {
-    border-color: $accent !important;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+  &:hover {
+    border-color: var(--brand-accent, #6366f1);
   }
 
   &.is-invalid {
-    border-color: $danger !important;
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
-    }
-  }
-
-  ::placeholder {
-    color: #94a3b8;
-    opacity: 0.8;
+    border-color: var(--danger, #dc2626);
   }
 }
 
-// --- Custom Draft Button Action ---
-.btn-draft {
-  border-color: #94a3b8;
-  color: #475569;
-  transition: all 0.15s;
-
-  &:hover:not(:disabled) {
-    background: #f1f5f9;
-    border-color: #475569;
-    color: #1e293b;
-  }
+.category-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
-// --- Third-Party Rich Text Plugin Overrides (CKEditor) ---
-::ng-deep .ck-editor__editable_inline {
-  min-height: 400px;
-  max-height: 700px;
+.category-dropdown-list {
+  padding: 4px 0;
 }
 
-::ng-deep .ck.ck-editor {
-  width: 100%;
-}
+.category-dropdown-item {
+  cursor: pointer;
+  transition: background 0.15s;
 
-::ng-deep .ck-toolbar {
-  border-radius: 0.5rem 0.5rem 0 0 !important;
-}
-
-::ng-deep .ck-editor__editable {
-  border-radius: 0 0 0.5rem 0.5rem !important;
-}
-
-// --- Notification Toast Layout Containers ---
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(2px);
-  z-index: 300;
-}
-
-.cat-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 301;
-  width: 100%;
-  max-width: 500px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  max-height: 90vh;
-
-  @media (max-width: 575px) {
-    max-width: calc(100% - 2rem);
-    margin: 0 1rem;
-  }
-}
-
-.modal-close-btn {
-  background: none;
-  border: none;
-  color: var(--bs-secondary-color);
-  padding: 4px 6px;
-  border-radius: 6px;
   &:hover {
-    background: #f8fafc;
-    color: var(--bs-body-color);
+    background: #f8f9ff;
   }
+}
+
+// Thumbnail upload
+.thumbnail-upload-zone {
+  min-height: 120px;
+  border-color: #c7d2fe;
+  background: #f8f9ff;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: var(--brand-primary, #3730a3);
+    background: #eef2ff;
+  }
+}
+
+.thumbnail-preview-img {
+  max-height: 160px;
+  object-fit: cover;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

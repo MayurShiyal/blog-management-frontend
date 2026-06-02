@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { AdminUserService } from '../../services/admin-user.service';
-import { StorageService } from '../../../../common/services/storage';
+import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { DeleteModal } from '../../../../common/components/delete-modal/delete-modal';
@@ -29,7 +29,7 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
 export class UserList implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly svc = inject(AdminUserService);
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
   private readonly layout = inject(LayoutService);
   private readonly toast = inject(ToastService);
@@ -46,7 +46,7 @@ export class UserList implements OnInit, OnDestroy {
   statusFilter = signal<StatusFilter>('');
   searchQuery = signal('');
 
-  isAdmin = computed(() => this.storage.isAdmin());
+  isAdmin = computed(() => this.authState.isAdmin);
 
   totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()) || 1);
 
@@ -67,7 +67,7 @@ export class UserList implements OnInit, OnDestroy {
   searchControl = this.fb.control<string>('');
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn() || !this.storage.isAdmin()) {
+    if (!this.authState.isLoggedIn || !this.authState.isAdmin) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }

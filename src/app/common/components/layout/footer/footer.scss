@@ -1,0 +1,23 @@
+// ── Footer ──
+.visitor-footer {
+  .visitor-brand-mark {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .visitor-footer-link {
+    transition: color 0.15s;
+    background: none;
+
+    &:hover {
+      color: var(--brand-primary) !important;
+    }
+  }
+
+  .tracking-wide {
+    letter-spacing: 0.08em;
+  }
+}

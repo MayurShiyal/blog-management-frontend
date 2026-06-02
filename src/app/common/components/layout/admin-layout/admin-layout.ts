@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { StorageService } from '../../../services/storage';
+import { AuthStateService } from '../../../services/auth-state.service';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { LayoutService } from '../../../services/layout.service';
 import { ToastService } from '../../../services/toast.service';
@@ -23,30 +23,22 @@ import { ROUTES } from '../../../constants/routes.constants';
   styleUrl: './admin-layout.scss',
 })
 export class AdminLayout implements OnInit {
-  private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly layoutService = inject(LayoutService);
   readonly toastService = inject(ToastService);
 
-  user = signal<{ firstName?: string; email?: string; role?: string; id?: string } | null>(null);
   sidebarOpen = signal(false);
 
-  isAdmin = computed(() => this.user()?.role === 'Admin');
+  user = computed(() => this.authState.currentUser);
+  isAdmin = computed(() => this.authState.isAdmin);
 
   ngOnInit(): void {
-    if (!this.storage.isLoggedIn()) {
+    if (!this.authState.isLoggedIn) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
-      return;
     }
-    const currentUser = this.storage.getUser<{
-      firstName: string;
-      email: string;
-      role: string;
-      id: string;
-    }>();
-    this.user.set(currentUser);
   }
 
   toggleSidebar(): void {

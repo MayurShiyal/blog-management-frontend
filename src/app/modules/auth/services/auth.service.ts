@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ApiService } from '../../../common/services/api';
 import { StorageService } from '../../../common/services/storage';
+import { AuthStateService } from '../../../common/services/auth-state.service';
 import {
   LoginRequest,
   RegisterRequest,
@@ -20,6 +21,7 @@ import {
 export class AuthService {
   private readonly api = inject(ApiService);
   private readonly storage = inject(StorageService);
+  private readonly authState = inject(AuthStateService);
 
   register(payload: RegisterRequest): Observable<RegisterResponse> {
     return this.api.post<RegisterResponse>('/api/user/register', payload);
@@ -30,9 +32,9 @@ export class AuthService {
       tap((res) => {
         if (res.status && res.token) {
           this.storage.setToken(res.token);
+          this.authState.setToken(res.token);
           if (res.data) {
-            this.storage.setUser(res.data);
-            this.storage.setRole(res.data.role);
+            this.authState.setUser(res.data);
           }
         }
       })
@@ -49,13 +51,14 @@ export class AuthService {
 
   logout(): void {
     this.storage.clear();
+    this.authState.clearAuth();
   }
 
   isLoggedIn(): boolean {
-    return this.storage.isLoggedIn();
+    return this.authState.isLoggedIn;
   }
 
   isAdmin(): boolean {
-    return this.storage.isAdmin();
+    return this.authState.isAdmin;
   }
 }

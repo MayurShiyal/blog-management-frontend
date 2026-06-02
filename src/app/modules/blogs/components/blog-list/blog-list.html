@@ -271,12 +271,12 @@
               }}</span>
             </div>
             }
-            <!-- <span
+            <span
               class="position-absolute bg-dark bg-opacity-75 text-white text-xs fw-semibold px-2 py-1 rounded-pill z-2 tracking-wide"
               style="top: 12px; left: 12px; backdrop-filter: blur(4px)"
               [title]="blog.categoryNames?.join(', ') || 'Uncategorized'"
               >{{ getCategoryLabel(blog) }}</span
-            > -->
+            >
             <span
               class="position-absolute text-xs fw-semibold px-2 py-1 rounded-pill z-2 tracking-wider text-uppercase shadow-sm bg-status {{
                 getStatusClass(blog.status)
@@ -458,14 +458,14 @@
               <span class="text-xs">{{ blog.authorName || 'Unknown' }}</span>
             </div>
           </td>
-          <!-- <td>
+          <td>
             <span
               class="badge bg-light text-dark border text-xs fw-normal"
               [title]="blog.categoryNames?.join(', ') || 'Uncategorized'"
             >
               {{ getCategoryLabel(blog) }}
             </span>
-          </td> -->
+          </td>
           <td>
             <span
               class="badge-status-list rounded-pill text-xs fw-semibold px-2 py-1 text-center bg-status {{

@@ -1,3 +1,21 @@
+// Matches backend ReactDto exactly
+export interface ReactDto {
+  id: string;
+  blogId?: string | null;
+  commentId?: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
+}
+
+export interface ReactResponse {
+  status: boolean;
+  message: string;
+  data?: ReactDto | null;
+}
+
+export type ReactToBlogResponse = ReactResponse;
+export type ReactToCommentResponse = ReactResponse;
 export interface BlogReactionDto {
   id: string;
   blogId: string;
@@ -7,12 +25,6 @@ export interface BlogReactionDto {
   updatedAt?: string | null;
 }
 
-export interface ReactToBlogResponse {
-  status: boolean;
-  message: string;
-  data?: BlogReactionDto | null;
-}
-
 export interface CommentReactionDto {
   id: string;
   commentId: string;
@@ -20,10 +32,4 @@ export interface CommentReactionDto {
   isActive: boolean;
   createdAt: string;
   updatedAt?: string | null;
-}
-
-export interface ReactToCommentResponse {
-  status: boolean;
-  message: string;
-  data?: CommentReactionDto | null;
 }
