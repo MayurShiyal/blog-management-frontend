@@ -12,12 +12,14 @@ import { PasswordComponent } from '../../../../common/components/text-fields/pas
 function passwordStrengthValidator(control: AbstractControl) {
   const val: string = control.value ?? '';
   if (!val) return null;
+
   const hasUpper = /[A-Z]/.test(val);
   const hasLower = /[a-z]/.test(val);
   const hasNumber = /\d/.test(val);
   const hasSpecial = /[^A-Za-z0-9]/.test(val);
   const isLong = val.length >= 8;
-  return isLong && hasUpper && hasLower && hasNumber && hasSpecial ? null : { passwordWeak: true };
+
+  return isLong && hasUpper && hasLower && hasNumber && hasSpecial ? null : { pattern: true };
 }
 
 @Component({
@@ -54,6 +56,7 @@ export class Register {
 
   submit() {
     this.form.markAllAsTouched();
+
     if (this.form.invalid) return;
 
     this.loading.set(true);

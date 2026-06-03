@@ -17,7 +17,8 @@ $active-text: #a5b4fc;
 
   @media (max-width: 991.98px) {
     width: 0;
-    overflow: visible;
+    position: fixed;
+    left: 0;
   }
 }
 
@@ -29,7 +30,23 @@ $active-text: #a5b4fc;
   background-color: $sidebar-bg;
   color: $text-color;
   overflow-y: auto;
-  transition: transform 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media (max-width: 991.98px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  &--open {
+    @media (max-width: 991.98px) {
+      transform: translateX(0);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    }
+  }
 
   &__header {
     padding: 1.25rem 1.25rem 1rem;
@@ -64,7 +81,7 @@ $active-text: #a5b4fc;
       border: none;
       color: $text-muted;
       cursor: pointer;
-      padding: 4px;
+      padding: 8px;
       line-height: 1;
       display: flex;
       align-items: center;
@@ -169,7 +186,7 @@ $active-text: #a5b4fc;
   font-size: 0.8rem !important;
   font-weight: 500;
   border-radius: 8px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
