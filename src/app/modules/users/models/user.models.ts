@@ -1,8 +1,7 @@
+import { UserStatus } from '../../../common/enums';
+
+export { UserStatus } from '../../../common/enums';
 export type UserRole = 'Author' | 'Visitor';
-export enum UserStatus {
-  Inactive = 0,
-  Active = 1,
-}
 
 export interface UserListItemDto {
   id: string;

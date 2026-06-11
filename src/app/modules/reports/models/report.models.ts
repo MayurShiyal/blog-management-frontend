@@ -1,30 +1,6 @@
-export enum ReportStatus {
-  Open = 1,
-  UnderReview = 2,
-  Approved = 3,
-  Rejected = 4,
-}
+import { ReportStatus, ReportType } from '../../../common/enums';
 
-export const REPORT_STATUS_LABELS: Record<ReportStatus, string> = {
-  [ReportStatus.Open]: 'Open',
-  [ReportStatus.UnderReview]: 'Under Review',
-  [ReportStatus.Approved]: 'Approved',
-  [ReportStatus.Rejected]: 'Rejected',
-};
-
-export enum ReportType {
-  Spam = 1,
-  InappropriateContent = 2,
-  Harassment = 3,
-  Other = 4,
-}
-
-export const REPORT_TYPE_LABELS: Record<ReportType, string> = {
-  [ReportType.Spam]: 'Spam',
-  [ReportType.InappropriateContent]: 'Inappropriate Content',
-  [ReportType.Harassment]: 'Harassment',
-  [ReportType.Other]: 'Other',
-};
+export { ReportStatus, REPORT_STATUS_LABELS, ReportType, REPORT_TYPE_LABELS } from '../../../common/enums';
 
 export interface CreateReportRequest {
   blogId?: string | null;

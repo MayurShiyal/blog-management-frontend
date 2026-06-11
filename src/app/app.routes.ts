@@ -14,8 +14,8 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./common/components/layout/visitor-layout/visitor-layout').then(
-        (m) => m.VisitorLayout
+      import('./common/components/layout/public-layout/public-layout').then(
+        (m) => m.PublicLayout
       ),
     children: [
       {
@@ -33,8 +33,8 @@ export const routes: Routes = [
     path: ROUTES.PUBLIC.ROOT,
     canActivate: [visitorGuard],
     loadComponent: () =>
-      import('./common/components/layout/visitor-layout/visitor-layout').then(
-        (m) => m.VisitorLayout
+      import('./common/components/layout/public-layout/public-layout').then(
+        (m) => m.PublicLayout
       ),
     children: [
       { path: '', redirectTo: 'blogs', pathMatch: 'full' },

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 import { AdminReportService } from '../../services/admin-report.service';
-import { AdminCommentService } from '../../../comments/services/admin-comment.service';
+import { CommentService } from '../../../comments/services/comment.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
@@ -31,7 +31,7 @@ export interface StatusOption {
 export class AdminReports implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly svc = inject(AdminReportService);
-  private readonly commentSvc = inject(AdminCommentService);
+  private readonly commentSvc = inject(CommentService);
   private readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
   private readonly layout = inject(LayoutService);

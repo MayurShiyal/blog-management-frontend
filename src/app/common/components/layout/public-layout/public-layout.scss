@@ -98,3 +98,28 @@
     }
   }
 }
+
+// ── Public Layout utility overrides ────────────────────────────────────────
+
+.pl-search-wrap {
+  max-width: 440px;
+}
+
+.pl-search-icon-sm {
+  font-size: 0.8rem;
+}
+
+.pl-mobile-search-input {
+  border-radius: 20px;
+  cursor: default;
+  background: #f8faff;
+  border-color: var(--border-color);
+}
+
+.pl-section-heading {
+  letter-spacing: 0.08em;
+}
+
+.pl-heart-icon {
+  font-size: 0.7rem;
+}

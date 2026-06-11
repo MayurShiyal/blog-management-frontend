@@ -9,11 +9,11 @@ import { AuthStateService } from '../../../../common/services/auth-state.service
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { DeleteModal } from '../../../../common/components/delete-modal/delete-modal';
-import { CategoryStats } from '../category-stats/category-stats';
 import { CategoryTable } from '../category-table/category-table';
 import { CategoryFormModal, ModalMode } from '../category-form-modal/category-form-modal';
 import { CategoryDto, CreateCategoryRequest, UpdateCategoryRequest } from '../../models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { CategoryStats } from '../category-stats/category-stats';
 
 export type StatusFilter = 'all' | 'active' | 'inactive';
 
@@ -23,9 +23,9 @@ export type StatusFilter = 'all' | 'active' | 'inactive';
     CommonModule,
     ReactiveFormsModule,
     DeleteModal,
-    CategoryStats,
     CategoryTable,
     CategoryFormModal,
+    CategoryStats
   ],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',

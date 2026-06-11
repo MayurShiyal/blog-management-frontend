@@ -15,7 +15,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AdminCommentService } from '../../services/admin-comment.service';
 import { CommentService } from '../../services/comment.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
@@ -30,8 +29,7 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
   styleUrl: './blog-comments-modal.scss',
 })
 export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
-  private readonly commentSvc = inject(AdminCommentService);
-  private readonly publicCommentSvc = inject(CommentService);
+  private readonly commentSvc = inject(CommentService);
   private readonly toast = inject(ToastService);
   private readonly authState = inject(AuthStateService);
   private readonly router = inject(Router);
@@ -203,7 +201,7 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
     if (!content) return;
 
     this.replySubmitting.set(true);
-    this.publicCommentSvc
+    this.commentSvc
       .addReply({ blogId: this.blogId(), parentCommentId: comment.id, content })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
