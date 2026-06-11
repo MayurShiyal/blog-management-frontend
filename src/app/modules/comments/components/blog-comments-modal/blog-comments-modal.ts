@@ -43,7 +43,7 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
   blogId = input.required<string>();
   blogTitle = input<string>('');
   totalComments = input<number>(0);
-  /** When set, the modal will auto-scroll to and highlight this comment after loading */
+
   highlightCommentId = input<string | null>(null);
 
   closed = output<void>();
@@ -57,17 +57,14 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
   totalCount = signal(0);
   expandedReplies = signal<Set<string>>(new Set());
 
-  // Reply state
   replyOpenFor = signal<string | null>(null);
   replyForms: Record<string, ReturnType<typeof this.fb.group>> = {};
   replySubmitting = signal(false);
 
-  // Report state
   reportModalOpen = signal(false);
   reportTargetId = signal<string | null>(null);
   reportTargetPreview = signal('');
 
-  // Highlight scroll tracking
   private _shouldScroll = false;
   private _scrolled = false;
 
@@ -111,7 +108,7 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
 
   loadComments(): void {
     this.loading.set(true);
-    // Admins use the admin endpoint (sees hidden/reported); others use public
+
     const call = this.isAdmin()
       ? this.commentSvc.getAdminCommentsByBlog(this.blogId(), this.pageNumber(), this.pageSize())
       : this.commentSvc.getCommentsByBlog(this.blogId(), this.pageNumber(), this.pageSize());
@@ -125,14 +122,13 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
           this.comments.set([...existing, ...incoming]);
           this.totalCount.set(res.totalCount ?? 0);
 
-          // Auto-expand replies for the highlighted comment if it's a reply
           const hid = this.highlightCommentId();
           if (hid) {
             this._shouldScroll = true;
-            // If highlighted id is a reply, expand its parent
-            const parent = incoming.find(c => c.replies?.some(r => r.id === hid));
+
+            const parent = incoming.find((c) => c.replies?.some((r) => r.id === hid));
             if (parent) {
-              this.expandedReplies.update(s => {
+              this.expandedReplies.update((s) => {
                 const n = new Set(s);
                 n.add(parent.id);
                 return n;
@@ -175,7 +171,6 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
     return this.expandedReplies().has(commentId);
   }
 
-  // ── Reply ──────────────────────────────────────────────────────────────
   openReply(commentId: string): void {
     if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
@@ -232,7 +227,6 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
       });
   }
 
-  // ── Report ─────────────────────────────────────────────────────────────
   openReport(commentId: string, content: string, commentUserId: string): void {
     if (!this.isLoggedIn()) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
@@ -263,7 +257,6 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
     this.loadComments();
   }
 
-  // ── Navigation ─────────────────────────────────────────────────────────
   navigateToBlog(): void {
     if (this.blogId()) {
       this.closed.emit();
@@ -271,17 +264,20 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
     }
   }
 
-  // ── Backdrop / close ───────────────────────────────────────────────────
   onBackdropClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('bcm-backdrop')) {
       this.closed.emit();
     }
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────
   getInitials(name: string): string {
     if (!name) return '?';
-    return name.split(' ').slice(0, 2).map((n) => n[0]).join('').toUpperCase();
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase();
   }
 
   formatDate(dateStr: string | undefined | null): string {

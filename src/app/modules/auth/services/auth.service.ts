@@ -27,12 +27,9 @@ export class AuthService {
     return this.api.post<RegisterResponse>('/api/user/register', payload);
   }
 
-  /**
-   * Evaluates if an email address is already bound to an active registered profile
-   * @param email The target raw query email string string typed into the input control field
-   */
-  checkEmailExists(email: string): Observable<{ status: boolean; exists: boolean; message?: string }> {
-    // Passes the lowercase string inside query params configuration mapping
+  checkEmailExists(
+    email: string
+  ): Observable<{ status: boolean; exists: boolean; message?: string }> {
     return this.api.get<{ status: boolean; exists: boolean; message?: string }>(
       `/api/user/check-email?email=${encodeURIComponent(email.trim().toLowerCase())}`
     );

@@ -1,8 +1,15 @@
 @if (show()) {
-<div class="report-modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+<div
+  class="report-modal-backdrop"
+  (click)="onBackdropClick($event)"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="reportModalTitle"
+>
   <div class="report-modal">
-
-    <div class="report-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+    <div
+      class="report-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom"
+    >
       <div class="d-flex align-items-center gap-2">
         <div class="report-icon-wrap">
           <i class="bi bi-flag-fill"></i>
@@ -11,9 +18,7 @@
           <h5 class="mb-0 fw-bold fs-6" id="reportModalTitle">
             Report {{ contentType() === 'blog' ? 'Blog' : 'Comment' }}
           </h5>
-          <p class="mb-0 text-muted" style="font-size: 0.72rem">
-            Help us keep the community safe
-          </p>
+          <p class="mb-0 text-muted" style="font-size: 0.72rem">Help us keep the community safe</p>
         </div>
       </div>
       <button class="btn-close" (click)="onCancel()" aria-label="Close"></button>
@@ -23,9 +28,14 @@
       @if (contentType() === 'blog' && contentPreview()) {
       <div class="content-preview-card mb-4">
         <div class="d-flex align-items-start gap-2">
-          <i class="bi bi-file-earmark-text text-muted mt-1" style="font-size: 0.875rem; flex-shrink:0"></i>
+          <i
+            class="bi bi-file-earmark-text text-muted mt-1"
+            style="font-size: 0.875rem; flex-shrink: 0"
+          ></i>
           <div class="min-w-0">
-            <div class="text-xs text-muted mb-1 fw-semibold text-uppercase letter-spacing-wide">Reporting Blog</div>
+            <div class="text-xs text-muted mb-1 fw-semibold text-uppercase letter-spacing-wide">
+              Reporting Blog
+            </div>
             <div class="text-dark fw-semibold small text-truncate">{{ contentPreview() }}</div>
           </div>
         </div>
@@ -33,16 +43,20 @@
       } @else if (contentType() === 'comment' && contentPreview()) {
       <div class="content-preview-card mb-4">
         <div class="d-flex align-items-start gap-2">
-          <i class="bi bi-chat-left-text text-muted mt-1" style="font-size: 0.875rem; flex-shrink:0"></i>
+          <i
+            class="bi bi-chat-left-text text-muted mt-1"
+            style="font-size: 0.875rem; flex-shrink: 0"
+          ></i>
           <div class="min-w-0">
-            <div class="text-xs text-muted mb-1 fw-semibold text-uppercase letter-spacing-wide">Reporting Comment</div>
+            <div class="text-xs text-muted mb-1 fw-semibold text-uppercase letter-spacing-wide">
+              Reporting Comment
+            </div>
             <div class="text-dark small" style="line-height: 1.5">{{ contentPreview() }}</div>
           </div>
         </div>
       </div>
       }
 
-      <!-- Report Type (required) -->
       <div class="mb-3">
         <label class="form-label text-dark fw-semibold small mb-2">
           Report Type <span class="text-danger">*</span>
@@ -64,7 +78,6 @@
         }
       </div>
 
-      <!-- Additional Reason (optional) -->
       <div class="mb-3">
         <label class="form-label text-dark fw-semibold small mb-2">
           Additional Details <span class="text-muted fw-normal">(required)</span>
@@ -83,15 +96,20 @@
       </div>
 
       <div class="report-info-box d-flex gap-2 align-items-start">
-        <i class="bi bi-info-circle text-primary mt-1" style="font-size: 0.875rem; flex-shrink: 0"></i>
+        <i
+          class="bi bi-info-circle text-primary mt-1"
+          style="font-size: 0.875rem; flex-shrink: 0"
+        ></i>
         <p class="mb-0 text-muted" style="font-size: 0.78rem; line-height: 1.5">
-          Once reported, this {{ contentType() === 'blog' ? 'blog' : 'comment' }} will be
-          hidden from your view. Our team will review your report and take action if necessary.
+          Once reported, this {{ contentType() === 'blog' ? 'blog' : 'comment' }} will be hidden
+          from your view. Our team will review your report and take action if necessary.
         </p>
       </div>
     </div>
 
-    <div class="report-modal__footer d-flex justify-content-end gap-2 px-4 py-3 border-top bg-light-subtle">
+    <div
+      class="report-modal__footer d-flex justify-content-end gap-2 px-4 py-3 border-top bg-light-subtle"
+    >
       <button
         type="button"
         class="btn btn-outline-secondary btn-sm px-4"
@@ -108,14 +126,11 @@
       >
         @if (loading()) {
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Submitting…
-        } @else {
+        Submitting… } @else {
         <i class="bi bi-flag"></i>
-        Submit Report
-        }
+        Submit Report }
       </button>
     </div>
-
   </div>
 </div>
 }

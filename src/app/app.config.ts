@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs'; // 👈 IMPORT THIS
+import { lastValueFrom } from 'rxjs';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './common/interceptor/auth-interceptor';

@@ -34,7 +34,6 @@ export class AdminCommentService {
   private readonly adminBlogsBase = '/api/admin/blogs';
   private readonly adminCommentsBase = '/api/admin/comments';
 
-  /** Public endpoint — used for viewing comments as-is */
   getCommentsByBlog(
     blogId: string,
     pageNumber = 1,
@@ -45,7 +44,6 @@ export class AdminCommentService {
     );
   }
 
-  /** Admin endpoint — returns ALL comments including hidden/reported with extra flags */
   getAdminCommentsByBlog(
     blogId: string,
     pageNumber = 1,
@@ -56,7 +54,6 @@ export class AdminCommentService {
     );
   }
 
-  /** Resolve blogId for a given commentId via the comment history endpoint */
   getCommentHistory(params: {
     isReported?: boolean;
     search?: string;

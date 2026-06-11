@@ -17,7 +17,7 @@ export class CategoryService {
     pageNumber = 1,
     pageSize = 10,
     search?: string,
-    isActive?: boolean | null,
+    isActive?: boolean | null
   ): Observable<PagedCategoryResponse> {
     let path = `${this.base}?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     if (search && search.trim()) {
@@ -32,8 +32,7 @@ export class CategoryService {
   getActive(): Observable<CategoryResponse> {
     return this.api.get<CategoryResponse>(`${this.base}/active`);
   }
-  
-  // FIXED: id type changed from number to string
+
   getById(id: string): Observable<CategoryResponse> {
     return this.api.get<CategoryResponse>(`${this.base}/${id}`);
   }
@@ -42,12 +41,10 @@ export class CategoryService {
     return this.api.post<CategoryResponse>(this.base, payload);
   }
 
-  // FIXED: id type changed from number to string
   update(id: string, payload: UpdateCategoryRequest): Observable<CategoryResponse> {
     return this.api.put<CategoryResponse>(`${this.base}/${id}`, payload);
   }
 
-  // FIXED: id type changed from number to string
   delete(id: string): Observable<CategoryResponse> {
     return this.api.delete<CategoryResponse>(`${this.base}/${id}`);
   }

@@ -65,7 +65,6 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
 
   monthlyData = computed<MonthlyBlogCountDto[]>(() => this.blogsData()?.monthlyBlogCounts ?? []);
 
-  // Chart instances
   private userChart?: Chart;
   private categoryChart?: Chart;
   private monthlyChart?: Chart;
@@ -174,7 +173,6 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
     const st = this.status();
     if (!st) return;
 
-    // User doughnut
     if (this.userDoughnutRef?.nativeElement) {
       this.userChart?.destroy();
       this.userChart = new Chart(this.userDoughnutRef.nativeElement, {
@@ -215,7 +213,7 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
     }
     this.userChart?.resize();
     this.categoryChart?.resize();
-    // Category doughnut
+
     if (this.categoryDoughnutRef?.nativeElement) {
       this.categoryChart?.destroy();
       this.categoryChart = new Chart(this.categoryDoughnutRef.nativeElement, {

@@ -87,7 +87,6 @@ export class BlogList implements OnInit, OnDestroy {
     reason: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(300)]],
   });
 
-  // Comments modal (admin only)
   commentsModalOpen = signal(false);
   commentsModalBlog = signal<BlogListItemDto | null>(null);
 
@@ -429,7 +428,6 @@ export class BlogList implements OnInit, OnDestroy {
     return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
   }
 
-  // ── Comments modal (admin only) ────────────────────────────────────────
   openCommentsModal(blog: BlogListItemDto): void {
     this.commentsModalBlog.set(blog);
     this.commentsModalOpen.set(true);

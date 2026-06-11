@@ -1,4 +1,3 @@
-// Layout Variable Mappings
 $brand: var(--brand-primary, #6366f1);
 $brand-dark: var(--brand-primary-dark, #4f46e5);
 $brand-light: var(--brand-light, rgba(99, 102, 241, 0.06));
@@ -7,7 +6,6 @@ $text-main: #334155;
 $text-muted: #64748b;
 $danger: var(--danger, #ef4444);
 
-// Text & Dimension Utilities
 .text-xs {
   font-size: 0.75rem !important;
 }
@@ -21,7 +19,6 @@ $danger: var(--danger, #ef4444);
   white-space: nowrap;
 }
 
-// --- Tab Controls ---
 .blog-tab-btn {
   transition: color 0.15s ease;
   &:hover {
@@ -42,7 +39,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- View Layout Selection Controls ---
 .view-toggle-btn {
   transition: all 0.15s ease;
   &:hover {
@@ -56,7 +52,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Dashboard Component Cards ---
 .blog-card {
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
   border: 1px solid #f1f5f9 !important;
@@ -95,7 +90,6 @@ $danger: var(--danger, #ef4444);
   color: $text-muted;
 }
 
-// --- Dynamic State Colors ---
 .bg-status {
   padding: 0.35em 0.75em !important;
   font-weight: 600 !important;
@@ -120,11 +114,10 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Cleaned Up Modern Table Structure ---
 .blog-list-table {
   min-width: 900px;
   border-collapse: separate;
-  border-spacing: 0 8px; // Creates a clean separate rows look
+  border-spacing: 0 8px;
 
   th {
     background: transparent;
@@ -190,7 +183,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Metrics Elements ---
 .table-metric-pill {
   display: inline-flex;
   align-items: center;
@@ -223,7 +215,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Inline Action Anchors ---
 .action-btn {
   display: inline-flex;
   align-items: center;
@@ -273,7 +264,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Pagination Configurations ---
 .page-btn {
   min-width: 36px;
   height: 36px;
@@ -305,7 +295,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Dialog Layout Modals ---
 .modal-backdrop {
   position: fixed;
   inset: 0;

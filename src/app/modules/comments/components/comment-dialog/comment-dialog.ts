@@ -86,7 +86,6 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   commentLikedMap = signal<Record<string, boolean>>({});
   commentReactionCountMap = signal<Record<string, number>>({});
 
-  // ── Report state ─────────────────────────────────────────────────────────
   reportModalOpen = signal(false);
   reportTargetId = signal<string | null>(null);
   reportTargetPreview = signal('');
@@ -184,7 +183,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
       this.pageNumber.set(1);
       this.comments.set([]);
       this.allLoaded.set(false);
-      this.commentsLimit.set(3); // Reset bounds view configuration on flush
+      this.commentsLimit.set(3);
     }
 
     this.loading.set(true);
@@ -197,7 +196,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
           if (res.status) {
             const incoming = res.items ?? [];
             const sortedIncoming = [...incoming].sort(
-              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
             if (reset || this.pageNumber() === 1) {
               this.comments.set(sortedIncoming);
@@ -235,48 +234,43 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
       });
   }
 
-loadMoreComments(): void {
-  if (this.allLoaded() || this.loading() || this.paginationLoading()) {
-    return;
+  loadMoreComments(): void {
+    if (this.allLoaded() || this.loading() || this.paginationLoading()) {
+      return;
+    }
+
+    this.paginationLoading.set(true);
+
+    this.pageNumber.update((p) => p + 1);
+
+    this.commentSvc
+      .getComments(this.blogId, this.pageNumber(), 10)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.paginationLoading.set(false);
+
+          if (res.status) {
+            const incoming = res.items ?? [];
+
+            const sortedIncoming = [...incoming].sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+
+            this.comments.update((existing) => [...existing, ...sortedIncoming]);
+
+            this.totalCount.set(res.totalCount ?? 0);
+
+            const loaded = this.comments().length;
+
+            this.allLoaded.set(loaded >= (res.totalCount ?? 0));
+          }
+        },
+        error: () => {
+          this.paginationLoading.set(false);
+        },
+      });
   }
-
-  this.paginationLoading.set(true);
-
-  this.pageNumber.update((p) => p + 1);
-
-  this.commentSvc
-    .getComments(this.blogId, this.pageNumber(), 10)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (res) => {
-        this.paginationLoading.set(false);
-
-        if (res.status) {
-          const incoming = res.items ?? [];
-
-          const sortedIncoming = [...incoming].sort(
-            (a, b) =>
-              new Date(b.createdAt).getTime() -
-              new Date(a.createdAt).getTime()
-          );
-
-          this.comments.update((existing) => [
-            ...existing,
-            ...sortedIncoming,
-          ]);
-
-          this.totalCount.set(res.totalCount ?? 0);
-
-          const loaded = this.comments().length;
-
-          this.allLoaded.set(loaded >= (res.totalCount ?? 0));
-        }
-      },
-      error: () => {
-        this.paginationLoading.set(false);
-      },
-    });
-}
 
   submitComment(): void {
     if (!this.isLoggedIn()) {
@@ -470,7 +464,7 @@ loadMoreComments(): void {
 
   onCommentReported(): void {
     this.closeCommentReport();
-    // Reload comments so the reported comment disappears from the current user's view
+
     this.loadComments(true);
   }
 

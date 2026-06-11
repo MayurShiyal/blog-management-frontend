@@ -1,4 +1,3 @@
-// Layout Variable Brand Token Configurations
 $brand: var(--brand-primary, #6366f1);
 $brand-dark: var(--brand-primary-dark, #4f46e5);
 $brand-light: var(--brand-light, rgba(99, 102, 241, 0.1));
@@ -6,7 +5,6 @@ $accent: var(--brand-accent, #6366f1);
 $border: var(--border-color, #e2e8f0);
 $danger: var(--danger, #ef4444);
 
-// General Core Typography Rules
 .text-xs {
   font-size: 0.75rem !important;
 }
@@ -14,14 +12,12 @@ $danger: var(--danger, #ef4444);
   font-size: 0.875rem !important;
 }
 
-// --- Sub-component Table Style Injector Overrides ---
-// Controls nested properties generated deep within <app-user-table>
 ::ng-deep {
   .usr-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
-    min-width: 900px; // Fix: Enforces desktop horizontal wrap limits inside overflow frames
+    min-width: 900px;
 
     th {
       padding: 0.75rem 1.25rem;
@@ -59,7 +55,6 @@ $danger: var(--danger, #ef4444);
     width: 40px;
   }
 
-  // User details alignment rows
   .user-cell {
     display: flex;
     align-items: center;
@@ -104,7 +99,6 @@ $danger: var(--danger, #ef4444);
     white-space: nowrap;
   }
 
-  // --- Specialized Badges ---
   .role-badge {
     display: inline-flex;
     align-items: center;
@@ -139,7 +133,6 @@ $danger: var(--danger, #ef4444);
     }
   }
 
-  // --- Custom Inline Action Triggers ---
   .action-btns {
     display: flex;
     align-items: center;
@@ -176,7 +169,6 @@ $danger: var(--danger, #ef4444);
     }
   }
 
-  // --- Status Toggle Switch ---
   .status-toggle {
     display: inline-flex;
     align-items: center;
@@ -227,7 +219,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Pagination Bars Control ---
 .page-btn {
   min-width: 34px;
   height: 34px;

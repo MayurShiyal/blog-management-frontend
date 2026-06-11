@@ -1,11 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  OnDestroy,
-  signal,
-  computed,
-} from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -48,13 +41,12 @@ export class AdminReports implements OnInit, OnDestroy {
   readonly routes = ROUTES;
 
   readonly STATUS_OPTIONS: StatusOption[] = [
-    { value: ReportStatus.Open,        label: REPORT_STATUS_LABELS[ReportStatus.Open] },
+    { value: ReportStatus.Open, label: REPORT_STATUS_LABELS[ReportStatus.Open] },
     { value: ReportStatus.UnderReview, label: REPORT_STATUS_LABELS[ReportStatus.UnderReview] },
-    { value: ReportStatus.Approved,    label: REPORT_STATUS_LABELS[ReportStatus.Approved] },
-    { value: ReportStatus.Rejected,    label: REPORT_STATUS_LABELS[ReportStatus.Rejected] },
+    { value: ReportStatus.Approved, label: REPORT_STATUS_LABELS[ReportStatus.Approved] },
+    { value: ReportStatus.Rejected, label: REPORT_STATUS_LABELS[ReportStatus.Rejected] },
   ];
 
-  // ── State ────────────────────────────────────────────────────────────────
   activeTab = signal<'blog' | 'comment'>('blog');
   items = signal<ReportedContentItemDto[]>([]);
   totalCount = signal(0);
@@ -71,7 +63,6 @@ export class AdminReports implements OnInit, OnDestroy {
   statusDropdownOpen = signal(false);
   openRowDropdown = signal<string | null>(null);
 
-  // Blog comments modal (used when admin clicks eye on a reported comment)
   commentsModalOpen = signal(false);
   commentsModalBlogId = signal<string | null>(null);
   commentsModalBlogTitle = signal('');
@@ -92,18 +83,14 @@ export class AdminReports implements OnInit, OnDestroy {
     return REPORT_STATUS_LABELS[this.statusFilter()!] ?? 'Status';
   });
 
-  // ── Lifecycle ────────────────────────────────────────────────────────────
   ngOnInit(): void {
     if (!this.authState.isLoggedIn || !this.authState.isAdmin) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
       return;
     }
 
-    this.layout.setHeader(
-      'Reports',
-      'Review and manage reported blogs and comments.',
-      true,
-      () => this.loadItems()
+    this.layout.setHeader('Reports', 'Review and manage reported blogs and comments.', true, () =>
+      this.loadItems()
     );
 
     this.searchControl.valueChanges
@@ -114,7 +101,6 @@ export class AdminReports implements OnInit, OnDestroy {
         this.loadItems();
       });
 
-    // Close dropdowns when clicking outside
     document.addEventListener('click', this.closeDropdownsOnOutsideClick, true);
 
     this.loadItems();
@@ -134,7 +120,6 @@ export class AdminReports implements OnInit, OnDestroy {
     }
   };
 
-  // ── Data loading ─────────────────────────────────────────────────────────
   loadItems(): void {
     this.loading.set(true);
     this.svc
@@ -165,7 +150,6 @@ export class AdminReports implements OnInit, OnDestroy {
       });
   }
 
-  // ── Tab / filter controls ─────────────────────────────────────────────────
   switchTab(tab: 'blog' | 'comment'): void {
     if (this.activeTab() === tab) return;
     this.activeTab.set(tab);
@@ -216,7 +200,6 @@ export class AdminReports implements OnInit, OnDestroy {
     this.statusDropdownOpen.set(false);
   }
 
-  // ── View actions ──────────────────────────────────────────────────────────
   viewBlog(item: ReportedContentItemDto): void {
     this.router.navigate([ROUTES.BLOG.DETAIL.ABSOLUTE(item.contentId)]);
   }
@@ -230,7 +213,6 @@ export class AdminReports implements OnInit, OnDestroy {
       return;
     }
 
-    // Fallback: resolve the blogId via the admin comment history endpoint
     this.commentsModalLoading.set(true);
     this.commentsModalOpen.set(false);
     this.commentSvc
@@ -239,9 +221,7 @@ export class AdminReports implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.commentsModalLoading.set(false);
-          const match = res.items?.find(
-            (h) => h.commentId === item.contentId
-          );
+          const match = res.items?.find((h) => h.commentId === item.contentId);
           if (match?.blogId) {
             this.commentsModalBlogId.set(match.blogId);
             this.commentsModalBlogTitle.set(match.blogTitle ?? '');
@@ -264,7 +244,6 @@ export class AdminReports implements OnInit, OnDestroy {
     this.commentsModalHighlightId.set(null);
   }
 
-  // ── Update status ─────────────────────────────────────────────────────────
   updateStatus(item: ReportedContentItemDto, newStatus: ReportStatus): void {
     this.openRowDropdown.set(null);
     const adminId = this.authState.currentUser?.id ?? null;
@@ -284,12 +263,10 @@ export class AdminReports implements OnInit, OnDestroy {
       });
   }
 
-  // ── History navigation ────────────────────────────────────────────────────
   goToHistory(): void {
     this.router.navigate([ROUTES.REPORTS.HISTORY.ABSOLUTE]);
   }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
   isFinalStatus(status: ReportStatus): boolean {
     return status === ReportStatus.Approved || status === ReportStatus.Rejected;
   }
@@ -300,11 +277,16 @@ export class AdminReports implements OnInit, OnDestroy {
 
   getStatusClass(status: ReportStatus): string {
     switch (status) {
-      case ReportStatus.Open:        return 'open';
-      case ReportStatus.UnderReview: return 'review';
-      case ReportStatus.Approved:    return 'approved';
-      case ReportStatus.Rejected:    return 'rejected';
-      default:                       return 'open';
+      case ReportStatus.Open:
+        return 'open';
+      case ReportStatus.UnderReview:
+        return 'review';
+      case ReportStatus.Approved:
+        return 'approved';
+      case ReportStatus.Rejected:
+        return 'rejected';
+      default:
+        return 'open';
     }
   }
 

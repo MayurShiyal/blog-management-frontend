@@ -1,6 +1,5 @@
-/* ─── Global Styles ─── */
 :root {
-  --brand-primary: #3730A3;
+  --brand-primary: #3730a3;
   --brand-primary-dark: #2d2887;
   --brand-accent: #6366f1;
   --brand-light: #eef2ff;
@@ -19,9 +18,14 @@
   --mat-form-field-container-height: 40px;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -34,13 +38,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Bootstrap Overrides ─── */
 .btn-primary {
   background-color: var(--brand-primary) !important;
   border-color: var(--brand-primary) !important;
   font-weight: 600;
   letter-spacing: 0.01em;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: var(--brand-primary-dark) !important;
     border-color: var(--brand-primary-dark) !important;
     box-shadow: 0 4px 16px rgba(55, 48, 163, 0.3) !important;
@@ -57,7 +61,8 @@ body {
   }
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
   border-color: var(--border-color);
   border-radius: 10px;
   padding: 0.625rem 1rem;
@@ -70,7 +75,9 @@ body {
   }
   &.is-invalid {
     border-color: var(--danger);
-    &:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12); }
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
   }
 }
 
@@ -103,7 +110,6 @@ body {
   color: var(--success);
 }
 
-/* ─── Auth Layout ─── */
 .auth-page {
   min-height: 100vh;
   background: var(--bg-page);
@@ -151,9 +157,8 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 20% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -161,20 +166,19 @@ body {
   position: absolute;
   inset: 0;
   opacity: 0.04;
-  background-image:
-    linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
-/* ─── Divider ─── */
 .divider-text {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   color: var(--text-muted);
   font-size: 0.8125rem;
-  &::before, &::after {
+  &::before,
+  &::after {
     content: '';
     flex: 1;
     height: 1px;
@@ -182,7 +186,6 @@ body {
   }
 }
 
-/* ─── Password toggle ─── */
 .input-group .form-control {
   border-radius: 10px !important;
 }
@@ -191,7 +194,10 @@ body {
   border-color: var(--border-color);
   background: #f9fafb;
   color: var(--text-muted);
-  &:hover { background: #f3f4f6; color: var(--text-dark); }
+  &:hover {
+    background: #f3f4f6;
+    color: var(--text-dark);
+  }
 }
 .input-group .form-control:first-child {
   border-radius: 10px 0 0 10px !important;

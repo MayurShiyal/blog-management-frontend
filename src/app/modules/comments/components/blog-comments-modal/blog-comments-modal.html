@@ -1,9 +1,15 @@
 @if (show()) {
-<div class="bcm-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" aria-label="Blog comments">
+<div
+  class="bcm-backdrop"
+  (click)="onBackdropClick($event)"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Blog comments"
+>
   <div class="bcm-modal">
-
-    <!-- Header -->
-    <div class="bcm-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+    <div
+      class="bcm-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom"
+    >
       <div class="d-flex align-items-center gap-2">
         <div class="bcm-icon-wrap">
           <i class="bi bi-chat-left-text-fill"></i>
@@ -14,12 +20,22 @@
             @if (isAdmin() && blogId()) {
             <a
               class="fw-semibold text-primary text-truncate text-decoration-none"
-              style="max-width: 240px; display: inline-block; vertical-align: bottom; cursor: pointer;"
+              style="
+                max-width: 240px;
+                display: inline-block;
+                vertical-align: bottom;
+                cursor: pointer;
+              "
               [title]="blogTitle()"
               (click)="navigateToBlog()"
-            >{{ blogTitle() }}</a>
+              >{{ blogTitle() }}</a
+            >
             } @else {
-            <span class="fw-semibold text-dark text-truncate" style="max-width: 240px; display: inline-block; vertical-align: bottom;">{{ blogTitle() }}</span>
+            <span
+              class="fw-semibold text-dark text-truncate"
+              style="max-width: 240px; display: inline-block; vertical-align: bottom"
+              >{{ blogTitle() }}</span
+            >
             }
           </p>
         </div>
@@ -34,16 +50,22 @@
       </div>
     </div>
 
-    <!-- Body -->
     <div class="bcm-modal__body px-4 py-3">
-
       @if (loading() && comments().length === 0) {
-      <div class="d-flex flex-column align-items-center justify-content-center py-5 gap-2 text-muted">
-        <div class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></div>
+      <div
+        class="d-flex flex-column align-items-center justify-content-center py-5 gap-2 text-muted"
+      >
+        <div
+          class="spinner-border spinner-border-sm text-primary"
+          role="status"
+          aria-hidden="true"
+        ></div>
         <span class="small">Loading comments…</span>
       </div>
       } @else if (comments().length === 0) {
-      <div class="d-flex flex-column align-items-center justify-content-center py-5 gap-2 text-muted">
+      <div
+        class="d-flex flex-column align-items-center justify-content-center py-5 gap-2 text-muted"
+      >
         <i class="bi bi-chat-square display-5 opacity-25"></i>
         <p class="mb-0 small text-center">No comments yet for this blog.</p>
       </div>
@@ -56,15 +78,15 @@
           [class.bcm-comment--highlighted]="comment.id === highlightCommentId()"
           [attr.data-comment-id]="comment.id"
         >
-
-          <!-- Comment header -->
           <div class="d-flex align-items-start gap-3">
             <div class="bcm-avatar flex-shrink-0">{{ getInitials(comment.userName) }}</div>
             <div class="min-w-0 flex-fill">
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-1 mb-1">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                   <span class="fw-semibold text-dark small">{{ comment.userName }}</span>
-                  <span class="text-muted" style="font-size: 0.7rem">{{ formatDate(comment.createdAt) }}</span>
+                  <span class="text-muted" style="font-size: 0.7rem">{{
+                    formatDate(comment.createdAt)
+                  }}</span>
                   @if (comment.updatedAt) {
                   <span class="text-muted" style="font-size: 0.68rem">(edited)</span>
                   }
@@ -76,24 +98,27 @@
                 </span>
                 }
               </div>
-              <p class="mb-2 text-dark" style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap">
+              <p
+                class="mb-2 text-dark"
+                style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap"
+              >
                 {{ comment.content }}
               </p>
 
-              <!-- Action bar -->
               <div class="d-flex align-items-center gap-3">
                 @if (!isAdmin()) {
-                <!-- Reply button — visible to non-admins -->
+
                 <button
                   type="button"
                   class="btn btn-link btn-sm p-0 text-muted text-decoration-none d-flex align-items-center gap-1"
                   (click)="openReply(comment.id)"
                 >
                   <i class="bi bi-reply" style="font-size: 0.8rem"></i>
-                  <span style="font-size: 0.8rem">{{ replyOpenFor() === comment.id ? 'Cancel' : 'Reply' }}</span>
+                  <span style="font-size: 0.8rem">{{
+                    replyOpenFor() === comment.id ? 'Cancel' : 'Reply'
+                  }}</span>
                 </button>
 
-                <!-- Report button — non-admins only -->
                 <button
                   type="button"
                   class="btn btn-link btn-sm p-0 text-decoration-none d-flex align-items-center gap-1"
@@ -107,43 +132,59 @@
                 }
               </div>
 
-              <!-- Reply form -->
               @if (replyOpenFor() === comment.id && replyForms[comment.id]; as replyForm) {
-              <div class="reply-form-wrap mt-3 ps-3 border-start border-primary border-2" [formGroup]="replyForm">
+              <div
+                class="reply-form-wrap mt-3 ps-3 border-start border-primary border-2"
+                [formGroup]="replyForm"
+              >
                 <textarea
                   formControlName="content"
                   class="form-control form-control-sm mb-2"
-                  [class.is-invalid]="replyForm.get('content')?.touched && replyForm.get('content')?.invalid"
+                  [class.is-invalid]="
+                    replyForm.get('content')?.touched && replyForm.get('content')?.invalid
+                  "
                   rows="2"
                   placeholder="Write a reply…"
                 ></textarea>
-                @if (replyForm.get('content')?.touched && replyForm.get('content')?.hasError('required')) {
+                @if (replyForm.get('content')?.touched &&
+                replyForm.get('content')?.hasError('required')) {
                 <div class="text-danger" style="font-size: 0.75rem">Reply cannot be empty.</div>
                 }
                 <div class="d-flex gap-2 mt-1">
-                  <button type="button" class="btn btn-primary btn-sm" [disabled]="replySubmitting()" (click)="submitReply(comment)">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    [disabled]="replySubmitting()"
+                    (click)="submitReply(comment)"
+                  >
                     @if (replySubmitting()) {
                     <span class="spinner-border spinner-border-sm me-1" role="status"></span>
                     } Post Reply
                   </button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelReply()">Cancel</button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    (click)="cancelReply()"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
-              }
-
-              <!-- Replies toggle -->
-              @if (comment.replies && comment.replies.length > 0) {
+              } @if (comment.replies && comment.replies.length > 0) {
               <button
                 type="button"
                 class="bcm-replies-toggle mt-2"
                 (click)="toggleReplies(comment.id)"
               >
-                <i class="bi" [class.bi-chevron-down]="!isRepliesExpanded(comment.id)" [class.bi-chevron-up]="isRepliesExpanded(comment.id)"></i>
+                <i
+                  class="bi"
+                  [class.bi-chevron-down]="!isRepliesExpanded(comment.id)"
+                  [class.bi-chevron-up]="isRepliesExpanded(comment.id)"
+                ></i>
                 {{ isRepliesExpanded(comment.id) ? 'Hide' : 'Show' }}
                 {{ comment.replies.length }} repl{{ comment.replies.length !== 1 ? 'ies' : 'y' }}
               </button>
 
-              <!-- Replies list -->
               @if (isRepliesExpanded(comment.id)) {
               <div class="bcm-replies mt-2">
                 @for (reply of comment.replies; track reply.id) {
@@ -153,13 +194,22 @@
                   [attr.data-comment-id]="reply.id"
                 >
                   <div class="d-flex align-items-start gap-2">
-                    <div class="bcm-avatar bcm-avatar--sm flex-shrink-0">{{ getInitials(reply.userName) }}</div>
+                    <div class="bcm-avatar bcm-avatar--sm flex-shrink-0">
+                      {{ getInitials(reply.userName) }}
+                    </div>
                     <div class="min-w-0 flex-fill">
                       <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                        <span class="fw-semibold text-dark" style="font-size: 0.8rem">{{ reply.userName }}</span>
-                        <span class="text-muted" style="font-size: 0.68rem">{{ formatDate(reply.createdAt) }}</span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.8rem">{{
+                          reply.userName
+                        }}</span>
+                        <span class="text-muted" style="font-size: 0.68rem">{{
+                          formatDate(reply.createdAt)
+                        }}</span>
                       </div>
-                      <p class="mb-0 text-dark" style="font-size: 0.82rem; line-height: 1.55; white-space: pre-wrap">
+                      <p
+                        class="mb-0 text-dark"
+                        style="font-size: 0.82rem; line-height: 1.55; white-space: pre-wrap"
+                      >
                         {{ reply.content }}
                       </p>
                     </div>
@@ -167,17 +217,13 @@
                 </div>
                 }
               </div>
-              }
-              }
-
+              } }
             </div>
           </div>
-
         </div>
         }
       </div>
 
-      <!-- Load more -->
       @if (hasMore()) {
       <div class="d-flex justify-content-center mt-4">
         <button
@@ -187,35 +233,34 @@
           [disabled]="loading()"
         >
           @if (loading()) {
-          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-          Loading…
-          } @else {
+          <span
+            class="spinner-border spinner-border-sm me-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading… } @else {
           <i class="bi bi-chevron-down me-1"></i>
-          Load more ({{ totalCount() - comments().length }} remaining)
-          }
+          Load more ({{ totalCount() - comments().length }} remaining) }
         </button>
       </div>
-      }
-
-      }
-
+      } }
     </div>
 
-    <!-- Footer -->
-    <div class="bcm-modal__footer px-4 py-3 border-top bg-light-subtle d-flex align-items-center justify-content-between">
+    <div
+      class="bcm-modal__footer px-4 py-3 border-top bg-light-subtle d-flex align-items-center justify-content-between"
+    >
       <span class="text-muted small">
-        Showing {{ comments().length }} of {{ totalCount() }} comment{{ totalCount() !== 1 ? 's' : '' }}
+        Showing {{ comments().length }} of {{ totalCount() }} comment{{
+          totalCount() !== 1 ? 's' : ''
+        }}
       </span>
       <button type="button" class="btn btn-outline-secondary btn-sm px-4" (click)="closed.emit()">
         Close
       </button>
     </div>
-
   </div>
 </div>
-}
-
-@if (reportModalOpen() && reportTargetId()) {
+} @if (reportModalOpen() && reportTargetId()) {
 <app-report-modal
   [show]="reportModalOpen()"
   contentType="comment"

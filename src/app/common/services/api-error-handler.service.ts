@@ -69,13 +69,9 @@ export class ApiErrorHandlerService {
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
 
-  /**
-   * Returns a human-friendly error object for a given HTTP error response.
-   */
   getApiError(error: HttpErrorResponse): ApiError {
     const knownError = HTTP_ERROR_MESSAGES[error.status];
     if (knownError) {
-      // Try to extract a more specific server-side message if available
       const serverMessage: string | undefined =
         error.error?.message || error.error?.title || undefined;
       return {
@@ -84,7 +80,6 @@ export class ApiErrorHandlerService {
       };
     }
 
-    // Network / CORS / unknown errors
     if (error.status === 0) {
       return {
         status: 0,
@@ -101,9 +96,6 @@ export class ApiErrorHandlerService {
     };
   }
 
-  /**
-   * Shows a toast notification for the error. For 401/403, optionally navigates.
-   */
   handleWithToast(error: HttpErrorResponse, navigate = false): void {
     const apiError = this.getApiError(error);
     this.toast.show('danger', apiError.message);
@@ -117,9 +109,6 @@ export class ApiErrorHandlerService {
     }
   }
 
-  /**
-   * Navigates to the appropriate error page based on status code.
-   */
   navigateToErrorPage(status: number): void {
     switch (status) {
       case 401:
@@ -137,9 +126,6 @@ export class ApiErrorHandlerService {
     }
   }
 
-  /**
-   * Returns a user-friendly message string for a status code.
-   */
   getMessageForStatus(status: number): string {
     return HTTP_ERROR_MESSAGES[status]?.message ?? 'An unexpected error occurred.';
   }

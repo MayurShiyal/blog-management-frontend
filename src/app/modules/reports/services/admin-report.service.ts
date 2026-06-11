@@ -36,7 +36,6 @@ export class AdminReportService {
     return this.api.get<GetReportedContentsResponse>(`${this.base}?${parts.join('&')}`);
   }
 
-  // Merged endpoint: GET /api/admin/reports/history/{contentId}?contentType=blog|comment
   getReportHistory(
     contentId: string,
     contentType: 'blog' | 'comment'
@@ -46,7 +45,6 @@ export class AdminReportService {
     );
   }
 
-  // All report history: GET /api/admin/reports/history?contentType=...&status=...&search=...&pageNumber=...&pageSize=...
   getAllReportHistory(params: {
     contentType?: 'blog' | 'comment';
     status?: ReportStatus;

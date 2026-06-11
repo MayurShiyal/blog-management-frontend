@@ -1,19 +1,17 @@
-// ─── Variables (mirrors global theme) ─────────────────────────────────────
-$brand:        var(--brand-primary);
-$brand-dark:   var(--brand-primary-dark);
-$brand-light:  var(--brand-light);
-$accent:       var(--brand-accent);
-$text-dark:    var(--text-dark);
-$text-muted:   var(--text-muted);
-$border:       var(--border-color);
-$surface:      var(--surface);
-$bg-page:      var(--bg-page);
-$danger:       var(--danger);
-$success:      var(--success);
-$radius-card:  var(--radius-card);
-$shadow-card:  var(--shadow-card);
+$brand: var(--brand-primary);
+$brand-dark: var(--brand-primary-dark);
+$brand-light: var(--brand-light);
+$accent: var(--brand-accent);
+$text-dark: var(--text-dark);
+$text-muted: var(--text-muted);
+$border: var(--border-color);
+$surface: var(--surface);
+$bg-page: var(--bg-page);
+$danger: var(--danger);
+$success: var(--success);
+$radius-card: var(--radius-card);
+$shadow-card: var(--shadow-card);
 
-// ─── Shell layout ──────────────────────────────────────────────────────────
 .admin-shell {
   display: flex;
   min-height: 100vh;
@@ -21,7 +19,6 @@ $shadow-card:  var(--shadow-card);
   position: relative;
 }
 
-// ─── Sidebar ───────────────────────────────────────────────────────────────
 $sidebar-w: 240px;
 
 .sidebar {
@@ -43,7 +40,9 @@ $sidebar-w: 240px;
     inset: 0;
     width: $sidebar-w;
     transform: translateX(-100%);
-    &--open { transform: translateX(0); }
+    &--open {
+      transform: translateX(0);
+    }
   }
 }
 
@@ -53,7 +52,7 @@ $sidebar-w: 240px;
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
+    background: rgba(0, 0, 0, 0.45);
     z-index: 199;
   }
 }
@@ -63,7 +62,7 @@ $sidebar-w: 240px;
   align-items: center;
   gap: 10px;
   padding: 1.25rem 1.25rem 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .brand-mark {
@@ -94,7 +93,9 @@ $sidebar-w: 240px;
   cursor: pointer;
   padding: 4px;
   line-height: 1;
-  &:hover { color: #e2e8f0; }
+  &:hover {
+    color: #e2e8f0;
+  }
 }
 
 .sidebar__nav {
@@ -117,22 +118,24 @@ $sidebar-w: 240px;
   font-weight: 500;
   transition: background 0.15s, color 0.15s;
 
-  i { font-size: 1rem; }
+  i {
+    font-size: 1rem;
+  }
 
   &:hover {
-    background: rgba(255,255,255,0.07);
+    background: rgba(255, 255, 255, 0.07);
     color: #e2e8f0;
   }
 
   &--active {
-    background: rgba(99,102,241,0.2);
+    background: rgba(99, 102, 241, 0.2);
     color: #a5b4fc;
   }
 }
 
 .sidebar__footer {
   padding: 1rem 0.75rem 1.25rem;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .sidebar__user {
@@ -156,7 +159,10 @@ $sidebar-w: 240px;
   flex-shrink: 0;
 }
 
-.user-info { flex: 1; overflow: hidden; }
+.user-info {
+  flex: 1;
+  overflow: hidden;
+}
 .user-name {
   color: #e2e8f0;
   font-size: 0.8rem;
@@ -170,7 +176,6 @@ $sidebar-w: 240px;
   font-size: 0.7rem;
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────
 .main-content {
   flex: 1;
   min-width: 0;
@@ -178,7 +183,6 @@ $sidebar-w: 240px;
   flex-direction: column;
 }
 
-// ─── Topbar ───────────────────────────────────────────────────────────────
 .topbar {
   display: flex;
   align-items: center;
@@ -199,7 +203,9 @@ $sidebar-w: 240px;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 8px;
-  &:hover { background: $bg-page; }
+  &:hover {
+    background: $bg-page;
+  }
 }
 
 .topbar__title {
@@ -220,26 +226,6 @@ $sidebar-w: 240px;
   margin: 2px 0 0;
 }
 
-// .btn-refresh {
-//   background: none;
-//   border: 1px solid $border;
-//   border-radius: 10px;
-//   color: $text-muted;
-//   width: 38px;
-//   height: 38px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   cursor: pointer;
-//   transition: background 0.15s, color 0.15s;
-//   &:hover {
-//     background: $bg-page;
-//     color: $brand;
-//   }
-//   i { font-size: 1rem; }
-// }
-
-// ─── Page Body ────────────────────────────────────────────────────────────
 .page-body {
   flex: 1;
   padding: 1.75rem;
@@ -253,14 +239,17 @@ $sidebar-w: 240px;
   flex-direction: column;
 }
 
-// ─── Summary Cards ────────────────────────────────────────────────────────
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
 
-  @media (max-width: 991px) { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 576px) { grid-template-columns: 1fr; }
+  @media (max-width: 991px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .stat-card {
@@ -274,7 +263,9 @@ $sidebar-w: 240px;
   gap: 1rem;
   transition: box-shadow 0.2s;
 
-  &:hover { box-shadow: var(--shadow-elevated); }
+  &:hover {
+    box-shadow: var(--shadow-elevated);
+  }
 }
 
 .stat-card__icon {
@@ -287,9 +278,18 @@ $sidebar-w: 240px;
   flex-shrink: 0;
   font-size: 1.4rem;
 
-  &--users      { background: #eef2ff; color: #3730A3; }
-  &--blogs      { background: #f0fdf4; color: #16a34a; }
-  &--categories { background: #fdf4ff; color: #9333ea; }
+  &--users {
+    background: #eef2ff;
+    color: #3730a3;
+  }
+  &--blogs {
+    background: #f0fdf4;
+    color: #16a34a;
+  }
+  &--categories {
+    background: #fdf4ff;
+    color: #9333ea;
+  }
 }
 
 .stat-card__body {
@@ -327,16 +327,19 @@ $sidebar-w: 240px;
   text-decoration: none;
   transition: color 0.15s;
   flex-shrink: 0;
-  &:hover { color: $brand; }
+  &:hover {
+    color: $brand;
+  }
 }
 
-// ─── Status Charts ────────────────────────────────────────────────────────
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
 
-  @media (max-width: 767px) { grid-template-columns: 1fr; }
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .chart-card {
@@ -347,8 +350,12 @@ $sidebar-w: 240px;
   overflow: hidden;
   transition: box-shadow 0.2s;
 
-  &:hover { box-shadow: var(--shadow-elevated); }
-  &--full { width: 100%; }
+  &:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  &--full {
+    width: 100%;
+  }
 }
 
 .chart-card__header {
@@ -366,7 +373,9 @@ $sidebar-w: 240px;
   display: flex;
   align-items: center;
 
-  i { color: $brand; }
+  i {
+    color: $brand;
+  }
 }
 
 .chart-subtitle {
@@ -374,7 +383,6 @@ $sidebar-w: 240px;
   color: $text-muted;
 }
 
-// Doughnut layout
 .doughnut-wrap {
   display: flex;
   align-items: center;
@@ -393,7 +401,10 @@ $sidebar-w: 240px;
   height: 220px;
   flex-shrink: 0;
 
-  canvas { width: 220px !important; height: 220px !important; }
+  canvas {
+    width: 220px !important;
+    height: 220px !important;
+  }
 }
 
 .doughnut-center-label {
@@ -422,7 +433,6 @@ $sidebar-w: 240px;
   margin-top: 4px;
 }
 
-// Legend
 .doughnut-legend {
   display: flex;
   flex-direction: column;
@@ -436,7 +446,9 @@ $sidebar-w: 240px;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   transition: background 0.15s;
-  &:hover { background: #f8faff; }
+  &:hover {
+    background: #f8faff;
+  }
 }
 
 .legend-dot {
@@ -445,9 +457,16 @@ $sidebar-w: 240px;
   border-radius: 4px;
   flex-shrink: 0;
 
-  &--primary  { background: #3730A3; }
-  &--accent   { background: #6366f1; }
-  &--muted    { background: #c7d2fe; border: 1px solid #a5b4fc; }
+  &--primary {
+    background: #3730a3;
+  }
+  &--accent {
+    background: #6366f1;
+  }
+  &--muted {
+    background: #c7d2fe;
+    border: 1px solid #a5b4fc;
+  }
 }
 
 .legend-text {
@@ -465,14 +484,15 @@ $sidebar-w: 240px;
   text-align: right;
 }
 
-// ─── Loading states ───────────────────────────────────────────────────────
 .chart-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 3rem 1.5rem;
 
-  &--tall { padding: 5rem 1.5rem; }
+  &--tall {
+    padding: 5rem 1.5rem;
+  }
 }
 
 .spinner-ring {
@@ -484,7 +504,6 @@ $sidebar-w: 240px;
   animation: spin 0.75s linear infinite;
 }
 
-// ─── Latest Blogs table ───────────────────────────────────────────────────
 .table-card {
   background: $surface;
   border-radius: $radius-card;
@@ -508,7 +527,9 @@ $sidebar-w: 240px;
   display: flex;
   align-items: center;
 
-  i { color: $brand; }
+  i {
+    color: $brand;
+  }
 }
 
 .view-all-link {
@@ -519,7 +540,9 @@ $sidebar-w: 240px;
   display: flex;
   align-items: center;
   transition: opacity 0.15s;
-  &:hover { opacity: 0.75; }
+  &:hover {
+    opacity: 0.75;
+  }
 }
 
 .blogs-table-wrap {
@@ -530,7 +553,8 @@ $sidebar-w: 240px;
   width: 100%;
   border-collapse: collapse;
 
-  th, td {
+  th,
+  td {
     padding: 0.875rem 1.5rem;
     text-align: left;
     border-bottom: 1px solid $border;
@@ -546,13 +570,17 @@ $sidebar-w: 240px;
     white-space: nowrap;
   }
 
-  tr:last-child td { border-bottom: none; }
+  tr:last-child td {
+    border-bottom: none;
+  }
 }
 
 .blog-row {
   cursor: pointer;
   transition: background 0.12s;
-  &:hover { background: #f8faff; }
+  &:hover {
+    background: #f8faff;
+  }
 }
 
 .td-title {
@@ -598,7 +626,6 @@ $sidebar-w: 240px;
   white-space: nowrap;
 }
 
-// Loading rows skeleton
 .table-loading {
   padding: 0.5rem 1.5rem 1rem;
   display: flex;
@@ -614,15 +641,16 @@ $sidebar-w: 240px;
   border-radius: 8px;
 }
 
-// ─── Monthly Bar chart ────────────────────────────────────────────────────
 .bar-canvas-wrap {
   padding: 1.25rem 1.5rem 1.5rem;
   height: 280px;
 
-  canvas { width: 100% !important; height: 100% !important; }
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }
 
-// ─── No data state ────────────────────────────────────────────────────────
 .no-data {
   color: $text-muted;
   font-size: 0.875rem;
@@ -636,7 +664,6 @@ $sidebar-w: 240px;
   }
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────
 .toast-container {
   position: fixed;
   bottom: 1.5rem;
@@ -656,21 +683,36 @@ $sidebar-w: 240px;
   max-width: 400px;
   padding: 0.875rem 1rem;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
   pointer-events: all;
   animation: slideIn 0.25s ease;
 
-  &--success { background: #f0fdf4; border-left: 4px solid #16a34a; }
-  &--danger  { background: #fef2f2; border-left: 4px solid $danger; }
-  &--warning { background: #fffbeb; border-left: 4px solid #d97706; }
+  &--success {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+  }
+  &--danger {
+    background: #fef2f2;
+    border-left: 4px solid $danger;
+  }
+  &--warning {
+    background: #fffbeb;
+    border-left: 4px solid #d97706;
+  }
 }
 
 .toast-icon {
   font-size: 1rem;
   flex-shrink: 0;
-  .dash-toast--success & { color: #16a34a; }
-  .dash-toast--danger  & { color: $danger; }
-  .dash-toast--warning & { color: #d97706; }
+  .dash-toast--success & {
+    color: #16a34a;
+  }
+  .dash-toast--danger & {
+    color: $danger;
+  }
+  .dash-toast--warning & {
+    color: #d97706;
+  }
 }
 
 .toast-msg {
@@ -688,30 +730,54 @@ $sidebar-w: 240px;
   font-size: 1.1rem;
   line-height: 1;
   padding: 0;
-  &:hover { color: $text-dark; }
+  &:hover {
+    color: $text-dark;
+  }
 }
 
-// ─── Keyframes ────────────────────────────────────────────────────────────
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
-// ─── Responsive ───────────────────────────────────────────────────────────
 @media (max-width: 767px) {
-  .page-body       { padding: 1rem; gap: 1rem; }
-  .doughnut-wrap   { padding: 1rem; gap: 1rem; }
-  .bar-canvas-wrap { height: 220px; padding: 1rem; }
-  .th-author, .td-author { display: none; }
+  .page-body {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .doughnut-wrap {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .bar-canvas-wrap {
+    height: 220px;
+    padding: 1rem;
+  }
+  .th-author,
+  .td-author {
+    display: none;
+  }
 }
 .doughnut-canvas-wrap {
   position: relative;

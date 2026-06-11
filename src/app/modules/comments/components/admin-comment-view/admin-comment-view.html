@@ -1,9 +1,9 @@
 @if (show()) {
 <div class="acv-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true">
   <div class="acv-modal">
-
-    <!-- Header -->
-    <div class="acv-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+    <div
+      class="acv-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom"
+    >
       <div class="d-flex align-items-center gap-2">
         <div class="acv-icon-wrap">
           <i class="bi bi-chat-left-text-fill"></i>
@@ -17,8 +17,6 @@
     </div>
 
     <div class="acv-modal__body px-4 py-4">
-
-      <!-- Blog context banner -->
       @if (blog()) {
       <div class="acv-blog-context mb-4">
         <div class="d-flex align-items-start justify-content-between gap-3">
@@ -27,7 +25,10 @@
             <div class="min-w-0">
               <div class="acv-context-label">Related Blog</div>
               <div class="fw-semibold text-dark small text-truncate">{{ blog()!.title }}</div>
-              <div class="text-muted mt-1 d-flex align-items-center gap-2 flex-wrap" style="font-size: 0.72rem">
+              <div
+                class="text-muted mt-1 d-flex align-items-center gap-2 flex-wrap"
+                style="font-size: 0.72rem"
+              >
                 <span><i class="bi bi-person me-1"></i>{{ blog()!.authorName || 'Unknown' }}</span>
                 <span class="acv-status-pill acv-status-pill--{{ blog()!.status | lowercase }}">
                   {{ blog()!.status }}
@@ -45,32 +46,41 @@
       </div>
       }
 
-      <!-- Comment -->
       <div class="acv-comment-card mb-3">
         <div class="d-flex align-items-start gap-3">
           <div class="acv-avatar flex-shrink-0">{{ getInitials(comment().userName) }}</div>
           <div class="min-w-0 flex-fill">
             <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
               <span class="fw-semibold text-dark small">{{ comment().userName }}</span>
-              <span class="text-muted" style="font-size: 0.7rem">{{ formatDate(comment().createdAt) }}</span>
+              <span class="text-muted" style="font-size: 0.7rem">{{
+                formatDate(comment().createdAt)
+              }}</span>
               @if (comment().updatedAt) {
-              <span class="text-muted" style="font-size: 0.68rem">(edited {{ formatDate(comment().updatedAt) }})</span>
+              <span class="text-muted" style="font-size: 0.68rem"
+                >(edited {{ formatDate(comment().updatedAt) }})</span
+              >
               }
             </div>
-            <p class="mb-0 text-dark" style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap">
+            <p
+              class="mb-0 text-dark"
+              style="font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap"
+            >
               {{ comment().content }}
             </p>
             @if (comment().totalReactions) {
             <div class="mt-2 d-flex align-items-center gap-1 text-muted" style="font-size: 0.75rem">
               <i class="bi bi-heart-fill text-danger"></i>
-              <span>{{ comment().totalReactions }} reaction{{ comment().totalReactions !== 1 ? 's' : '' }}</span>
+              <span
+                >{{ comment().totalReactions }} reaction{{
+                  comment().totalReactions !== 1 ? 's' : ''
+                }}</span
+              >
             </div>
             }
           </div>
         </div>
       </div>
 
-      <!-- Replies -->
       @if (comment().replies && comment().replies.length > 0) {
       <div class="acv-replies-section">
         <div class="acv-replies-label mb-2">
@@ -81,13 +91,22 @@
           @for (reply of comment().replies; track reply.id) {
           <div class="acv-reply-card">
             <div class="d-flex align-items-start gap-2">
-              <div class="acv-avatar acv-avatar--sm flex-shrink-0">{{ getInitials(reply.userName) }}</div>
+              <div class="acv-avatar acv-avatar--sm flex-shrink-0">
+                {{ getInitials(reply.userName) }}
+              </div>
               <div class="min-w-0">
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                  <span class="fw-semibold text-dark" style="font-size: 0.8rem">{{ reply.userName }}</span>
-                  <span class="text-muted" style="font-size: 0.68rem">{{ formatDate(reply.createdAt) }}</span>
+                  <span class="fw-semibold text-dark" style="font-size: 0.8rem">{{
+                    reply.userName
+                  }}</span>
+                  <span class="text-muted" style="font-size: 0.68rem">{{
+                    formatDate(reply.createdAt)
+                  }}</span>
                 </div>
-                <p class="mb-0 text-dark" style="font-size: 0.85rem; line-height: 1.55; white-space: pre-wrap">
+                <p
+                  class="mb-0 text-dark"
+                  style="font-size: 0.85rem; line-height: 1.55; white-space: pre-wrap"
+                >
                   {{ reply.content }}
                 </p>
               </div>
@@ -97,7 +116,6 @@
         </div>
       </div>
       }
-
     </div>
 
     <div class="acv-modal__footer d-flex justify-content-end px-4 py-3 border-top bg-light-subtle">
@@ -105,7 +123,6 @@
         Close
       </button>
     </div>
-
   </div>
 </div>
 }

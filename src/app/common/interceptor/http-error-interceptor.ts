@@ -9,10 +9,6 @@ import { environment } from '../../../environments/environment';
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-/**
- * Global HTTP error interceptor.
- * Handles automatic token refreshing on 401 Unauthorized using HttpOnly cookies.
- */
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authState = inject(AuthStateService);
@@ -22,7 +18,6 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Prevent refreshing token for login or refresh-token requests
         if (req.url.includes('/refresh-token') || req.url.includes('/login')) {
           authState.clearAuth();
           router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
@@ -48,8 +43,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                     authState.setUser(res.data);
                   }
                   refreshTokenSubject.next(res.token);
-                  
-                  // Clone request and retry with new headers
+
                   const retryReq = req.clone({
                     setHeaders: { Authorization: `Bearer ${res.token}` },
                     withCredentials: true,
@@ -69,7 +63,6 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
               })
             );
         } else {
-          // If already refreshing, wait for the token and retry
           return refreshTokenSubject.pipe(
             filter((token) => token !== null),
             take(1),

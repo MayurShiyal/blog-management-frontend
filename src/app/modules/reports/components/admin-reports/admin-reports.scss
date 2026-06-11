@@ -1,13 +1,16 @@
-$brand:       var(--brand-primary, #6366f1);
-$brand-dark:  var(--brand-primary-dark, #4f46e5);
+$brand: var(--brand-primary, #6366f1);
+$brand-dark: var(--brand-primary-dark, #4f46e5);
 $brand-light: var(--brand-light, rgba(99, 102, 241, 0.1));
-$border:      var(--border-color, #e2e8f0);
-$danger:      var(--danger, #ef4444);
+$border: var(--border-color, #e2e8f0);
+$danger: var(--danger, #ef4444);
 
-.text-xs { font-size: 0.75rem !important; }
-.text-sm { font-size: 0.875rem !important; }
+.text-xs {
+  font-size: 0.75rem !important;
+}
+.text-sm {
+  font-size: 0.875rem !important;
+}
 
-// ── Tab navigation ─────────────────────────────────────────────────────────
 .reports-tabs {
   background: #fafbff;
 }
@@ -55,7 +58,6 @@ $danger:      var(--danger, #ef4444);
   font-weight: 700;
 }
 
-// ── Search bar ─────────────────────────────────────────────────────────────
 .reports-search {
   position: relative;
   min-width: 220px;
@@ -78,7 +80,6 @@ $danger:      var(--danger, #ef4444);
   }
 }
 
-// ── Table ──────────────────────────────────────────────────────────────────
 .rpt-table {
   width: 100%;
   border-collapse: collapse;
@@ -106,8 +107,12 @@ $danger:      var(--danger, #ef4444);
 
   tbody tr {
     transition: background 0.1s;
-    &:hover { background: #fafbff; }
-    &:last-child td { border-bottom: none; }
+    &:hover {
+      background: #fafbff;
+    }
+    &:last-child td {
+      border-bottom: none;
+    }
   }
 }
 
@@ -131,7 +136,9 @@ $danger:      var(--danger, #ef4444);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   cursor: pointer;
-  &:hover { color: $brand; }
+  &:hover {
+    color: $brand;
+  }
 }
 
 .content-preview-cell {
@@ -187,7 +194,6 @@ $danger:      var(--danger, #ef4444);
   white-space: nowrap;
 }
 
-// ── Status badges ──────────────────────────────────────────────────────────
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -197,10 +203,22 @@ $danger:      var(--danger, #ef4444);
   font-weight: 600;
   white-space: nowrap;
 
-  &--open      { background: #f0f9ff; color: #0369a1; }
-  &--review    { background: #fefce8; color: #a16207; }
-  &--approved  { background: #f0fdf4; color: #15803d; }
-  &--rejected  { background: #fef2f2; color: #dc2626; }
+  &--open {
+    background: #f0f9ff;
+    color: #0369a1;
+  }
+  &--review {
+    background: #fefce8;
+    color: #a16207;
+  }
+  &--approved {
+    background: #f0fdf4;
+    color: #15803d;
+  }
+  &--rejected {
+    background: #fef2f2;
+    color: #dc2626;
+  }
 }
 
 .status-dot {
@@ -210,13 +228,20 @@ $danger:      var(--danger, #ef4444);
   display: inline-block;
   flex-shrink: 0;
 
-  &--open      { background: #0369a1; }
-  &--review    { background: #a16207; }
-  &--approved  { background: #15803d; }
-  &--rejected  { background: #dc2626; }
+  &--open {
+    background: #0369a1;
+  }
+  &--review {
+    background: #a16207;
+  }
+  &--approved {
+    background: #15803d;
+  }
+  &--rejected {
+    background: #dc2626;
+  }
 }
 
-// ── Action buttons ─────────────────────────────────────────────────────────
 .action-btns {
   display: flex;
   align-items: center;
@@ -240,19 +265,25 @@ $danger:      var(--danger, #ef4444);
   &--view {
     background: #f5f3ff;
     color: #7c3aed;
-    &:hover { background: #ede9fe; }
+    &:hover {
+      background: #ede9fe;
+    }
   }
 
   &--history {
     background: #eff6ff;
     color: #2563eb;
-    &:hover { background: #dbeafe; }
+    &:hover {
+      background: #dbeafe;
+    }
   }
 
   &--status {
     background: #f0fdf4;
     color: #15803d;
-    &:hover { background: #dcfce7; }
+    &:hover {
+      background: #dcfce7;
+    }
   }
 
   &--locked {
@@ -263,7 +294,6 @@ $danger:      var(--danger, #ef4444);
   }
 }
 
-// ── Status dropdown panel ───────────────────────────────────────────────────
 .status-dropdown-wrap {
   position: relative;
 }
@@ -325,11 +355,16 @@ $danger:      var(--danger, #ef4444);
 }
 
 @keyframes dropIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-// Loading overlay for comment view
 .acv-loading-overlay {
   position: fixed;
   inset: 0;
@@ -340,7 +375,6 @@ $danger:      var(--danger, #ef4444);
   justify-content: center;
 }
 
-// ── Pagination ─────────────────────────────────────────────────────────────
 .page-btn {
   min-width: 34px;
   height: 34px;
@@ -357,7 +391,17 @@ $danger:      var(--danger, #ef4444);
   transition: all 0.15s;
   cursor: pointer;
 
-  &:hover:not(:disabled) { border-color: $brand; color: $brand; }
-  &--active { background: $brand; border-color: $brand; color: #fff; }
-  &:disabled { opacity: 0.4; cursor: not-allowed; }
+  &:hover:not(:disabled) {
+    border-color: $brand;
+    color: $brand;
+  }
+  &--active {
+    background: $brand;
+    border-color: $brand;
+    color: #fff;
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }

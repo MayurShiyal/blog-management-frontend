@@ -1,11 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  OnDestroy,
-  signal,
-  computed,
-} from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -24,7 +17,6 @@ import {
 } from '../../models/report.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
 
-// Extended model for the all-reports history endpoint
 export interface AllReportHistoryItemDto extends ReportHistoryItemDto {
   contentId: string;
   contentType: 'blog' | 'comment';
@@ -57,7 +49,7 @@ export class ReportHistory implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   readonly routes = ROUTES;
-  // ── State ────────────────────────────────────────────────────────────────
+
   activeTab = signal<'all' | 'blog' | 'comment'>('all');
   items = signal<AllReportHistoryItemDto[]>([]);
   totalCount = signal(0);
@@ -88,13 +80,12 @@ export class ReportHistory implements OnInit, OnDestroy {
   });
 
   readonly STATUS_OPTIONS = [
-    { value: ReportStatus.Open,        label: REPORT_STATUS_LABELS[ReportStatus.Open] },
+    { value: ReportStatus.Open, label: REPORT_STATUS_LABELS[ReportStatus.Open] },
     { value: ReportStatus.UnderReview, label: REPORT_STATUS_LABELS[ReportStatus.UnderReview] },
-    { value: ReportStatus.Approved,    label: REPORT_STATUS_LABELS[ReportStatus.Approved] },
-    { value: ReportStatus.Rejected,    label: REPORT_STATUS_LABELS[ReportStatus.Rejected] },
+    { value: ReportStatus.Approved, label: REPORT_STATUS_LABELS[ReportStatus.Approved] },
+    { value: ReportStatus.Rejected, label: REPORT_STATUS_LABELS[ReportStatus.Rejected] },
   ];
 
-  // ── Lifecycle ────────────────────────────────────────────────────────────
   ngOnInit(): void {
     if (!this.authState.isLoggedIn || !this.authState.isAdmin) {
       this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
@@ -134,10 +125,10 @@ export class ReportHistory implements OnInit, OnDestroy {
     }
   };
 
-  // ── Data loading ─────────────────────────────────────────────────────────
   loadHistory(): void {
     this.loading.set(true);
-    const contentType = this.activeTab() === 'all' ? undefined : this.activeTab() as 'blog' | 'comment';
+    const contentType =
+      this.activeTab() === 'all' ? undefined : (this.activeTab() as 'blog' | 'comment');
 
     this.svc
       .getAllReportHistory({
@@ -165,7 +156,6 @@ export class ReportHistory implements OnInit, OnDestroy {
       });
   }
 
-  // ── Controls ──────────────────────────────────────────────────────────────
   switchTab(tab: 'all' | 'blog' | 'comment'): void {
     if (this.activeTab() === tab) return;
     this.activeTab.set(tab);
@@ -199,7 +189,6 @@ export class ReportHistory implements OnInit, OnDestroy {
     this.loadHistory();
   }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
   getStatusLabel(status: ReportStatus): string {
     return REPORT_STATUS_LABELS[status] ?? 'Unknown';
   }
@@ -210,17 +199,27 @@ export class ReportHistory implements OnInit, OnDestroy {
 
   getStatusClass(status: ReportStatus): string {
     switch (status) {
-      case ReportStatus.Open:        return 'open';
-      case ReportStatus.UnderReview: return 'review';
-      case ReportStatus.Approved:    return 'approved';
-      case ReportStatus.Rejected:    return 'rejected';
-      default:                       return 'open';
+      case ReportStatus.Open:
+        return 'open';
+      case ReportStatus.UnderReview:
+        return 'review';
+      case ReportStatus.Approved:
+        return 'approved';
+      case ReportStatus.Rejected:
+        return 'rejected';
+      default:
+        return 'open';
     }
   }
 
   getInitials(name: string): string {
     if (!name) return '?';
-    return name.split(' ').slice(0, 2).map((n) => n[0]).join('').toUpperCase();
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase();
   }
 
   formatDate(dateStr: string): string {

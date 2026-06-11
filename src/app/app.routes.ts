@@ -1,16 +1,22 @@
 import { Routes } from '@angular/router';
-import { authGuard, adminGuard, guestGuard, authorOrAdminGuard, visitorGuard } from './common/guards/auth-guard';
+import {
+  authGuard,
+  adminGuard,
+  guestGuard,
+  authorOrAdminGuard,
+  visitorGuard,
+} from './common/guards/auth-guard';
 import { ROUTES } from './common/constants/routes.constants';
 
 export const routes: Routes = [
   { path: '', redirectTo: ROUTES.PUBLIC.BLOGS.ABSOLUTE.substring(1), pathMatch: 'full' },
 
-  // Visitor profile — must come BEFORE the AdminLayout block so Angular
-  // doesn't try to match ''/profile against the AdminLayout (which blocks Visitors).
   {
     path: '',
     loadComponent: () =>
-      import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
+      import('./common/components/layout/visitor-layout/visitor-layout').then(
+        (m) => m.VisitorLayout
+      ),
     children: [
       {
         path: 'profile',
@@ -27,7 +33,9 @@ export const routes: Routes = [
     path: ROUTES.PUBLIC.ROOT,
     canActivate: [visitorGuard],
     loadComponent: () =>
-      import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
+      import('./common/components/layout/visitor-layout/visitor-layout').then(
+        (m) => m.VisitorLayout
+      ),
     children: [
       { path: '', redirectTo: 'blogs', pathMatch: 'full' },
       {
@@ -181,7 +189,6 @@ export const routes: Routes = [
     ],
   },
 
-  // Error pages
   {
     path: 'error/:code',
     loadComponent: () =>

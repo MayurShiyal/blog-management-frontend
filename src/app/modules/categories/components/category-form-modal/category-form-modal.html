@@ -16,7 +16,6 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="cat-modal__body">
-    <!-- Name -->
     <app-input
       [control]="form.controls.name"
       label="Name"
@@ -24,7 +23,6 @@
       autocomplete="off"
     ></app-input>
 
-    <!-- Slug -->
     <app-input
       [control]="form.controls.slug"
       label="Slug"
@@ -35,7 +33,6 @@
       Auto-generated from name. Lowercase letters, numbers, and hyphens only.
     </div>
 
-    <!-- Description -->
     <app-textarea
       [control]="form.controls.description"
       label="Description"
@@ -43,7 +40,6 @@
       [rows]="3"
     ></app-textarea>
 
-    <!-- IsActive toggle -->
     <div class="mb-4">
       <div class="active-toggle-row">
         <div>
@@ -63,7 +59,6 @@
       </div>
     </div>
 
-    <!-- Footer buttons -->
     <div class="cat-modal__footer">
       <button type="button" class="btn btn-ghost" (click)="cancel()">Cancel</button>
       <button type="submit" class="btn btn-primary" [disabled]="loading()">

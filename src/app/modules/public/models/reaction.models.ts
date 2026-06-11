@@ -1,4 +1,3 @@
-// Matches backend ReactDto exactly
 export interface ReactDto {
   id: string;
   blogId?: string | null;

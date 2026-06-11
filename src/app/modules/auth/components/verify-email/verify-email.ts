@@ -12,14 +12,13 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
   styleUrl: './verify-email.scss',
 })
 export class VerifyEmail implements OnInit {
-  private readonly route  = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly http   = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   readonly routes = ROUTES;
 
-  /** 'loading' | 'success' | 'error' */
-  state   = signal<'loading' | 'success' | 'error'>('loading');
+  state = signal<'loading' | 'success' | 'error'>('loading');
   message = signal<string>('Verifying your email, please wait…');
 
   ngOnInit(): void {
@@ -32,20 +31,21 @@ export class VerifyEmail implements OnInit {
     }
 
     this.http
-      .get<{ status: boolean; message: string }>(
-        `${environment.apiUrl}/api/user/verify-email`,
-        { params: { token } }
-      )
+      .get<{ status: boolean; message: string }>(`${environment.apiUrl}/api/user/verify-email`, {
+        params: { token },
+      })
       .subscribe({
         next: (res) => {
           if (res.status) {
             this.state.set('success');
             this.message.set(res.message ?? 'Email verified successfully. You can now log in.');
-            // Redirect to login after 3 seconds
+
             setTimeout(() => this.router.navigate([this.routes.AUTH.LOGIN.ABSOLUTE]), 3000);
           } else {
             this.state.set('error');
-            this.message.set(res.message ?? 'Verification failed. The token may be invalid or already used.');
+            this.message.set(
+              res.message ?? 'Verification failed. The token may be invalid or already used.'
+            );
           }
         },
         error: (err) => {
@@ -56,4 +56,4 @@ export class VerifyEmail implements OnInit {
         },
       });
   }
-}
+}

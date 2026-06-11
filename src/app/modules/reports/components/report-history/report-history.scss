@@ -10,7 +10,6 @@ $border: var(--border-color, #e2e8f0);
   font-size: 0.875rem !important;
 }
 
-// ── Page layout Container ───────────────────────────────────────────────────
 .rh-page {
   max-width: 1400px;
 }
@@ -37,7 +36,6 @@ $border: var(--border-color, #e2e8f0);
   }
 }
 
-// ── Segment Navigation ───────────────────────────────────────────────────────
 .rh-tabs {
   background: #f8fafc;
 }
@@ -75,7 +73,6 @@ $border: var(--border-color, #e2e8f0);
   }
 }
 
-// ── Search Filters ──────────────────────────────────────────────────────────
 .rh-search {
   flex: 1;
   min-width: 260px;
@@ -105,12 +102,11 @@ $border: var(--border-color, #e2e8f0);
   }
 }
 
-// ── Main Content Grid Table ─────────────────────────────────────────────────
 .rh-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  min-width: 1040px; // Guarantees proper data boundary space grid columns
+  min-width: 1040px;
 
   thead tr {
     background: #f8fafc;
@@ -150,7 +146,6 @@ $border: var(--border-color, #e2e8f0);
   font-size: 0.775rem;
 }
 
-// Reporter Cell
 .reporter-cell {
   display: flex;
   align-items: center;
@@ -182,7 +177,6 @@ $border: var(--border-color, #e2e8f0);
   color: #334155;
 }
 
-// Content Tracking Info Cell
 .content-cell {
   display: flex;
   align-items: center;
@@ -221,7 +215,6 @@ $border: var(--border-color, #e2e8f0);
   flex-grow: 1;
 }
 
-// Context Reason Cell
 .reason-cell {
   max-width: 240px;
   overflow: hidden;
@@ -230,7 +223,6 @@ $border: var(--border-color, #e2e8f0);
   font-size: 0.825rem;
 }
 
-// Type/Classification Badges
 .rh-type-badge {
   display: inline-flex;
   align-items: center;
@@ -244,7 +236,6 @@ $border: var(--border-color, #e2e8f0);
   white-space: nowrap;
 }
 
-// Resolution Lifecycle State Badges
 .rh-status-badge {
   display: inline-flex;
   align-items: center;
@@ -280,7 +271,6 @@ $border: var(--border-color, #e2e8f0);
   color: #64748b;
 }
 
-// ── Pagination Action Buttons ───────────────────────────────────────────────
 .page-btn {
   display: inline-flex;
   align-items: center;

@@ -1,12 +1,10 @@
 <app-toast [toasts]="toastService.toasts()" (dismiss)="toastService.dismiss($event)"></app-toast>
 
 <div class="visitor-shell min-vh-100 d-flex flex-column">
-  <!-- ── Header ── -->
   <nav
     class="visitor-navbar navbar navbar-expand-lg bg-white border-bottom border-light-subtle shadow-sm sticky-top"
   >
     <div class="container-xl px-3 px-md-4">
-      <!-- Left: Logo + Name -->
       <a
         class="navbar-brand d-flex align-items-center gap-2 text-decoration-none me-3"
         [routerLink]="routes.PUBLIC.BLOGS.ABSOLUTE"
@@ -19,7 +17,6 @@
         <span class="visitor-brand-name fw-bold text-dark">BlogSpace</span>
       </a>
 
-      <!-- Center: Search (hidden on mobile) -->
       <div class="visitor-search-wrap flex-grow-1 mx-3 d-none d-md-flex">
         <div class="position-relative w-100" style="max-width: 440px">
           <i
@@ -35,10 +32,9 @@
         </div>
       </div>
 
-      <!-- Right: Auth Actions -->
       <div class="d-flex align-items-center gap-2 ms-auto ms-md-0">
         @if (isLoggedIn()) {
-        <!-- Profile menu (NO dashboard button for visitors) -->
+
         <div class="visitor-profile-menu-wrap position-relative">
           <button
             class="visitor-avatar-btn btn d-flex align-items-center gap-2 p-0 border-0 bg-transparent"
@@ -93,7 +89,6 @@
     </div>
   </nav>
 
-  <!-- Mobile Search Strip -->
   <div class="visitor-mobile-search bg-white border-bottom border-light-subtle py-2 px-3 d-md-none">
     <div class="position-relative">
       <i
@@ -119,7 +114,6 @@
     <router-outlet />
   </main>
 
-  <!-- ── Footer ── -->
   <footer class="visitor-footer bg-white border-top border-light-subtle mt-auto">
     <div class="container-xl px-3 px-md-4 py-5">
       <div class="row g-4">

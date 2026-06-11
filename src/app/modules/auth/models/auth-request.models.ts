@@ -3,7 +3,7 @@ export interface RegisterRequest {
   lastName?: string;
   email: string;
   password: string;
-  role: number; // 2 = Author, 3 = Visitor
+  role: number;
 }
 
 export interface LoginRequest {

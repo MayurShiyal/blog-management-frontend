@@ -1,11 +1,9 @@
-// Layout Variable Framework Tokens
 $brand: var(--brand-primary, #6366f1);
 $brand-light: var(--brand-light, rgba(99, 102, 241, 0.1));
 $accent: var(--brand-accent, #6366f1);
 $border: var(--border-color, #e2e8f0);
 $danger: var(--danger, #ef4444);
 
-// General Typography Overrides
 .text-xs {
   font-size: 0.75rem !important;
 }
@@ -16,7 +14,6 @@ $danger: var(--danger, #ef4444);
   white-space: nowrap;
 }
 
-// --- Dropdown Filtering Utilities ---
 .filter-select {
   appearance: none !important;
   -webkit-appearance: none !important;
@@ -34,12 +31,11 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Nested Dynamic Child Elements (Table Components) ---
 ::ng-deep {
   .cat-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 800px; // Guarantees smooth text breaking limits inside internal sub-tables
+    min-width: 800px;
 
     th {
       padding: 0.75rem 1rem;
@@ -89,7 +85,6 @@ $danger: var(--danger, #ef4444);
     font-size: 0.8125rem;
   }
 
-  // --- Inline Table Form Status Switches ---
   .status-badge {
     display: inline-flex;
     align-items: center;
@@ -123,7 +118,6 @@ $danger: var(--danger, #ef4444);
     }
   }
 
-  // --- Actions Micro-buttons ---
   .action-btn {
     width: 32px;
     height: 32px;
@@ -156,7 +150,6 @@ $danger: var(--danger, #ef4444);
   }
 }
 
-// --- Pagination Controls ---
 .page-btn {
   min-width: 34px;
   height: 34px;

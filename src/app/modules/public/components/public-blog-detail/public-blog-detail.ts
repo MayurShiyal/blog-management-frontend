@@ -197,7 +197,7 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
 
   onBlogReported(): void {
     this.reportModalOpen.set(false);
-    // Blog is hidden for the current user — navigate back to listing
+
     this.router.navigate([ROUTES.PUBLIC.BLOGS.ABSOLUTE]);
   }
 

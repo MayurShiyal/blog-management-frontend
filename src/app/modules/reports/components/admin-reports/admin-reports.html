@@ -1,6 +1,4 @@
 <div class="bg-white border border-light-subtle rounded-3 shadow-sm overflow-hidden w-100">
-
-  <!-- ── Tabs: Blog / Comment ── -->
   <div class="reports-tabs d-flex border-bottom">
     <button
       type="button"
@@ -9,8 +7,7 @@
       (click)="switchTab('blog')"
     >
       <i class="bi bi-file-earmark-richtext me-1"></i>
-      Reported Blogs
-      @if (activeTab() === 'blog' && totalCount() > 0) {
+      Reported Blogs @if (activeTab() === 'blog' && totalCount() > 0) {
       <span class="tab-badge">{{ totalCount() }}</span>
       }
     </button>
@@ -21,16 +18,13 @@
       (click)="switchTab('comment')"
     >
       <i class="bi bi-chat-left-dots me-1"></i>
-      Reported Comments
-      @if (activeTab() === 'comment' && totalCount() > 0) {
+      Reported Comments @if (activeTab() === 'comment' && totalCount() > 0) {
       <span class="tab-badge">{{ totalCount() }}</span>
       }
     </button>
   </div>
 
-  <!-- ── Filters bar ── -->
   <div class="d-flex flex-wrap align-items-center gap-2 px-3 py-3 border-bottom bg-light-subtle">
-    <!-- Search -->
     <div class="position-relative reports-search">
       <i class="bi bi-search reports-search__icon"></i>
       <input
@@ -42,7 +36,6 @@
       />
     </div>
 
-    <!-- Status filter -->
     <div class="dropdown">
       <button
         type="button"
@@ -55,7 +48,11 @@
       </button>
       <ul class="dropdown-menu shadow-sm rounded-3 p-2 mt-1" [class.show]="statusDropdownOpen()">
         <li>
-          <button class="dropdown-item rounded-2 small" type="button" (click)="setStatusFilter(null)">
+          <button
+            class="dropdown-item rounded-2 small"
+            type="button"
+            (click)="setStatusFilter(null)"
+          >
             All Statuses
           </button>
         </li>
@@ -79,25 +76,29 @@
     </span>
   </div>
 
-  <!-- ── Table ── -->
   <div class="w-100 overflow-x-auto">
     @if (loading()) {
-    <div class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 gap-2">
-      <div class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></div>
+    <div
+      class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 gap-2"
+    >
+      <div
+        class="spinner-border spinner-border-sm text-primary"
+        role="status"
+        aria-hidden="true"
+      ></div>
       <span>Loading reported {{ activeTab() === 'blog' ? 'blogs' : 'comments' }}…</span>
     </div>
     } @else if (items().length === 0) {
-    <div class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 gap-2 px-3">
+    <div
+      class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 gap-2 px-3"
+    >
       <i class="bi bi-flag display-4 mb-1 opacity-25"></i>
       <p class="text-center m-0 lh-base">
-        @if (searchQuery()) {
-        No reported {{ activeTab() === 'blog' ? 'blogs' : 'comments' }} match
-        "<strong>{{ searchQuery() }}</strong>"
-        } @else if (statusFilter() !== null) {
-        No reported {{ activeTab() === 'blog' ? 'blogs' : 'comments' }} with the selected status.
-        } @else {
-        No reported {{ activeTab() === 'blog' ? 'blogs' : 'comments' }} yet.
-        }
+        @if (searchQuery()) { No reported {{ activeTab() === 'blog' ? 'blogs' : 'comments' }} match
+        "<strong>{{ searchQuery() }}</strong
+        >" } @else if (statusFilter() !== null) { No reported
+        {{ activeTab() === 'blog' ? 'blogs' : 'comments' }} with the selected status. } @else { No
+        reported {{ activeTab() === 'blog' ? 'blogs' : 'comments' }} yet. }
       </p>
     </div>
     } @else {
@@ -110,18 +111,24 @@
           <th>
             <button type="button" class="sort-btn" (click)="toggleSort('reportcount')">
               Reports
-              <i class="bi" [class.bi-chevron-down]="sortBy() !== 'reportcount'"
-                 [class.bi-sort-down-alt]="sortBy() === 'reportcount' && sortDesc()"
-                 [class.bi-sort-up-alt]="sortBy() === 'reportcount' && !sortDesc()"></i>
+              <i
+                class="bi"
+                [class.bi-chevron-down]="sortBy() !== 'reportcount'"
+                [class.bi-sort-down-alt]="sortBy() === 'reportcount' && sortDesc()"
+                [class.bi-sort-up-alt]="sortBy() === 'reportcount' && !sortDesc()"
+              ></i>
             </button>
           </th>
           <th>Status</th>
           <th>
             <button type="button" class="sort-btn" (click)="toggleSort('lastreported')">
               Last Reported
-              <i class="bi" [class.bi-chevron-down]="sortBy() !== 'lastreported'"
-                 [class.bi-sort-down-alt]="sortBy() === 'lastreported' && sortDesc()"
-                 [class.bi-sort-up-alt]="sortBy() === 'lastreported' && !sortDesc()"></i>
+              <i
+                class="bi"
+                [class.bi-chevron-down]="sortBy() !== 'lastreported'"
+                [class.bi-sort-down-alt]="sortBy() === 'lastreported' && sortDesc()"
+                [class.bi-sort-up-alt]="sortBy() === 'lastreported' && !sortDesc()"
+              ></i>
             </button>
           </th>
           <th class="text-end">Actions</th>
@@ -155,7 +162,6 @@
           <td class="date-cell">{{ formatDate(item.lastReportedAt) }}</td>
           <td>
             <div class="action-btns">
-              <!-- View content -->
               <button
                 type="button"
                 class="action-btn action-btn--view"
@@ -165,7 +171,6 @@
                 <i class="bi bi-eye"></i>
               </button>
 
-              <!-- View history -->
               <button
                 type="button"
                 class="action-btn action-btn--history"
@@ -175,48 +180,49 @@
                 <i class="bi bi-clock-history"></i>
               </button>
 
-              <!-- Update status dropdown -->
               @if (isFinalStatus(item.latestStatus)) {
-                <!-- Finalized: locked, no further changes -->
+
+              <button
+                type="button"
+                class="action-btn action-btn--locked"
+                [title]="
+                  'Status is ' + getStatusLabel(item.latestStatus) + ' — no further changes allowed'
+                "
+                disabled
+              >
+                <i class="bi bi-lock-fill"></i>
+              </button>
+              } @else {
+              <div class="status-dropdown-wrap">
                 <button
                   type="button"
-                  class="action-btn action-btn--locked"
-                  [title]="'Status is ' + getStatusLabel(item.latestStatus) + ' — no further changes allowed'"
-                  disabled
+                  class="action-btn action-btn--status"
+                  title="Update status"
+                  (click)="toggleRowDropdown(item.contentId)"
                 >
-                  <i class="bi bi-lock-fill"></i>
+                  <i class="bi bi-shield-check"></i>
                 </button>
-              } @else {
-                <div class="status-dropdown-wrap">
+                @if (openRowDropdown() === item.contentId) {
+                <div class="status-dropdown-panel">
+                  <div class="status-dropdown-panel__title">Update Status</div>
+                  @for (opt of STATUS_OPTIONS; track opt.value) {
                   <button
                     type="button"
-                    class="action-btn action-btn--status"
-                    title="Update status"
-                    (click)="toggleRowDropdown(item.contentId)"
+                    class="status-dropdown-panel__item"
+                    [class.status-dropdown-panel__item--active]="item.latestStatus === opt.value"
+                    [disabled]="item.latestStatus === opt.value"
+                    (click)="updateStatus(item, opt.value)"
                   >
-                    <i class="bi bi-shield-check"></i>
-                  </button>
-                  @if (openRowDropdown() === item.contentId) {
-                  <div class="status-dropdown-panel">
-                    <div class="status-dropdown-panel__title">Update Status</div>
-                    @for (opt of STATUS_OPTIONS; track opt.value) {
-                    <button
-                      type="button"
-                      class="status-dropdown-panel__item"
-                      [class.status-dropdown-panel__item--active]="item.latestStatus === opt.value"
-                      [disabled]="item.latestStatus === opt.value"
-                      (click)="updateStatus(item, opt.value)"
-                    >
-                      <span class="status-dot status-dot--{{ getStatusClass(opt.value) }}"></span>
-                      {{ opt.label }}
-                      @if (item.latestStatus === opt.value) {
-                      <i class="bi bi-check2 ms-auto"></i>
-                      }
-                    </button>
+                    <span class="status-dot status-dot--{{ getStatusClass(opt.value) }}"></span>
+                    {{ opt.label }}
+                    @if (item.latestStatus === opt.value) {
+                    <i class="bi bi-check2 ms-auto"></i>
                     }
-                  </div>
+                  </button>
                   }
                 </div>
+                }
+              </div>
               }
             </div>
           </td>
@@ -227,8 +233,9 @@
     }
   </div>
 
-  <!-- ── Pagination ── -->
-  <div class="d-flex align-items-center justify-content-between p-3 border-top bg-light-subtle flex-wrap gap-2">
+  <div
+    class="d-flex align-items-center justify-content-between p-3 border-top bg-light-subtle flex-wrap gap-2"
+  >
     <div class="d-flex align-items-center gap-2">
       <span class="text-muted text-xs">Rows per page:</span>
       <select
@@ -265,7 +272,9 @@
         class="page-btn"
         [class.page-btn--active]="p === pageNumber()"
         (click)="goToPage(p)"
-      >{{ p }}</button>
+      >
+        {{ p }}
+      </button>
       }
       <button
         class="page-btn"
@@ -280,16 +289,17 @@
   </div>
 </div>
 
-<!-- Blog Comments Modal (opened when admin clicks eye on a reported comment) -->
 @if (commentsModalLoading()) {
-<div class="d-flex align-items-center justify-content-center" style="position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,0.25)">
+<div
+  class="d-flex align-items-center justify-content-center"
+  style="position: fixed; inset: 0; z-index: 1070; background: rgba(0, 0, 0, 0.25)"
+>
   <div class="bg-white rounded-3 px-5 py-4 shadow d-flex align-items-center gap-3">
     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
     <span class="text-muted small">Loading comments…</span>
   </div>
 </div>
-}
-@if (commentsModalOpen() && commentsModalBlogId()) {
+} @if (commentsModalOpen() && commentsModalBlogId()) {
 <app-blog-comments-modal
   [show]="commentsModalOpen()"
   [blogId]="commentsModalBlogId()!"

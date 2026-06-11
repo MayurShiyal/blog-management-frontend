@@ -1,11 +1,4 @@
-import {
-  Component,
-  input,
-  output,
-  signal,
-  inject,
-  OnDestroy,
-} from '@angular/core';
+import { Component, input, output, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -29,29 +22,26 @@ export class ReportModalComponent implements OnDestroy {
   private readonly toast = inject(ToastService);
   private readonly destroy$ = new Subject<void>();
 
-  /** Whether the modal is visible */
   show = input.required<boolean>();
 
-  /** 'blog' or 'comment' */
   contentType = input.required<'blog' | 'comment'>();
 
-  /** The id of the content being reported */
   contentId = input.required<string>();
 
-  /** Short preview shown in the modal header (blog title or first ~80 chars of comment) */
   contentPreview = input<string>('');
 
-  /** Emitted when the report was successfully submitted */
   reported = output<void>();
 
-  /** Emitted when the user cancels */
   cancelled = output<void>();
 
   readonly REPORT_TYPE_OPTIONS: ReportTypeOption[] = [
-    { value: ReportType.Spam,                label: REPORT_TYPE_LABELS[ReportType.Spam] },
-    { value: ReportType.InappropriateContent, label: REPORT_TYPE_LABELS[ReportType.InappropriateContent] },
-    { value: ReportType.Harassment,           label: REPORT_TYPE_LABELS[ReportType.Harassment] },
-    { value: ReportType.Other,                label: REPORT_TYPE_LABELS[ReportType.Other] },
+    { value: ReportType.Spam, label: REPORT_TYPE_LABELS[ReportType.Spam] },
+    {
+      value: ReportType.InappropriateContent,
+      label: REPORT_TYPE_LABELS[ReportType.InappropriateContent],
+    },
+    { value: ReportType.Harassment, label: REPORT_TYPE_LABELS[ReportType.Harassment] },
+    { value: ReportType.Other, label: REPORT_TYPE_LABELS[ReportType.Other] },
   ];
 
   selectedType = signal<ReportType | null>(null);
@@ -78,8 +68,16 @@ export class ReportModalComponent implements OnDestroy {
 
     const payload =
       this.contentType() === 'blog'
-        ? { blogId: this.contentId(), type: this.selectedType()!, reason: this.reasonText().trim() || null }
-        : { commentId: this.contentId(), type: this.selectedType()!, reason: this.reasonText().trim() || null };
+        ? {
+            blogId: this.contentId(),
+            type: this.selectedType()!,
+            reason: this.reasonText().trim() || null,
+          }
+        : {
+            commentId: this.contentId(),
+            type: this.selectedType()!,
+            reason: this.reasonText().trim() || null,
+          };
 
     this.loading.set(true);
     this.reportSvc
@@ -100,10 +98,7 @@ export class ReportModalComponent implements OnDestroy {
           this.loading.set(false);
           const e = err as { status?: number; error?: { message?: string } };
           if (e?.status === 409) {
-            this.toast.show(
-              'warning',
-              `You have already reported this ${this.contentType()}.`
-            );
+            this.toast.show('warning', `You have already reported this ${this.contentType()}.`);
             this.resetState();
             this.cancelled.emit();
           } else {

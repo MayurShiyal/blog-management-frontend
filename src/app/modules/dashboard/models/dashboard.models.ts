@@ -1,5 +1,3 @@
-// ── GET /api/admin/dashboard/summary ───────────────────────────────────────
-
 export interface DashboardSummaryDto {
   totalUsers: number;
   totalBlogs: number;
@@ -10,8 +8,6 @@ export interface GetDashboardSummaryResponse {
   message: string;
   data?: DashboardSummaryDto | null;
 }
-
-// ── GET /api/admin/dashboard/status ────────────────────────────────────────
 
 export interface UserStatusCountsDto {
   active: number;
@@ -34,8 +30,6 @@ export interface GetDashboardStatusResponse {
   data?: DashboardStatusDto | null;
 }
 
-// ── GET /api/admin/dashboard/blogs ─────────────────────────────────────────
-
 export interface LatestBlogItemDto {
   id: string;
   title: string;
@@ -44,7 +38,6 @@ export interface LatestBlogItemDto {
 }
 
 export interface MonthlyBlogCountDto {
-  /** Format: "yyyy-MM" e.g. "2025-01" */
   month: string;
   count: number;
 }

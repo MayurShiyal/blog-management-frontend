@@ -1,5 +1,3 @@
-// ── Enums ────────────────────────────────────────────────────────────────────
-
 export enum ReportStatus {
   Open = 1,
   UnderReview = 2,
@@ -28,8 +26,6 @@ export const REPORT_TYPE_LABELS: Record<ReportType, string> = {
   [ReportType.Other]: 'Other',
 };
 
-// ── User-facing: Create Report ───────────────────────────────────────────────
-
 export interface CreateReportRequest {
   blogId?: string | null;
   commentId?: string | null;
@@ -52,8 +48,6 @@ export interface CreateReportResponse {
   data?: CreateReportDto | null;
 }
 
-// ── Admin: Reported Content List ─────────────────────────────────────────────
-
 export interface ReportedContentItemDto {
   contentId: string;
   contentPreview: string;
@@ -61,7 +55,7 @@ export interface ReportedContentItemDto {
   reportCount: number;
   latestStatus: ReportStatus;
   lastReportedAt: string;
-  /** Present when contentType is 'comment' — the blog this comment belongs to */
+
   blogId?: string | null;
   blogTitle?: string | null;
 }
@@ -74,8 +68,6 @@ export interface GetReportedContentsResponse {
   pageNumber: number;
   pageSize: number;
 }
-
-// ── Admin: Report History ────────────────────────────────────────────────────
 
 export interface ReportHistoryItemDto {
   reportId: string;
@@ -90,8 +82,6 @@ export interface GetReportHistoryResponse {
   message: string;
   items: ReportHistoryItemDto[];
 }
-
-// ── Admin: Update Report Status ──────────────────────────────────────────────
 
 export interface UpdateReportStatusRequest {
   status: ReportStatus;

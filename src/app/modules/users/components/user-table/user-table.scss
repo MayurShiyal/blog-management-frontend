@@ -1,4 +1,3 @@
-// ─── Variables ─────────────────────────────────────────────────────────────
 $brand: var(--brand-primary);
 $brand-light: var(--brand-light);
 $text-dark: var(--text-dark);
@@ -9,7 +8,6 @@ $bg-page: var(--bg-page);
 $danger: var(--danger);
 $success: var(--success);
 
-// ─── Table ─────────────────────────────────────────────────────────────────
 .usr-table {
   width: 100%;
   border-collapse: collapse;
@@ -51,7 +49,6 @@ $success: var(--success);
   width: 40px;
 }
 
-// ─── User cell ─────────────────────────────────────────────────────────────
 .user-cell {
   display: flex;
   align-items: center;
@@ -92,7 +89,6 @@ $success: var(--success);
   white-space: nowrap;
 }
 
-// ─── Role badge ────────────────────────────────────────────────────────────
 .role-badge {
   display: inline-flex;
   align-items: center;
@@ -111,7 +107,6 @@ $success: var(--success);
   }
 }
 
-// ─── Verified badge ────────────────────────────────────────────────────────
 .verified-badge {
   display: inline-flex;
   align-items: center;
@@ -130,7 +125,6 @@ $success: var(--success);
   }
 }
 
-// ─── Status toggle ─────────────────────────────────────────────────────────
 .status-toggle {
   display: inline-flex;
   align-items: center;
@@ -180,7 +174,6 @@ $success: var(--success);
   min-width: 52px;
 }
 
-// ─── Actions ───────────────────────────────────────────────────────────────
 .actions-cell {
   width: 100px;
 }
@@ -221,7 +214,6 @@ $success: var(--success);
   }
 }
 
-// ─── Responsive ───────────────────────────────────────────────────────────
 @media (max-width: 767px) {
   .email-cell {
     max-width: 150px;

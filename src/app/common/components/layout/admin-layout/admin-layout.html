@@ -10,20 +10,31 @@
   />
   @if (sidebarOpen()) {
   <div class="sidebar-overlay" (click)="toggleSidebar()"></div>
-  }
-  }
+  } }
 
   <div class="main-content">
     <header class="topbar d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center gap-2">
         @if (isAdmin()) {
-        <button class="topbar__hamburger d-lg-none" (click)="toggleSidebar()" aria-label="Open menu">
+        <button
+          class="topbar__hamburger d-lg-none"
+          (click)="toggleSidebar()"
+          aria-label="Open menu"
+        >
           <i class="bi bi-list"></i>
         </button>
         } @else {
-        <!-- Author Brand Mark (since they have no sidebar) -->
-        <a [routerLink]="routes.DASHBOARD.HOME.ABSOLUTE" class="d-flex align-items-center gap-2 text-decoration-none me-3">
-          <div class="brand-mark bg-primary text-white rounded-2 d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px;">B</div>
+
+        <a
+          [routerLink]="routes.DASHBOARD.HOME.ABSOLUTE"
+          class="d-flex align-items-center gap-2 text-decoration-none me-3"
+        >
+          <div
+            class="brand-mark bg-primary text-white rounded-2 d-flex align-items-center justify-content-center fw-bold"
+            style="width: 32px; height: 32px"
+          >
+            B
+          </div>
           <span class="fw-bold text-dark d-none d-sm-inline-block">BlogSpace</span>
         </a>
         }
@@ -34,7 +45,6 @@
       </div>
 
       <div class="topbar__actions d-flex align-items-center gap-3 ms-auto">
-        <!-- Author Top Navigation -->
         @if (!isAdmin()) {
         <div class="d-flex align-items-center gap-2 me-2">
           <a
@@ -52,17 +62,17 @@
             <i class="bi bi-plus-circle me-1"></i>Create
           </a>
         </div>
-        }
-
-        <!-- Profile Dropdown -->
-        @if (user(); as u) {
+        } @if (user(); as u) {
         <div class="profile-dropdown-wrap position-relative">
           <button
             class="btn d-flex align-items-center gap-2 p-1 border-0 bg-transparent"
             (click)="toggleProfileMenu()"
             type="button"
           >
-            <div class="topbar-avatar d-flex align-items-center justify-content-center fw-bold text-white rounded-circle bg-primary" style="width: 32px; height: 32px; font-size: 0.9rem;">
+            <div
+              class="topbar-avatar d-flex align-items-center justify-content-center fw-bold text-white rounded-circle bg-primary"
+              style="width: 32px; height: 32px; font-size: 0.9rem"
+            >
               {{ u.firstName.charAt(0) | uppercase }}
             </div>
             <span class="text-dark fw-medium small d-none d-sm-inline-block">
@@ -74,12 +84,18 @@
           @if (profileMenuOpen()) {
           <div
             class="topbar-dropdown-menu position-absolute end-0 bg-white rounded-3 shadow-lg border border-light-subtle py-1 mt-2"
-            style="z-index: 1050; min-width: 200px;"
+            style="z-index: 1050; min-width: 200px"
           >
             <div class="px-3 py-2 border-bottom border-light-subtle">
               <div class="fw-semibold text-dark small">{{ u.firstName }} {{ u.lastName }}</div>
-              <div class="text-muted text-truncate" style="font-size: 0.72rem; max-width: 170px;">{{ u.email }}</div>
-              <span class="badge bg-primary-subtle text-primary small mt-1" style="font-size: 0.65rem;">{{ u.role }}</span>
+              <div class="text-muted text-truncate" style="font-size: 0.72rem; max-width: 170px">
+                {{ u.email }}
+              </div>
+              <span
+                class="badge bg-primary-subtle text-primary small mt-1"
+                style="font-size: 0.65rem"
+                >{{ u.role }}</span
+              >
             </div>
             <div class="p-1">
               <a

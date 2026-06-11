@@ -18,19 +18,14 @@ import { CategoryService } from '../../../categories/services/category.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { CommentDialogComponent } from '../../../comments/components/comment-dialog/comment-dialog';
-import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal'; 
+import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal';
 import { PublicBlogListItemDto } from '../../models/public-blog.models';
 import { CategoryDto } from '../../../categories/models/category.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
 
 @Component({
   selector: 'app-public-blog-list',
-  imports: [
-    CommonModule,
-    FormsModule,
-    CommentDialogComponent,
-    ReportModalComponent,
-  ],
+  imports: [CommonModule, FormsModule, CommentDialogComponent, ReportModalComponent],
   templateUrl: './public-blog-list.html',
   styleUrl: './public-blog-list.scss',
 })
@@ -54,7 +49,6 @@ export class PublicBlogList implements OnInit, OnDestroy {
   selectedCategoryId = signal<string | null>(null);
   categoryDropdownOpen = signal(false);
 
-  // Search
   searchQuery = signal<string>('');
   private readonly searchSubject$ = new Subject<string>();
 
@@ -65,7 +59,6 @@ export class PublicBlogList implements OnInit, OnDestroy {
   commentDialogBlogId = signal<string | null>(null);
   commentDialogBlogTitle = signal<string>('');
 
-  // Report Signals
   reportDialogBlogId = signal<string | null>(null);
   reportDialogBlogTitle = signal<string>('');
 

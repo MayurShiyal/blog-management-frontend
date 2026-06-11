@@ -43,7 +43,6 @@ export interface AddCommentResponse {
   data?: CommentDto | null;
 }
 
-// Reply is same endpoint with parentCommentId set
 export interface AddReplyRequest {
   blogId: string;
   parentCommentId: string;

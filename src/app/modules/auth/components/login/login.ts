@@ -69,16 +69,12 @@ export class Login implements OnInit {
               : 'Login successful! Redirecting…';
             this.serverMsg.set({ type: 'success', text: welcomeMsg });
 
-            // Role-based redirect — Admin and Author always go to their dashboard,
-            // ignoring any returnUrl (which is a visitor/public-page URL).
-            // Only Visitors follow the returnUrl back to the public page they came from.
             let targetRoute: string;
             if (role === 'Admin') {
               targetRoute = ROUTES.DASHBOARD.ADMIN.ABSOLUTE;
             } else if (role === 'Author') {
               targetRoute = ROUTES.DASHBOARD.HOME.ABSOLUTE;
             } else {
-              // Visitor — honour returnUrl if present, otherwise go to public blogs
               const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
               targetRoute = returnUrl ?? ROUTES.PUBLIC.BLOGS.ABSOLUTE;
             }
