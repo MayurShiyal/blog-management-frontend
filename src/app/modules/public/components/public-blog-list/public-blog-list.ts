@@ -140,6 +140,8 @@ export class PublicBlogList implements OnInit, OnDestroy {
       .getPublicBlogs({
         search: query || undefined,
         categoryIds: catId ? [catId] : undefined,
+        pageNumber: 1,
+        pageSize: 1000,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({

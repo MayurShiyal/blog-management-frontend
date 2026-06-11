@@ -61,6 +61,9 @@ export interface ReportedContentItemDto {
   reportCount: number;
   latestStatus: ReportStatus;
   lastReportedAt: string;
+  /** Present when contentType is 'comment' — the blog this comment belongs to */
+  blogId?: string | null;
+  blogTitle?: string | null;
 }
 
 export interface GetReportedContentsResponse {
