@@ -11,7 +11,16 @@
         <div>
           <h5 class="mb-0 fw-bold fs-6">Comments</h5>
           <p class="mb-0 text-muted" style="font-size: 0.7rem">
+            @if (isAdmin() && blogId()) {
+            <a
+              class="fw-semibold text-primary text-truncate text-decoration-none"
+              style="max-width: 240px; display: inline-block; vertical-align: bottom; cursor: pointer;"
+              [title]="blogTitle()"
+              (click)="navigateToBlog()"
+            >{{ blogTitle() }}</a>
+            } @else {
             <span class="fw-semibold text-dark text-truncate" style="max-width: 240px; display: inline-block; vertical-align: bottom;">{{ blogTitle() }}</span>
+            }
           </p>
         </div>
       </div>

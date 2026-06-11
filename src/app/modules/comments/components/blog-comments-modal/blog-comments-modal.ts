@@ -263,6 +263,14 @@ export class BlogCommentsModalComponent implements OnDestroy, AfterViewChecked {
     this.loadComments();
   }
 
+  // ── Navigation ─────────────────────────────────────────────────────────
+  navigateToBlog(): void {
+    if (this.blogId()) {
+      this.closed.emit();
+      this.router.navigate([ROUTES.BLOG.DETAIL.ABSOLUTE(this.blogId())]);
+    }
+  }
+
   // ── Backdrop / close ───────────────────────────────────────────────────
   onBackdropClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('bcm-backdrop')) {

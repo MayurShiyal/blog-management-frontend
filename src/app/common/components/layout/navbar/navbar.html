@@ -67,9 +67,6 @@
 
     <div class="collapse navbar-collapse order-lg-2" [class.show]="sidebarOpen()">
       <div class="navbar-nav mx-auto pt-3 pb-2 py-lg-0 gap-1 gap-lg-2">
-        <a class="nav-link visitor-nav-link px-3 py-2 rounded-3 active" [routerLink]="routes.PUBLIC.BLOGS.ABSOLUTE" (click)="sidebarOpen.set(false)">
-          <i class="bi bi-grid-1x2 me-2 d-inline-block d-lg-none"></i>Explore Articles
-        </a>
         </div>
       
       @if (!isLoggedIn()) {

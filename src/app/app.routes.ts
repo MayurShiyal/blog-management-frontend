@@ -5,6 +5,24 @@ import { ROUTES } from './common/constants/routes.constants';
 export const routes: Routes = [
   { path: '', redirectTo: ROUTES.PUBLIC.BLOGS.ABSOLUTE.substring(1), pathMatch: 'full' },
 
+  // Visitor profile — must come BEFORE the AdminLayout block so Angular
+  // doesn't try to match ''/profile against the AdminLayout (which blocks Visitors).
+  {
+    path: '',
+    loadComponent: () =>
+      import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
+    children: [
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./modules/profile/components/profile-details/profile-details').then(
+            (m) => m.ProfileDetails
+          ),
+      },
+    ],
+  },
+
   {
     path: ROUTES.PUBLIC.ROOT,
     canActivate: [visitorGuard],
@@ -159,22 +177,6 @@ export const routes: Routes = [
         canActivate: [authorOrAdminGuard],
         loadComponent: () =>
           import('./modules/blogs/components/blog-detail/blog-detail').then((m) => m.BlogDetail),
-      },
-    ],
-  },
-
-  {
-    path: '',
-    loadComponent: () =>
-      import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
-    children: [
-      {
-        path: 'profile',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('./modules/profile/components/profile-details/profile-details').then(
-            (m) => m.ProfileDetails
-          ),
       },
     ],
   },
