@@ -89,7 +89,8 @@ export class ProfileDetails {
   }
 
   logout(): void {
-    this.auth.logout();
-    this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    this.auth.logout().subscribe(() => {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    });
   }
 }

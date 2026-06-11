@@ -1,6 +1,7 @@
-import { Component, inject, HostListener, computed, signal } from '@angular/core';
+import { Component, inject, HostListener, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthStateService } from '../../../services/auth-state.service';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { ROUTES } from '../../../constants/routes.constants';
@@ -19,16 +20,16 @@ export class Navbar {
   readonly routes = ROUTES;
   profileMenuOpen = signal(false);
 
-  isLoggedIn = computed(() => this.authState.isLoggedIn);
-  currentUser = computed(() => this.authState.currentUser);
+  isLoggedIn = toSignal(this.authState.isLoggedIn$, { initialValue: this.authState.isLoggedIn });
+  currentUser = toSignal(this.authState.user$, { initialValue: this.authState.currentUser });
 
   getUserInitial(): string {
-    const user = this.authState.currentUser;
+    const user = this.currentUser();
     return (user?.firstName?.[0] ?? user?.email?.[0] ?? 'U').toUpperCase();
   }
 
   getUserDisplayName(): string {
-    const user = this.authState.currentUser;
+    const user = this.currentUser();
     return user?.firstName ?? user?.email ?? 'User';
   }
 
@@ -37,9 +38,10 @@ export class Navbar {
   }
 
   logout(): void {
-    this.auth.logout();
-    this.profileMenuOpen.set(false);
-    this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    this.auth.logout().subscribe(() => {
+      this.profileMenuOpen.set(false);
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    });
   }
 
   @HostListener('document:click', ['$event'])

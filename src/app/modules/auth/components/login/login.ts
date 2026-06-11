@@ -56,7 +56,7 @@ export class Login implements OnInit {
             const role = res.data?.role ?? '';
 
             if (this.isAdminPortal() && role !== 'Admin') {
-              this.auth.logout();
+              this.auth.logout().subscribe();
               this.serverMsg.set({
                 type: 'danger',
                 text: 'Access denied. This portal is for administrators only.',
@@ -69,24 +69,20 @@ export class Login implements OnInit {
               : 'Login successful! Redirecting…';
             this.serverMsg.set({ type: 'success', text: welcomeMsg });
 
-            // Check for returnUrl first
-            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-            if (returnUrl) {
-              setTimeout(() => this.router.navigateByUrl(returnUrl), 800);
-              return;
-            }
-
-            // Role-based redirect
+            // Role-based redirect — Admin and Author always go to their dashboard,
+            // ignoring any returnUrl (which is a visitor/public-page URL).
+            // Only Visitors follow the returnUrl back to the public page they came from.
             let targetRoute: string;
             if (role === 'Admin') {
               targetRoute = ROUTES.DASHBOARD.ADMIN.ABSOLUTE;
             } else if (role === 'Author') {
               targetRoute = ROUTES.DASHBOARD.HOME.ABSOLUTE;
             } else {
-              // Visitor/Customer → public blogs
-              targetRoute = ROUTES.PUBLIC.BLOGS.ABSOLUTE;
+              // Visitor — honour returnUrl if present, otherwise go to public blogs
+              const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+              targetRoute = returnUrl ?? ROUTES.PUBLIC.BLOGS.ABSOLUTE;
             }
-            setTimeout(() => this.router.navigate([targetRoute]), 800);
+            setTimeout(() => this.router.navigateByUrl(targetRoute), 800);
           } else {
             this.serverMsg.set({ type: 'danger', text: res.message });
           }

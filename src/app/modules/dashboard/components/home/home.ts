@@ -38,7 +38,8 @@ export class Home implements OnInit {
   }
 
   logout(): void {
-    this.auth.logout();
-    this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    this.auth.logout().subscribe(() => {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    });
   }
 }

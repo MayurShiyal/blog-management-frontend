@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { tap, catchError, map } from 'rxjs/operators';
 import { ApiService } from '../../../common/services/api';
 import { StorageService } from '../../../common/services/storage';
 import { AuthStateService } from '../../../common/services/auth-state.service';
@@ -64,17 +64,19 @@ export class AuthService {
     return this.api.post<any>('/api/user/change-password', payload);
   }
 
-  logout(): void {
-    this.api.post('/api/user/logout', {}).subscribe({
-      next: () => {
+  logout(): Observable<void> {
+    return this.api.post('/api/user/logout', {}).pipe(
+      tap(() => {
         this.storage.clear();
         this.authState.clearAuth();
-      },
-      error: () => {
+      }),
+      catchError(() => {
         this.storage.clear();
         this.authState.clearAuth();
-      }
-    });
+        return of(undefined);
+      }),
+      map(() => undefined)
+    );
   }
 
   isLoggedIn(): boolean {

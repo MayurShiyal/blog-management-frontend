@@ -52,9 +52,10 @@ export class AdminLayout implements OnInit {
   }
 
   logout(): void {
-    this.auth.logout();
-    this.profileMenuOpen.set(false);
-    this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    this.auth.logout().subscribe(() => {
+      this.profileMenuOpen.set(false);
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    });
   }
 
   @HostListener('document:click', ['$event'])

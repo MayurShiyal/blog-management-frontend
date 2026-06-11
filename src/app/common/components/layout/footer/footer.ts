@@ -23,7 +23,8 @@ export class Footer {
   isLoggedIn = computed(() => this.authState.isLoggedIn);
 
   logout(): void {
-    this.auth.logout();
-    this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    this.auth.logout().subscribe(() => {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    });
   }
 }

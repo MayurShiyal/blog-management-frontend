@@ -419,11 +419,12 @@ export class BlogList implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.auth.logout();
-    this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    this.auth.logout().subscribe(() => {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+    });
   }
 
-  private extractError(err: unknown): string {
+  extractError(err: unknown): string {
     const e = err as { error?: { message?: string; title?: string } };
     return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
   }
