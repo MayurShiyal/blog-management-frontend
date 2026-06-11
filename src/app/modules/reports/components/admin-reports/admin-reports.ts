@@ -222,7 +222,15 @@ export class AdminReports implements OnInit, OnDestroy {
   }
 
   viewComment(item: ReportedContentItemDto): void {
-    // Resolve the blogId for this comment via the admin comment history endpoint
+    if (item.blogId) {
+      this.commentsModalBlogId.set(item.blogId);
+      this.commentsModalBlogTitle.set(item.blogTitle ?? '');
+      this.commentsModalHighlightId.set(item.contentId);
+      this.commentsModalOpen.set(true);
+      return;
+    }
+
+    // Fallback: resolve the blogId via the admin comment history endpoint
     this.commentsModalLoading.set(true);
     this.commentsModalOpen.set(false);
     this.commentSvc

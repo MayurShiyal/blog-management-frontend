@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, adminGuard, guestGuard, authorOrAdminGuard } from './common/guards/auth-guard';
+import { authGuard, adminGuard, guestGuard, authorOrAdminGuard, visitorGuard } from './common/guards/auth-guard';
 import { ROUTES } from './common/constants/routes.constants';
 
 export const routes: Routes = [
@@ -7,6 +7,7 @@ export const routes: Routes = [
 
   {
     path: ROUTES.PUBLIC.ROOT,
+    canActivate: [visitorGuard],
     loadComponent: () =>
       import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
     children: [

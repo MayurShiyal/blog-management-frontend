@@ -50,6 +50,29 @@ export const authorOrAdminGuard: CanActivateFn = (_route, _state) => {
   return router.createUrlTree([ROUTES.ERROR.FORBIDDEN]);
 };
 
+/**
+ * Guard for Visitor-only (public) routes.
+ * - Not logged in → allowed (true Visitor)
+ * - Logged in as Admin → redirect to Admin dashboard
+ * - Logged in as Author → redirect to Author dashboard
+ * - Logged in as a regular user → allowed (regular users can browse public pages)
+ *
+ * Ensures Admin/Author sessions are never treated as Visitors,
+ * even after closing and reopening the site (token restored on init).
+ */
+export const visitorGuard: CanActivateFn = (_route, _state) => {
+  const authState = inject(AuthStateService);
+  const router = inject(Router);
+
+  if (!authState.isLoggedIn) return true;
+
+  const role = authState.role;
+  if (role === 'Admin') return router.createUrlTree([ROUTES.DASHBOARD.ADMIN.ABSOLUTE]);
+  if (role === 'Author') return router.createUrlTree([ROUTES.DASHBOARD.HOME.ABSOLUTE]);
+
+  return true;
+};
+
 export const guestGuard: CanActivateFn = (_route, _state) => {
   const authState = inject(AuthStateService);
   const router = inject(Router);
