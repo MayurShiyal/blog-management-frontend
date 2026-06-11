@@ -107,9 +107,7 @@
       </div>
       <h3 class="fw-bold text-dark mb-2">No Articles Found</h3>
       <p class="text-muted mb-4">
-        @if (searchQuery()) { No articles match "<strong>{{ searchQuery() }}</strong
-        >". Try a different search term. } @else { No published articles available yet. Check back
-        soon! }
+        @if (searchQuery()) { No articles match "<strong>{{ searchQuery() }}</strong>". Try a different search term. } @else { No published articles available yet. Check back soon! }
       </p>
       @if (searchQuery()) {
       <button class="btn btn-outline-primary btn-sm me-2" (click)="clearSearch()" type="button">
@@ -221,6 +219,15 @@
                   <i class="bi bi-chat"></i>
                   <span>{{ blog.totalComments }}</span>
                 </button>
+
+                <button
+                  class="blog-action-btn d-flex align-items-center gap-1 ms-1 text-secondary"
+                  (click)="openReportModal(blog, $event)"
+                  type="button"
+                  title="Report this blog"
+                >
+                  <i class="bi bi-flag"></i>
+                </button>
               </div>
 
               <a
@@ -237,20 +244,16 @@
       }
     </div>
 
+    @if (loading()) {
     <div class="text-center mt-5">
-      @if (loading()) {
       <div class="d-flex flex-column align-items-center gap-3 text-muted">
         <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem">
           <span class="visually-hidden">Loading...</span>
         </div>
-        <span class="small">Loading more articles...</span>
+        <span class="small">Loading articles...</span>
       </div>
-      } @else if (allLoaded() && blogs().length > 0) {
-      <div class="end-of-feed d-flex flex-column align-items-center gap-2">
-        <div class="end-of-feed__dots d-flex gap-2"><span></span><span></span><span></span></div>
-      </div>
-      }
     </div>
+    }
     }
   </div>
 </div>
@@ -264,5 +267,16 @@
   (close)="closeCommentDialog()"
   (commentCountChanged)="onCommentCountChanged($event)"
   (commentLikeStateChanged)="onCommentLikeStateChanged($event)"
+/>
+}
+
+@if (reportDialogBlogId() !== null) {
+<app-report-modal
+  [show]="reportDialogBlogId() !== null"
+  contentType="blog"
+  [contentId]="reportDialogBlogId()!"
+  [contentPreview]="reportDialogBlogTitle()"
+  (reported)="onBlogReported()"
+  (cancelled)="closeReportModal()"
 />
 }

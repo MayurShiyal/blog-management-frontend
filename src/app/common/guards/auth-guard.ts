@@ -7,26 +7,47 @@ export const authGuard: CanActivateFn = (_route, _state) => {
   const authState = inject(AuthStateService);
   const router = inject(Router);
   if (authState.isLoggedIn) return true;
+  // Not authenticated at all – go to login
   return router.createUrlTree([ROUTES.AUTH.LOGIN.ABSOLUTE]);
 };
 
+/**
+ * Admin-only guard.
+ * - Not logged in  → login page
+ * - Logged in but not Admin (e.g. Author) → 403 Forbidden page
+ */
 export const adminGuard: CanActivateFn = (_route, _state) => {
   const authState = inject(AuthStateService);
   const router = inject(Router);
-  if (authState.isLoggedIn && authState.isAdmin) return true;
-  return router.createUrlTree([ROUTES.AUTH.LOGIN.ABSOLUTE]);
-};
 
-/** Only Admin and Author roles can access protected dashboard routes. */
-export const authorOrAdminGuard: CanActivateFn = (_route, _state) => {
-  const authState = inject(AuthStateService);
-  const router = inject(Router);
   if (!authState.isLoggedIn) {
     return router.createUrlTree([ROUTES.AUTH.LOGIN.ABSOLUTE]);
   }
+
+  if (authState.isAdmin) return true;
+
+  // User is authenticated but lacks the Admin role
+  return router.createUrlTree([ROUTES.ERROR.FORBIDDEN]);
+};
+
+/**
+ * Guard for routes accessible by both Admin and Author roles.
+ * - Not logged in  → login page
+ * - Logged in but wrong role (e.g. plain user) → 403 Forbidden page
+ */
+export const authorOrAdminGuard: CanActivateFn = (_route, _state) => {
+  const authState = inject(AuthStateService);
+  const router = inject(Router);
+
+  if (!authState.isLoggedIn) {
+    return router.createUrlTree([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+  }
+
   const role = authState.role;
   if (role === 'Admin' || role === 'Author') return true;
-  return router.createUrlTree([ROUTES.PUBLIC.BLOGS.ABSOLUTE]);
+
+  // Authenticated but unauthorised
+  return router.createUrlTree([ROUTES.ERROR.FORBIDDEN]);
 };
 
 export const guestGuard: CanActivateFn = (_route, _state) => {

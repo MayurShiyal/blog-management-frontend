@@ -10,9 +10,6 @@ export type StatusFilter = 'all' | 'active' | 'inactive';
   styleUrl: './category-stats.scss',
 })
 export class CategoryStats {
-  totalCount = input.required<number>();
-  activeCount = input.required<number>();
-  inactiveCount = input.required<number>();
   statusFilter = input.required<StatusFilter>();
 
   filterChange = output<StatusFilter>();

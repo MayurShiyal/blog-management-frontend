@@ -13,6 +13,7 @@ import { CategoryDto } from '../../../categories/models/category.models';
 import { LayoutService } from '../../../../common/services/layout.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { DeleteModal } from '../../../../common/components/delete-modal/delete-modal';
+import { BlogCommentsModalComponent } from '../../../comments/components/blog-comments-modal/blog-comments-modal';
 import { ROUTES } from '../../../../common/constants/routes.constants';
 
 type ViewMode = 'grid' | 'list';
@@ -24,7 +25,7 @@ interface AuthorOption {
 
 @Component({
   selector: 'app-blog-list',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DeleteModal],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, DeleteModal, BlogCommentsModalComponent],
   templateUrl: './blog-list.html',
   styleUrl: './blog-list.scss',
 })
@@ -47,9 +48,9 @@ export class BlogList implements OnInit, OnDestroy {
 
   blogs = signal<BlogListItemDto[]>([]);
   totalCount = signal(0);
-  totalPages = signal(0);
   pageNumber = signal(1);
   pageSize = signal(10);
+  readonly pageSizeOptions = [10, 20, 30];
   loading = signal(false);
 
   categories = signal<CategoryDto[]>([]);
@@ -86,16 +87,16 @@ export class BlogList implements OnInit, OnDestroy {
     reason: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(300)]],
   });
 
+  // Comments modal (admin only)
+  commentsModalOpen = signal(false);
+  commentsModalBlog = signal<BlogListItemDto | null>(null);
+
+  totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()) || 1);
+
   pages = computed(() => {
     const tp = this.totalPages();
     if (tp <= 1) return [];
-    const current = this.pageNumber();
-    const delta = 2;
-    const range: number[] = [];
-    for (let i = Math.max(1, current - delta); i <= Math.min(tp, current + delta); i++) {
-      range.push(i);
-    }
-    return range;
+    return Array.from({ length: tp }, (_, i) => i + 1);
   });
 
   updateHeader(): void {
@@ -171,7 +172,7 @@ export class BlogList implements OnInit, OnDestroy {
         status: (() => {
           const s = this.statusFilter() || undefined;
           if (this.isAdmin() && (s === 'Draft' || !s)) {
-            return s === 'Draft' ? undefined : s;  
+            return s === 'Draft' ? undefined : s;
           }
           return s;
         })(),
@@ -192,9 +193,6 @@ export class BlogList implements OnInit, OnDestroy {
               : res.items ?? [];
             this.blogs.set(items);
             this.totalCount.set(res.totalCount ?? 0);
-
-            const size = res.pageSize || this.pageSize();
-            this.totalPages.set(Math.ceil((res.totalCount ?? 0) / size));
 
             this.updateStats(items);
             if (this.isAdmin()) {
@@ -228,7 +226,10 @@ export class BlogList implements OnInit, OnDestroy {
 
   updateStats(items: BlogListItemDto[]): void {
     const visibleItems = this.isAdmin() ? items.filter((x) => x.status !== 'Draft') : items;
-    let pub = 0, pend = 0, rej = 0, draft = 0;
+    let pub = 0,
+      pend = 0,
+      rej = 0,
+      draft = 0;
     visibleItems.forEach((x) => {
       if (x.status === 'Published') pub++;
       else if (x.status === 'PendingApproval') pend++;
@@ -279,6 +280,12 @@ export class BlogList implements OnInit, OnDestroy {
       this.sortBy.set(field);
       this.sortDesc.set(true);
     }
+    this.pageNumber.set(1);
+    this.loadBlogs();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
     this.pageNumber.set(1);
     this.loadBlogs();
   }
@@ -421,9 +428,20 @@ export class BlogList implements OnInit, OnDestroy {
     return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
   }
 
+  // ── Comments modal (admin only) ────────────────────────────────────────
+  openCommentsModal(blog: BlogListItemDto): void {
+    this.commentsModalBlog.set(blog);
+    this.commentsModalOpen.set(true);
+  }
+
+  closeCommentsModal(): void {
+    this.commentsModalOpen.set(false);
+    this.commentsModalBlog.set(null);
+  }
+
   isEditable(blog: BlogListItemDto): boolean {
     if (this.isAdmin()) return false;
-    return blog.status === 'Draft' || blog.status === 'Rejected';
+    return blog.status === 'Draft';
   }
 
   canAdminModerate(blog: BlogListItemDto): boolean {
@@ -432,21 +450,31 @@ export class BlogList implements OnInit, OnDestroy {
 
   getStatusClass(status: BlogStatus): string {
     switch (status) {
-      case 'Published': return 'status-published';
-      case 'PendingApproval': return 'status-pending';
-      case 'Rejected': return 'status-rejected';
-      case 'Draft': return 'status-draft';
-      default: return 'status-draft';
+      case 'Published':
+        return 'status-published';
+      case 'PendingApproval':
+        return 'status-pending';
+      case 'Rejected':
+        return 'status-rejected';
+      case 'Draft':
+        return 'status-draft';
+      default:
+        return 'status-draft';
     }
   }
 
   getStatusLabel(status: BlogStatus): string {
     switch (status) {
-      case 'Published': return 'Published';
-      case 'PendingApproval': return 'Pending Approval';
-      case 'Rejected': return 'Rejected';
-      case 'Draft': return 'Draft';
-      default: return status;
+      case 'Published':
+        return 'Published';
+      case 'PendingApproval':
+        return 'Pending Approval';
+      case 'Rejected':
+        return 'Rejected';
+      case 'Draft':
+        return 'Draft';
+      default:
+        return status;
     }
   }
 

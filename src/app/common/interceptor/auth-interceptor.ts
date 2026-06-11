@@ -5,11 +5,15 @@ import { AuthStateService } from '../services/auth-state.service';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authState = inject(AuthStateService);
   const token = authState.getToken();
-  if (token && !req.headers.has('Authorization')) {
-    const authReq = req.clone({
+  
+  let authReq = req.clone({
+    withCredentials: true,
+  });
+
+  if (token && !authReq.headers.has('Authorization')) {
+    authReq = authReq.clone({
       setHeaders: { Authorization: `Bearer ${token}` },
     });
-    return next(authReq);
   }
-  return next(req);
+  return next(authReq);
 };

@@ -8,14 +8,14 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PublicBlogService } from '../../services/public-blog.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { ToastService } from '../../../../common/services/toast.service';
-import { LoadingComponent } from '../../../../common/components/loading/loading';
 import { CommentDialogComponent } from '../../../comments/components/comment-dialog/comment-dialog';
+import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal';
 import { PublicBlogDetailDto } from '../../models/public-blog.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
 
 @Component({
   selector: 'app-public-blog-detail',
-  imports: [CommonModule, RouterLink, LoadingComponent, CommentDialogComponent],
+  imports: [CommonModule, RouterLink, CommentDialogComponent, ReportModalComponent],
   templateUrl: './public-blog-detail.html',
   styleUrl: './public-blog-detail.scss',
 })
@@ -41,6 +41,8 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
   commentCount = signal(0);
 
   commentDialogOpen = signal(false);
+
+  reportModalOpen = signal(false);
 
   commentLikedMapCache: Record<string, boolean> = {};
   commentCountMapCache: Record<string, number> = {};
@@ -166,6 +168,37 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
 
   closeCommentDialog(): void {
     this.commentDialogOpen.set(false);
+  }
+
+  isOwnBlog(): boolean {
+    const user = this.authState.currentUser;
+    const b = this.blog();
+    if (!user || !b) return false;
+    return b.createdBy === user.id;
+  }
+
+  openReportModal(): void {
+    if (!this.isLoggedIn()) {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+    if (this.isOwnBlog()) {
+      this.toast.show('warning', 'You cannot report your own blog.');
+      return;
+    }
+    this.reportModalOpen.set(true);
+  }
+
+  closeReportModal(): void {
+    this.reportModalOpen.set(false);
+  }
+
+  onBlogReported(): void {
+    this.reportModalOpen.set(false);
+    // Blog is hidden for the current user — navigate back to listing
+    this.router.navigate([ROUTES.PUBLIC.BLOGS.ABSOLUTE]);
   }
 
   onCommentCountChanged(count: number): void {

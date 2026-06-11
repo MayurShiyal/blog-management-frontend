@@ -62,6 +62,26 @@ export const ROUTES = {
       ABSOLUTE: (id: string | number) => `/blogs/${id}`,
     },
   },
+  REPORTS: {
+    LIST: {
+      PATH: 'admin/reports',
+      ABSOLUTE: '/admin/reports',
+    },
+    HISTORY: {
+      PATH: 'admin/reports/history',
+      ABSOLUTE: '/admin/reports/history',
+    },
+  },
+  COMMENTS: {
+    HISTORY: {
+      PATH: 'admin/comments',
+      ABSOLUTE: '/admin/comments',
+    },
+  },
+  PROFILE: {
+    PATH: 'profile',
+    ABSOLUTE: '/profile',
+  },
   PUBLIC: {
     ROOT: 'public',
     BLOGS: {
@@ -72,6 +92,12 @@ export const ROUTES = {
       PATH: 'public/blogs/:id',
       ABSOLUTE: (id: string | number) => `/public/blogs/${id}`,
     },
+  },
+  ERROR: {
+    FORBIDDEN: '/error/403',
+    UNAUTHORIZED: '/error/401',
+    NOT_FOUND: '/error/404',
+    SERVER_ERROR: '/error/500',
   },
 } as const;
 

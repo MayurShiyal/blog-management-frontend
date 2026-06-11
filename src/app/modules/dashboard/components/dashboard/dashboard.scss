@@ -256,7 +256,7 @@ $sidebar-w: 240px;
 // ─── Summary Cards ────────────────────────────────────────────────────────
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
 
   @media (max-width: 991px) { grid-template-columns: repeat(2, 1fr); }
@@ -345,7 +345,9 @@ $sidebar-w: 240px;
   box-shadow: $shadow-card;
   border: 1px solid $border;
   overflow: hidden;
+  transition: box-shadow 0.2s;
 
+  &:hover { box-shadow: var(--shadow-elevated); }
   &--full { width: 100%; }
 }
 
@@ -376,8 +378,8 @@ $sidebar-w: 240px;
 .doughnut-wrap {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  padding: 1.5rem;
+  gap: 2.5rem;
+  padding: 2rem 2rem;
 
   @media (max-width: 480px) {
     flex-direction: column;
@@ -387,11 +389,11 @@ $sidebar-w: 240px;
 
 .doughnut-canvas-wrap {
   position: relative;
-  width: 160px;
-  height: 160px;
+  width: 220px;
+  height: 220px;
   flex-shrink: 0;
 
-  canvas { width: 160px !important; height: 160px !important; }
+  canvas { width: 220px !important; height: 220px !important; }
 }
 
 .doughnut-center-label {
@@ -405,19 +407,19 @@ $sidebar-w: 240px;
 }
 
 .doughnut-pct {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.875rem;
+  font-weight: 800;
   color: $text-dark;
   line-height: 1;
 }
 
 .doughnut-sub {
-  font-size: 0.72rem;
-  font-weight: 500;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: $text-muted;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-top: 2px;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
 }
 
 // Legend
@@ -430,31 +432,36 @@ $sidebar-w: 240px;
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+  &:hover { background: #f8faff; }
 }
 
 .legend-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
   flex-shrink: 0;
 
   &--primary  { background: #3730A3; }
   &--accent   { background: #6366f1; }
-  &--muted    { background: #e0e7ff; border: 1px solid #c7d2fe; }
+  &--muted    { background: #c7d2fe; border: 1px solid #a5b4fc; }
 }
 
 .legend-text {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: $text-muted;
   flex: 1;
+  font-weight: 500;
 }
 
 .legend-count {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
   color: $text-dark;
-  min-width: 24px;
+  min-width: 28px;
   text-align: right;
 }
 
@@ -708,8 +715,8 @@ $sidebar-w: 240px;
 }
 .doughnut-canvas-wrap {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 220px;
+  height: 220px;
 }
 
 .bar-canvas-wrap {

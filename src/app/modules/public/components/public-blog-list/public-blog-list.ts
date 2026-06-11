@@ -8,7 +8,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -17,9 +17,8 @@ import { PublicBlogService } from '../../services/public-blog.service';
 import { CategoryService } from '../../../categories/services/category.service';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { ToastService } from '../../../../common/services/toast.service';
-import { EmptyStateComponent } from '../../../../common/components/empty-state/empty-state';
-import { LoadingComponent } from '../../../../common/components/loading/loading';
 import { CommentDialogComponent } from '../../../comments/components/comment-dialog/comment-dialog';
+import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal'; 
 import { PublicBlogListItemDto } from '../../models/public-blog.models';
 import { CategoryDto } from '../../../categories/models/category.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
@@ -28,11 +27,9 @@ import { ROUTES } from '../../../../common/constants/routes.constants';
   selector: 'app-public-blog-list',
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
-    EmptyStateComponent,
-    LoadingComponent,
     CommentDialogComponent,
+    ReportModalComponent,
   ],
   templateUrl: './public-blog-list.html',
   styleUrl: './public-blog-list.scss',
@@ -46,14 +43,11 @@ export class PublicBlogList implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   readonly routes = ROUTES;
-  readonly PAGE_SIZE = 6;
 
   blogs = signal<PublicBlogListItemDto[]>([]);
   totalCount = signal(0);
-  pageNumber = signal(1);
   loading = signal(false);
   initialLoading = signal(true);
-  allLoaded = computed(() => this.totalCount() > 0 && this.blogs().length >= this.totalCount());
 
   categories = signal<CategoryDto[]>([]);
 
@@ -70,6 +64,10 @@ export class PublicBlogList implements OnInit, OnDestroy {
 
   commentDialogBlogId = signal<string | null>(null);
   commentDialogBlogTitle = signal<string>('');
+
+  // Report Signals
+  reportDialogBlogId = signal<string | null>(null);
+  reportDialogBlogTitle = signal<string>('');
 
   private commentLikedMapCache: Record<string, Record<string, boolean>> = {};
   private commentCountMapCache: Record<string, Record<string, number>> = {};
@@ -105,7 +103,7 @@ export class PublicBlogList implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCategories();
-    this.loadBlogs(true);
+    this.loadBlogs();
 
     this.searchSubject$
       .pipe(debounceTime(350), distinctUntilChanged(), takeUntil(this.destroy$))
@@ -131,10 +129,8 @@ export class PublicBlogList implements OnInit, OnDestroy {
       });
   }
 
-  loadBlogs(initial = false): void {
+  loadBlogs(): void {
     if (this.loading()) return;
-    if (!initial && this.allLoaded()) return;
-
     this.loading.set(true);
 
     const catId = this.selectedCategoryId();
@@ -144,8 +140,6 @@ export class PublicBlogList implements OnInit, OnDestroy {
       .getPublicBlogs({
         search: query || undefined,
         categoryIds: catId ? [catId] : undefined,
-        pageNumber: this.pageNumber(),
-        pageSize: this.PAGE_SIZE,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -154,33 +148,17 @@ export class PublicBlogList implements OnInit, OnDestroy {
           this.initialLoading.set(false);
           if (res.status) {
             const items = res.items ?? [];
-            if (initial || this.pageNumber() === 1) {
-              this.blogs.set(items);
+            this.blogs.set(items);
 
-              const countMap: Record<string, number> = {};
-              const likedMap: Record<string, boolean> = {};
+            const countMap: Record<string, number> = {};
+            const likedMap: Record<string, boolean> = {};
+            items.forEach((b) => {
+              countMap[b.id] = b.totalReactions;
+              likedMap[b.id] = b.isLiked;
+            });
+            this.blogReactionCountMap.set(countMap);
+            this.blogLikedMap.set(likedMap);
 
-              items.forEach((b) => {
-                countMap[b.id] = b.totalReactions;
-                likedMap[b.id] = b.isLiked;
-              });
-
-              this.blogReactionCountMap.set(countMap);
-              this.blogLikedMap.set(likedMap);
-            } else {
-              this.blogs.update((existing) => [...existing, ...items]);
-
-              const newCounts: Record<string, number> = {};
-              const newLikes: Record<string, boolean> = {};
-
-              items.forEach((b) => {
-                newCounts[b.id] = b.totalReactions;
-                newLikes[b.id] = b.isLiked;
-              });
-
-              this.blogReactionCountMap.update((m) => ({ ...m, ...newCounts }));
-              this.blogLikedMap.update((m) => ({ ...m, ...newLikes }));
-            }
             this.totalCount.set(res.totalCount ?? 0);
           } else {
             this.toast.show('danger', res.message || 'Failed to load blogs.');
@@ -194,18 +172,11 @@ export class PublicBlogList implements OnInit, OnDestroy {
       });
   }
 
-  loadMore(): void {
-    if (this.loading() || this.allLoaded()) return;
-    this.pageNumber.update((p) => p + 1);
-    this.loadBlogs(false);
-  }
-
   resetAndLoad(): void {
-    this.pageNumber.set(1);
     this.blogs.set([]);
     this.totalCount.set(0);
     this.initialLoading.set(true);
-    this.loadBlogs(true);
+    this.loadBlogs();
   }
 
   onSearchInput(value: string): void {
@@ -343,22 +314,33 @@ export class PublicBlogList implements OnInit, OnDestroy {
     );
   }
 
-  private _scrollThrottled = false;
+  openReportModal(blog: PublicBlogListItemDto, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
 
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    if (this._scrollThrottled) return;
-    this._scrollThrottled = true;
-    requestAnimationFrame(() => {
-      this._scrollThrottled = false;
-      if (this.loading() || this.allLoaded()) return;
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight;
-      const winHeight = window.innerHeight;
-      if (scrollTop + winHeight >= docHeight - 300) {
-        this.loadMore();
-      }
-    });
+    if (!this.isLoggedIn()) {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+
+    this.reportDialogBlogId.set(blog.id);
+    this.reportDialogBlogTitle.set(blog.title);
+  }
+
+  closeReportModal(): void {
+    this.reportDialogBlogId.set(null);
+  }
+
+  onBlogReported(): void {
+    const activeId = this.reportDialogBlogId();
+    if (activeId) {
+      this.blogs.update((list) => list.filter((b) => b.id !== activeId));
+      this.totalCount.update((count) => Math.max(0, count - 1));
+      this.toast.show('success', 'Blog content has been reported.');
+    }
+    this.reportDialogBlogId.set(null);
   }
 
   getExcerpt(blog: PublicBlogListItemDto): string {

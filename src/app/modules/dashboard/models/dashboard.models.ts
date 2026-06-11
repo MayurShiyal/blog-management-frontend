@@ -3,7 +3,6 @@
 export interface DashboardSummaryDto {
   totalUsers: number;
   totalBlogs: number;
-  totalCategories: number;
 }
 
 export interface GetDashboardSummaryResponse {

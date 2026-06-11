@@ -5,21 +5,32 @@
   </label>
   }
 
-  <input
-    [id]="id"
-    type="email"
-    class="form-control rounded-3"
-    [class.is-invalid]="control.invalid && control.touched"
-    [placeholder]="placeholder"
-    [formControl]="control"
-    autocomplete="email"
-  />
+  <div class="position-relative">
+    <input
+      [id]="id"
+      type="email"
+      class="form-control rounded-3"
+      [class.is-invalid]="control.invalid && (control.touched || control.dirty)"
+      [placeholder]="placeholder"
+      [formControl]="control"
+      autocomplete="email"
+    />
 
-  @if (control.invalid && control.touched) {
+    @if (control.pending) {
+    <div
+      class="spinner-border spinner-border-sm text-primary position-absolute end-0 top-50 translate-middle-y me-3"
+      role="status"
+      style="z-index: 5"
+    ></div>
+    }
+  </div>
+
+  @if (control.invalid && (control.touched || control.dirty)) {
   <div class="invalid-feedback d-block">
     @if (control.errors?.['required']) {
     {{ label || 'Email' }} is required. } @else if (control.errors?.['email'] ||
-    control.errors?.['pattern']) { Please enter a valid email address. }
+    control.errors?.['pattern']) { Please enter a valid email address. } @else if
+    (control.errors?.['emailExists']) { An account with this email address already exists. }
   </div>
   }
 </div>

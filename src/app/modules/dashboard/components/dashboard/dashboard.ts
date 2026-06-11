@@ -184,21 +184,29 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
           datasets: [
             {
               data: [st.users.active, st.users.inactive],
-              backgroundColor: ['#3730A3', '#e0e7ff'],
-              borderWidth: 0,
-              hoverOffset: 6,
+              backgroundColor: ['#3730A3', '#c7d2fe'],
+              hoverBackgroundColor: ['#4338CA', '#a5b4fc'],
+              borderWidth: 3,
+              borderColor: '#ffffff',
+              hoverOffset: 10,
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: '72%',
+          cutout: '68%',
+          animation: { animateRotate: true, animateScale: true, duration: 800 },
           plugins: {
             legend: { display: false },
             tooltip: {
+              backgroundColor: '#1e293b',
+              titleColor: '#e2e8f0',
+              bodyColor: '#94a3b8',
+              padding: 12,
+              cornerRadius: 10,
               callbacks: {
-                label: (ctx) => ` ${ctx.label}: ${ctx.parsed}`,
+                label: (ctx) => `  ${ctx.label}: ${ctx.parsed} users`,
               },
             },
           },
@@ -217,21 +225,29 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
           datasets: [
             {
               data: [st.categories.active, st.categories.inactive],
-              backgroundColor: ['#6366f1', '#e0e7ff'],
-              borderWidth: 0,
-              hoverOffset: 6,
+              backgroundColor: ['#6366f1', '#ddd6fe'],
+              hoverBackgroundColor: ['#4f46e5', '#c4b5fd'],
+              borderWidth: 3,
+              borderColor: '#ffffff',
+              hoverOffset: 10,
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: '72%',
+          cutout: '68%',
+          animation: { animateRotate: true, animateScale: true, duration: 800 },
           plugins: {
             legend: { display: false },
             tooltip: {
+              backgroundColor: '#1e293b',
+              titleColor: '#e2e8f0',
+              bodyColor: '#94a3b8',
+              padding: 12,
+              cornerRadius: 10,
               callbacks: {
-                label: (ctx) => ` ${ctx.label}: ${ctx.parsed}`,
+                label: (ctx) => `  ${ctx.label}: ${ctx.parsed} categories`,
               },
             },
           },

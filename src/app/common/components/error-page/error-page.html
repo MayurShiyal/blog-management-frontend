@@ -1,0 +1,40 @@
+<div class="error-shell">
+  <div class="error-card">
+    <!-- Icon badge -->
+    <div class="error-icon-wrap" [style.--icon-color]="config().iconColor">
+      <div class="error-icon-ring">
+        <i class="bi {{ config().icon }} error-icon"></i>
+      </div>
+    </div>
+
+    <!-- Status code badge -->
+    <div class="error-code">{{ config().code }}</div>
+
+    <!-- Title & message -->
+    <h1 class="error-title">{{ config().title }}</h1>
+    <p class="error-message">{{ config().message }}</p>
+    <p class="error-description">{{ config().description }}</p>
+
+    <!-- Actions -->
+    <div class="error-actions">
+      <button class="btn-primary-action" (click)="navigatePrimary()" type="button">
+        {{ config().primaryLabel }}
+      </button>
+
+      @if (config().showSecondary) {
+        <button class="btn-secondary-action" (click)="goBack()" type="button">
+          <i class="bi bi-arrow-left me-1"></i> Go Back
+        </button>
+      }
+    </div>
+
+    <!-- Helpful links -->
+    <div class="error-footer">
+      <a [routerLink]="'/public/blogs'" class="footer-link">Home</a>
+      @if (!isLoggedIn()) {
+        <span class="footer-sep">·</span>
+        <a [routerLink]="'/auth/login'" class="footer-link">Sign In</a>
+      }
+    </div>
+  </div>
+</div>

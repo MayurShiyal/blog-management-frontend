@@ -45,10 +45,18 @@
             <a
               class="dropdown-item rounded-2 small py-2"
               [routerLink]="routes.DASHBOARD.HOME.ABSOLUTE"
+              (click)="profileMenuOpen.set(false)"
             >
               <i class="bi bi-speedometer2 me-2"></i>Dashboard
             </a>
             }
+            <a
+              class="dropdown-item rounded-2 small py-2"
+              [routerLink]="'/profile'"
+              (click)="profileMenuOpen.set(false)"
+            >
+              <i class="bi bi-person me-2"></i>My Profile
+            </a>
             <button
               class="dropdown-item rounded-2 small py-2 text-danger w-100 text-start border-0 bg-transparent"
               (click)="logout()"

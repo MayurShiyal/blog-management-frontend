@@ -33,27 +33,6 @@
         <i class="bi bi-arrow-right-circle"></i>
       </a>
     </div>
-
-    <div class="stat-card">
-      <div class="stat-card__icon stat-card__icon--categories">
-        <i class="bi bi-tags-fill"></i>
-      </div>
-      <div class="stat-card__body">
-        <div class="stat-card__label">Total Categories</div>
-        @if (loadingSummary()) {
-        <div class="stat-skeleton"></div>
-        } @else {
-        <div class="stat-card__value">{{ summary()?.totalCategories ?? 0 }}</div>
-        }
-      </div>
-      <a
-        [routerLink]="routes.CATEGORIES.LIST.ABSOLUTE"
-        class="stat-card__link"
-        title="Manage categories"
-      >
-        <i class="bi bi-arrow-right-circle"></i>
-      </a>
-    </div>
   </div>
 </section>
 
@@ -173,7 +152,9 @@
             </td>
             <td class="td-author">
               <div class="author-chip">
-                <div class="author-avatar">{{ blog.authorName.charAt(0) | uppercase }}</div>
+                <div class="author-avatar">
+                  {{ blog.authorName.charAt(0) | uppercase }}
+                </div>
                 <span>{{ blog.authorName }}</span>
               </div>
             </td>

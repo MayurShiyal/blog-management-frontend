@@ -1,0 +1,250 @@
+<div class="rh-page container-fluid px-0">
+  <div
+    class="rh-page__topbar d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3"
+  >
+    <div class="d-flex align-items-center gap-3">
+      <button type="button" class="rh-back-btn" (click)="goBack()" title="Back to Reports">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <div>
+        <h4 class="mb-0 fw-bold tracking-tight text-dark fs-5">Report History</h4>
+        <p class="mb-0 text-muted text-xs">Complete history of all reported blogs and comments</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white border border-light-subtle rounded-3 shadow-sm overflow-hidden w-100">
+    <div class="rh-tabs d-flex border-bottom">
+      <button
+        type="button"
+        class="rh-tab"
+        [class.rh-tab--active]="activeTab() === 'all'"
+        (click)="switchTab('all')"
+      >
+        <i class="bi bi-clock-history"></i> All Reports
+      </button>
+      <button
+        type="button"
+        class="rh-tab"
+        [class.rh-tab--active]="activeTab() === 'blog'"
+        (click)="switchTab('blog')"
+      >
+        <i class="bi bi-file-earmark-richtext"></i> Blog Reports
+      </button>
+      <button
+        type="button"
+        class="rh-tab"
+        [class.rh-tab--active]="activeTab() === 'comment'"
+        (click)="switchTab('comment')"
+      >
+        <i class="bi bi-chat-left-dots"></i> Comment Reports
+      </button>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center gap-2 px-3 py-3 border-bottom bg-light-subtle">
+      <div class="position-relative rh-search">
+        <i class="bi bi-search rh-search__icon"></i>
+        <input
+          type="text"
+          class="form-control form-control-sm rh-search__input"
+          placeholder="Search by reporter, content or reason…"
+          [formControl]="searchControl"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="dropdown">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 dropdown-toggle text-xs px-2.5 py-1.5"
+          (click)="toggleStatusDropdown()"
+          [attr.aria-expanded]="statusDropdownOpen()"
+        >
+          <i class="bi bi-funnel"></i>
+          {{ selectedStatusLabel() }}
+        </button>
+        <ul
+          class="dropdown-menu shadow-sm rounded-3 p-2 mt-1 border-light-subtle"
+          [class.show]="statusDropdownOpen()"
+        >
+          <li>
+            <button
+              class="dropdown-item rounded-2 small text-xs"
+              type="button"
+              (click)="setStatusFilter(null)"
+            >
+              All Statuses
+            </button>
+          </li>
+          @for (opt of STATUS_OPTIONS; track opt.value) {
+          <li>
+            <button
+              class="dropdown-item rounded-2 small text-xs d-flex align-items-center justify-content-between"
+              type="button"
+              (click)="setStatusFilter(opt.value)"
+              [class.active]="statusFilter() === opt.value"
+            >
+              {{ opt.label }}
+            </button>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <span class="ms-auto text-muted text-xs fw-medium">
+        {{ totalCount() }} item{{ totalCount() !== 1 ? 's' : '' }} found
+      </span>
+    </div>
+
+    <div class="w-100 overflow-x-auto">
+      @if (loading()) {
+      <div
+        class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 gap-2"
+      >
+        <div
+          class="spinner-border spinner-border-sm text-primary"
+          role="status"
+          aria-hidden="true"
+        ></div>
+        <span class="text-xs text-secondary mt-1">Loading report logs…</span>
+      </div>
+      } @else if (items().length === 0) {
+      <div
+        class="d-flex flex-column align-items-center justify-content-center text-muted text-sm py-5 gap-2 px-3"
+      >
+        <i class="bi bi-clock-history display-5 mb-1 text-muted opacity-25"></i>
+        <p class="text-center text-xs m-0 text-secondary">
+          @if (searchQuery()) { No matching history records found for "<strong>{{
+            searchQuery()
+          }}</strong
+          >". } @else if (statusFilter() !== null) { No historic logs found with the selected
+          lifecycle status. } @else { This tracking log repository is currently empty. }
+        </p>
+      </div>
+      } @else {
+      <table class="rh-table">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 50px">#</th>
+            <th>Reporter</th>
+            <th>Target Content</th>
+            <th>Violation Type</th>
+            <th>Reasoning Statement</th>
+            <th class="text-center">Resolution Status</th>
+            <th>Logged Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items(); track item.reportId; let i = $index) {
+          <tr>
+            <td class="row-num text-center fw-medium">
+              {{ (pageNumber() - 1) * pageSize() + i + 1 }}
+            </td>
+            <td>
+              <div class="reporter-cell">
+                <div class="reporter-avatar">{{ getInitials(item.reporterName) }}</div>
+                <span class="reporter-name" [title]="item.reporterName">{{
+                  item.reporterName || 'Anonymous User'
+                }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="content-cell">
+                <span class="content-type-pill content-type-pill--{{ item.contentType }}">
+                  <i
+                    class="bi"
+                    [class.bi-file-earmark-richtext]="item.contentType === 'blog'"
+                    [class.bi-chat-left-dots]="item.contentType === 'comment'"
+                  ></i>
+                  {{ item.contentType | titlecase }}
+                </span>
+                <span class="content-preview" [title]="item.contentPreview">{{
+                  item.contentPreview
+                }}</span>
+              </div>
+            </td>
+            <td>
+              @if (item.reportType) {
+              <span class="rh-type-badge">{{ getTypeLabel(item.reportType) }}</span>
+              } @else {
+              <span class="text-muted text-xs opacity-50">—</span>
+              }
+            </td>
+            <td>
+              <div class="reason-cell text-secondary" [title]="item.reason">
+                {{ item.reason || 'No additional comment provided.' }}
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="rh-status-badge rh-status-badge--{{ getStatusClass(item.status) }}">
+                {{ getStatusLabel(item.status) }}
+              </span>
+            </td>
+            <td class="date-cell font-monospace">{{ formatDate(item.reportDate) }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+
+    <div
+      class="d-flex align-items-center justify-content-between p-3 border-top bg-light-subtle flex-wrap gap-2"
+    >
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted text-xs">Rows per page:</span>
+        <select
+          class="form-select form-select-sm text-xs rounded-2 bg-white"
+          style="width: auto; min-width: 75px"
+          [value]="pageSize()"
+          (change)="onPageSizeChange(+$any($event.target).value)"
+          aria-label="Records scale page size"
+        >
+          @for (opt of pageSizeOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+        @if (totalCount() > 0) {
+        <span class="text-muted text-xs ms-1">
+          Showing <strong>{{ (pageNumber() - 1) * pageSize() + 1 }}</strong
+          >–<strong>{{
+            pageNumber() * pageSize() > totalCount() ? totalCount() : pageNumber() * pageSize()
+          }}</strong>
+          of <strong>{{ totalCount() }}</strong> entries
+        </span>
+        }
+      </div>
+
+      @if (totalPages() > 1) {
+      <div class="d-flex align-items-center gap-1">
+        <button
+          class="page-btn"
+          [disabled]="pageNumber() === 1"
+          (click)="goToPage(pageNumber() - 1)"
+          type="button"
+        >
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        @for (p of pages(); track p) {
+        <button
+          type="button"
+          class="page-btn"
+          [class.page-btn--active]="p === pageNumber()"
+          (click)="goToPage(p)"
+        >
+          {{ p }}
+        </button>
+        }
+        <button
+          class="page-btn"
+          [disabled]="pageNumber() === totalPages()"
+          (click)="goToPage(pageNumber() + 1)"
+          type="button"
+        >
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+</div>

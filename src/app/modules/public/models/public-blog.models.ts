@@ -34,7 +34,8 @@ export interface PublicBlogDetailDto {
   categoryIds: string[];
   categoryNames: string[];
   authorName?: string | null;
-  isLiked: boolean; 
+  isLiked: boolean;
+  createdBy: string;
   publishedAt?: string | null;
   totalComments: number;
   totalReactions: number;

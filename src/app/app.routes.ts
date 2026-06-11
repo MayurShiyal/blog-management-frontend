@@ -81,6 +81,14 @@ export const routes: Routes = [
     canActivate: [authorOrAdminGuard],
     children: [
       {
+        path: 'profile',
+        canActivate: [authorOrAdminGuard],
+        loadComponent: () =>
+          import('./modules/profile/components/profile-details/profile-details').then(
+            (m) => m.ProfileDetails
+          ),
+      },
+      {
         path: ROUTES.DASHBOARD.HOME.PATH,
         canActivate: [authorOrAdminGuard],
         loadComponent: () => import('./modules/dashboard/components/home/home').then((m) => m.Home),
@@ -110,6 +118,24 @@ export const routes: Routes = [
       },
 
       {
+        path: ROUTES.REPORTS.LIST.PATH,
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./modules/reports/components/admin-reports/admin-reports').then(
+            (m) => m.AdminReports
+          ),
+      },
+
+      {
+        path: ROUTES.REPORTS.HISTORY.PATH,
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./modules/reports/components/report-history/report-history').then(
+            (m) => m.ReportHistory
+          ),
+      },
+
+      {
         path: ROUTES.BLOG.LIST.PATH,
         canActivate: [authorOrAdminGuard],
         loadComponent: () =>
@@ -134,6 +160,29 @@ export const routes: Routes = [
           import('./modules/blogs/components/blog-detail/blog-detail').then((m) => m.BlogDetail),
       },
     ],
+  },
+
+  {
+    path: '',
+    loadComponent: () =>
+      import('./common/components/layout/visitor-layout/visitor-layout').then((m) => m.VisitorLayout),
+    children: [
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./modules/profile/components/profile-details/profile-details').then(
+            (m) => m.ProfileDetails
+          ),
+      },
+    ],
+  },
+
+  // Error pages
+  {
+    path: 'error/:code',
+    loadComponent: () =>
+      import('./common/components/error-page/error-page').then((m) => m.ErrorPage),
   },
 
   { path: '**', redirectTo: ROUTES.PUBLIC.BLOGS.ABSOLUTE.substring(1) },

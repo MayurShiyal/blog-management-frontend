@@ -1,8 +1,10 @@
 // Layout Variable Mappings
 $brand: var(--brand-primary, #6366f1);
 $brand-dark: var(--brand-primary-dark, #4f46e5);
-$brand-light: var(--brand-light, rgba(99, 102, 241, 0.1));
-$border: var(--border-color, #e2e8f0);
+$brand-light: var(--brand-light, rgba(99, 102, 241, 0.06));
+$border: var(--border-color, #f1f5f9);
+$text-main: #334155;
+$text-muted: #64748b;
 $danger: var(--danger, #ef4444);
 
 // Text & Dimension Utilities
@@ -21,7 +23,7 @@ $danger: var(--danger, #ef4444);
 
 // --- Tab Controls ---
 .blog-tab-btn {
-  transition: color 0.15s;
+  transition: color 0.15s ease;
   &:hover {
     color: $brand !important;
   }
@@ -42,37 +44,36 @@ $danger: var(--danger, #ef4444);
 
 // --- View Layout Selection Controls ---
 .view-toggle-btn {
-  transition: background 0.15s, color 0.15s;
+  transition: all 0.15s ease;
   &:hover {
     background: $brand-light;
     color: $brand !important;
   }
   &--active {
-    background: $brand !important;
-    color: #fff !important;
-    &:hover {
-      background: $brand-dark !important;
-    }
+    background: #f8fafc !important;
+    color: $brand !important;
+    font-weight: 600;
   }
 }
 
 // --- Dashboard Component Cards ---
 .blog-card {
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+  border: 1px solid #f1f5f9 !important;
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(55, 48, 163, 0.08) !important;
+    box-shadow: 0 12px 20px rgba(99, 102, 241, 0.05) !important;
   }
 }
 
 .blog-card__image-container {
-  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
 }
 
 .blog-card__img {
-  transition: transform 0.3s;
+  transition: transform 0.3s ease;
   .blog-card:hover & {
-    transform: scale(1.04);
+    transform: scale(1.03);
   }
 }
 
@@ -88,48 +89,81 @@ $danger: var(--danger, #ef4444);
 
 .blog-card__description {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  color: $text-muted;
 }
 
-// --- Dynamic Dynamic State Colors ---
-.bg-status.status-published {
-  background-color: #dcfce7 !important;
-  color: var(--bs-success) !important;
-}
-.bg-status.status-pending {
-  background-color: #fffbeb !important;
-  color: #d97706 !important;
-}
-.bg-status.status-rejected {
-  background-color: #fef2f2 !important;
-  color: $danger !important;
-}
-.bg-status.status-draft {
-  background-color: #f3f4f6 !important;
-  color: var(--bs-text-muted) !important;
-}
+// --- Dynamic State Colors ---
+.bg-status {
+  padding: 0.35em 0.75em !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.02em;
 
-// --- Table Data Structures ---
-.blog-list-table {
-  min-width: 800px; // Fix: Guarantees responsive table wrapping container alignment
-  th {
-    background: #f8fafc;
-    color: var(--bs-secondary-color);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid $border;
+  &.status-published {
+    background-color: #f0fdf4 !important;
+    color: #16a34a !important;
   }
+  &.status-pending {
+    background-color: #fffbeb !important;
+    color: #d97706 !important;
+  }
+  &.status-rejected {
+    background-color: #fef2f2 !important;
+    color: $danger !important;
+  }
+  &.status-draft {
+    background-color: #f8fafc !important;
+    color: $text-muted !important;
+  }
+}
+
+// --- Cleaned Up Modern Table Structure ---
+.blog-list-table {
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0 8px; // Creates a clean separate rows look
+
+  th {
+    background: transparent;
+    color: $text-muted;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    border-bottom: 2px solid #f1f5f9;
+  }
+
   tbody tr {
-    border-bottom: 1px solid $border;
-    transition: background 0.12s;
-    &:hover {
-      background: #f8fafc;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+
+    td {
+      padding: 14px 16px;
+      vertical-align: middle;
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+
+      &:first-child {
+        border-left: 1px solid #f1f5f9;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      &:last-child {
+        border-right: 1px solid #f1f5f9;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
     }
-    &:last-child {
-      border-bottom: none;
+
+    &:hover {
+      background: #fafafa;
+      transform: scale(1.002);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
   }
 }
@@ -140,6 +174,8 @@ $danger: var(--danger, #ef4444);
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: $text-main;
+    transition: color 0.15s;
     &:hover {
       color: $brand;
     }
@@ -149,6 +185,41 @@ $danger: var(--danger, #ef4444);
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: $text-muted;
+    max-width: 320px;
+  }
+}
+
+// --- Metrics Elements ---
+.table-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #f8fafc;
+  border-radius: 6px;
+  font-weight: 500;
+  color: $text-main;
+
+  &--clickable {
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    &:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+  }
+}
+
+.comment-count-clickable {
+  cursor: pointer;
+  transition: opacity 0.15s;
+  border-radius: 6px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  &:hover {
+    opacity: 0.75;
+    background: rgba(37, 99, 235, 0.07);
   }
 }
 
@@ -157,30 +228,28 @@ $danger: var(--danger, #ef4444);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid $border;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
   background: #fff;
-  color: var(--bs-secondary-color);
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: all 0.15s;
+  color: $text-muted;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: $brand-light;
+    background: #f8fafc;
     color: $brand;
-    border-color: $brand;
+    border-color: #cbd5e1;
   }
   &--edit:hover {
-    background: #eff6ff;
-    color: #3b82f6;
-    border-color: #3b82f6;
+    background: #f0f9ff;
+    color: #0284c7;
+    border-color: #bae6fd;
   }
   &--delete:hover {
     background: #fef2f2;
     color: $danger;
-    border-color: $danger;
+    border-color: #fecaca;
   }
   &--approve {
     background: #f0fdf4;
@@ -206,24 +275,23 @@ $danger: var(--danger, #ef4444);
 
 // --- Pagination Configurations ---
 .page-btn {
-  min-width: 34px;
-  height: 34px;
-  padding: 0 6px;
-  border: 1px solid $border;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   background: #fff;
-  color: var(--bs-body-color);
+  color: $text-main;
   font-size: 0.8125rem;
   font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
 
   &:hover:not([disabled]):not(.page-btn--active) {
-    background: $brand-light;
-    border-color: $brand;
-    color: $brand;
+    background: #f8fafc;
+    border-color: #cbd5e1;
   }
   &--active {
     background: $brand;
@@ -241,8 +309,8 @@ $danger: var(--danger, #ef4444);
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(2px);
+  background: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(4px);
   z-index: 300;
 }
 
@@ -256,52 +324,6 @@ $danger: var(--danger, #ef4444);
   max-width: 500px;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
   max-height: 90vh;
-
-  @media (max-width: 575px) {
-    max-width: calc(100% - 2rem);
-    margin: 0 1rem;
-  }
-}
-
-.modal-close-btn {
-  background: none;
-  border: none;
-  color: var(--bs-secondary-color);
-  padding: 4px 6px;
-  border-radius: 6px;
-  &:hover {
-    background: #f8fafc;
-    color: var(--bs-body-color);
-  }
-}
-@media (max-width: 767.98px) {
-  .position-relative.flex-grow-1[style*='max-width: 300px'] {
-    max-width: 100% !important;
-    width: 100%;
-  }
-
-  .d-flex.flex-wrap.gap-2.align-items-center.w-100 {
-    flex-direction: column;
-    align-items: stretch !important;
-
-    div,
-    select,
-    button,
-    a {
-      width: 100% !important;
-    }
-
-    .d-flex.border.rounded-2 {
-      width: 100% !important;
-      button {
-        flex: 1;
-      }
-    }
-  }
-
-  .p-4 {
-    padding: 1rem !important;
-  }
 }

@@ -41,33 +41,33 @@ export class CategoryList implements OnInit, OnDestroy {
 
   categories = signal<CategoryDto[]>([]);
   totalCount = signal(0);
-  totalPages = signal(0);
   pageNumber = signal(1);
   pageSize = signal(10);
-  searchQuery = signal('');
+  readonly pageSizeOptions = [10, 20, 30];
   loading = signal(false);
   formLoading = signal(false);
 
   statusFilter = signal<StatusFilter>('all');
-  activeCount = signal(0);
-  inactiveCount = signal(0);
-
-  modalMode = signal<ModalMode>('create');
-  modalOpen = signal(false);
-  editingCategory = signal<CategoryDto | null>(null);
-
-  deleteTargetId = signal<string | null>(null);
-  deleteTargetName = signal('');
-  deleteOpen = signal(false);
-  deleteLoading = signal(false);
+  searchQuery = signal('');
 
   isAdmin = computed(() => this.authState.isAdmin);
+
+  totalPages = computed(() => Math.ceil(this.totalCount() / this.pageSize()) || 1);
 
   pages = computed(() => {
     const tp = this.totalPages();
     if (tp <= 1) return [];
     return Array.from({ length: tp }, (_, i) => i + 1);
   });
+
+  modalMode = signal<ModalMode>('create');
+  modalOpen = signal(false);
+  editingCategory = signal<CategoryDto | null>(null);
+
+  deleteOpen = signal(false);
+  deleteTargetId = signal<string | null>(null);
+  deleteTargetName = signal('');
+  deleteLoading = signal(false);
 
   searchControl = this.fb.control<string>('');
 
@@ -114,9 +114,6 @@ export class CategoryList implements OnInit, OnDestroy {
           if (res.status) {
             this.categories.set(res.items ?? []);
             this.totalCount.set(res.totalCount ?? 0);
-            this.totalPages.set(res.totalPages ?? 0);
-            this.activeCount.set(res.activeCount ?? 0);
-            this.inactiveCount.set(res.inactiveCount ?? 0);
           } else {
             this.toast.show('danger', res.message || 'Failed to load categories.');
           }
@@ -138,6 +135,12 @@ export class CategoryList implements OnInit, OnDestroy {
   onDropdownFilterChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value as StatusFilter;
     this.setStatusFilter(value);
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.pageNumber.set(1);
+    this.loadCategories();
   }
 
   goToPage(page: number): void {
@@ -194,7 +197,6 @@ export class CategoryList implements OnInit, OnDestroy {
     } else {
       const id = this.editingCategory()!.id;
       this.svc
-        // CLEANUP: Removed the temporary cast here
         .update(id, payload as UpdateCategoryRequest)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -224,7 +226,6 @@ export class CategoryList implements OnInit, OnDestroy {
       isActive: !cat.isActive,
     };
     this.svc
-      // CLEANUP: Removed the temporary cast here
       .update(cat.id, payload)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -261,7 +262,6 @@ export class CategoryList implements OnInit, OnDestroy {
 
     this.deleteLoading.set(true);
     this.svc
-      // CLEANUP: Removed the temporary cast here
       .delete(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

@@ -10,6 +10,7 @@ import { lastValueFrom } from 'rxjs'; // 👈 IMPORT THIS
 
 import { routes } from './app.routes';
 import { authInterceptor } from './common/interceptor/auth-interceptor';
+import { httpErrorInterceptor } from './common/interceptor/http-error-interceptor';
 import { AuthStateService } from './common/services/auth-state.service';
 
 function initializeAuth(authState: AuthStateService) {
@@ -21,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor])),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAuth,

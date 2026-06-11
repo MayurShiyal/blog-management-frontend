@@ -1,0 +1,101 @@
+.rh-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1060;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+
+  @media (min-width: 576px) {
+    align-items: center;
+  }
+}
+
+.rh-modal {
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  animation: slideUp 0.2s ease;
+
+  @media (min-width: 576px) {
+    border-radius: 16px;
+    animation: scaleIn 0.18s ease;
+  }
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+  }
+}
+
+.rh-icon-wrap {
+  width: 36px;
+  height: 36px;
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.rh-item {
+  background: #fafbff;
+  border: 1px solid #e8edf5;
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  transition: background 0.1s;
+
+  &:hover {
+    background: #f5f7ff;
+  }
+}
+
+.rh-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-light, #eff6ff);
+  color: var(--brand-primary, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+
+// Status badges
+.rh-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &--open      { background: #f0f9ff; color: #0369a1; }
+  &--review    { background: #fefce8; color: #a16207; }
+  &--approved  { background: #f0fdf4; color: #15803d; }
+  &--rejected  { background: #fef2f2; color: #dc2626; }
+}
+
+.min-w-0 { min-width: 0; }
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }

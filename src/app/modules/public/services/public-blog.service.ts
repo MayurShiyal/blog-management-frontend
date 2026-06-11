@@ -11,6 +11,7 @@ import { ReactToBlogResponse, ReactToCommentResponse } from '../models/reaction.
 export class PublicBlogService {
   private readonly api = inject(ApiService);
   private readonly base = '/api/blogs';
+  private readonly publicBase = '/api/public/blogs';
   private readonly reactionsBase = '/api/reactions';
 
   getPublicBlogs(params: {
@@ -35,11 +36,11 @@ export class PublicBlogService {
     }
 
     const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
-    return this.api.get<GetPublicBlogsResponse>(`${this.base}/public${queryString}`);
+    return this.api.get<GetPublicBlogsResponse>(`${this.publicBase}${queryString}`);
   }
 
   getPublicBlogById(id: string): Observable<GetPublicBlogByIdResponse> {
-    return this.api.get<GetPublicBlogByIdResponse>(`${this.base}/public/${id}`);
+    return this.api.get<GetPublicBlogByIdResponse>(`${this.publicBase}/${id}`);
   }
 
   reactToBlog(blogId: string): Observable<ReactToBlogResponse> {

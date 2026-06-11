@@ -16,6 +16,8 @@ export interface BlogListItemDto {
   createdAt: string;
   updatedAt?: string | null;
   publishedAt?: string | null;
+  totalComments?: number;
+  totalLikes?: number;
 }
 
 export interface GetBlogsResponse {

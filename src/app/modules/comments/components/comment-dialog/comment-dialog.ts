@@ -21,12 +21,20 @@ import { AuthStateService } from '../../../../common/services/auth-state.service
 import { ToastService } from '../../../../common/services/toast.service';
 import { LoadingComponent } from '../../../../common/components/loading/loading';
 import { EmptyStateComponent } from '../../../../common/components/empty-state/empty-state';
+import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal';
 import { CommentDto } from '../../models/comment.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
 
 @Component({
   selector: 'app-comment-dialog',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, LoadingComponent, EmptyStateComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    LoadingComponent,
+    EmptyStateComponent,
+    ReportModalComponent,
+  ],
   templateUrl: './comment-dialog.html',
   styleUrl: './comment-dialog.scss',
 })
@@ -69,7 +77,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
     content: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(1000)]],
   });
   commentSubmitting = signal(false);
-
+  paginationLoading = signal(false);
   replyOpenFor = signal<string | null>(null);
   replyForms: Record<string, ReturnType<typeof this.fb.group>> = {};
   replySubmitting = signal(false);
@@ -77,6 +85,11 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   commentLikeLoading = signal<Record<string, boolean>>({});
   commentLikedMap = signal<Record<string, boolean>>({});
   commentReactionCountMap = signal<Record<string, number>>({});
+
+  // ── Report state ─────────────────────────────────────────────────────────
+  reportModalOpen = signal(false);
+  reportTargetId = signal<string | null>(null);
+  reportTargetPreview = signal('');
 
   readonly isLoggedIn = toSignal(this.authState.isLoggedIn$, {
     initialValue: this.authState.isLoggedIn,
@@ -184,7 +197,7 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
           if (res.status) {
             const incoming = res.items ?? [];
             const sortedIncoming = [...incoming].sort(
-              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
             );
             if (reset || this.pageNumber() === 1) {
               this.comments.set(sortedIncoming);
@@ -222,11 +235,48 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadMoreComments(): void {
-    if (this.allLoaded() || this.loading()) return;
-    this.pageNumber.update((p) => p + 1);
-    this.loadComments(false);
+loadMoreComments(): void {
+  if (this.allLoaded() || this.loading() || this.paginationLoading()) {
+    return;
   }
+
+  this.paginationLoading.set(true);
+
+  this.pageNumber.update((p) => p + 1);
+
+  this.commentSvc
+    .getComments(this.blogId, this.pageNumber(), 10)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (res) => {
+        this.paginationLoading.set(false);
+
+        if (res.status) {
+          const incoming = res.items ?? [];
+
+          const sortedIncoming = [...incoming].sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() -
+              new Date(a.createdAt).getTime()
+          );
+
+          this.comments.update((existing) => [
+            ...existing,
+            ...sortedIncoming,
+          ]);
+
+          this.totalCount.set(res.totalCount ?? 0);
+
+          const loaded = this.comments().length;
+
+          this.allLoaded.set(loaded >= (res.totalCount ?? 0));
+        }
+      },
+      error: () => {
+        this.paginationLoading.set(false);
+      },
+    });
+}
 
   submitComment(): void {
     if (!this.isLoggedIn()) {
@@ -391,6 +441,37 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
     if ((event.target as HTMLElement).classList.contains('comment-dialog-backdrop')) {
       this.close.emit();
     }
+  }
+
+  openCommentReport(commentId: string, content: string, commentUserId: string): void {
+    if (!this.isLoggedIn()) {
+      this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      this.close.emit();
+      return;
+    }
+    const currentUser = this.authState.currentUser;
+    if (currentUser && currentUser.id === commentUserId) {
+      this.toast.show('warning', 'You cannot report your own comment.');
+      return;
+    }
+    const preview = content.length > 80 ? content.substring(0, 80) + '…' : content;
+    this.reportTargetId.set(commentId);
+    this.reportTargetPreview.set(preview);
+    this.reportModalOpen.set(true);
+  }
+
+  closeCommentReport(): void {
+    this.reportModalOpen.set(false);
+    this.reportTargetId.set(null);
+    this.reportTargetPreview.set('');
+  }
+
+  onCommentReported(): void {
+    this.closeCommentReport();
+    // Reload comments so the reported comment disappears from the current user's view
+    this.loadComments(true);
   }
 
   private extractError(err: unknown): string {

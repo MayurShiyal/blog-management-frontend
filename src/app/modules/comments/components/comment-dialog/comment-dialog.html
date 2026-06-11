@@ -127,6 +127,17 @@
                     replyOpenFor() === comment.id ? 'Cancel' : 'Reply'
                   }}</span>
                 </button>
+
+                <button
+                  class="btn btn-link btn-sm p-0 text-decoration-none d-flex align-items-center gap-1"
+                  style="color: #9ca3af"
+                  (click)="openCommentReport(comment.id, comment.content, comment.userId)"
+                  type="button"
+                  title="Report this comment"
+                >
+                  <i class="bi bi-flag" style="font-size: 0.8rem"></i>
+                  <span style="font-size: 0.8rem">Report</span>
+                </button>
               </div>
 
               @if (replyOpenFor() === comment.id) {
@@ -259,3 +270,14 @@
     </div>
   </div>
 </div>
+
+@if (reportModalOpen() && reportTargetId()) {
+<app-report-modal
+  [show]="reportModalOpen()"
+  contentType="comment"
+  [contentId]="reportTargetId()!"
+  [contentPreview]="reportTargetPreview()"
+  (reported)="onCommentReported()"
+  (cancelled)="closeCommentReport()"
+/>
+}

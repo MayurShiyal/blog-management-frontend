@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { Component, inject, OnInit, signal, computed, HostListener } from '@angular/core';
+import { RouterOutlet, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthStateService } from '../../../services/auth-state.service';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
@@ -7,7 +7,6 @@ import { LayoutService } from '../../../services/layout.service';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../toast/toast';
 import { AdminSidebarComponent } from '../sidebars/admin-sidebar/admin-sidebar';
-import { AuthorSidebarComponent } from '../sidebars/author-sidebar/author-sidebar';
 import { ROUTES } from '../../../constants/routes.constants';
 
 @Component({
@@ -15,9 +14,10 @@ import { ROUTES } from '../../../constants/routes.constants';
   imports: [
     CommonModule,
     RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
     ToastComponent,
     AdminSidebarComponent,
-    AuthorSidebarComponent,
   ],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.scss',
@@ -29,8 +29,10 @@ export class AdminLayout implements OnInit {
 
   readonly layoutService = inject(LayoutService);
   readonly toastService = inject(ToastService);
+  readonly routes = ROUTES;
 
   sidebarOpen = signal(false);
+  profileMenuOpen = signal(false);
 
   user = computed(() => this.authState.currentUser);
   isAdmin = computed(() => this.authState.isAdmin);
@@ -45,8 +47,21 @@ export class AdminLayout implements OnInit {
     this.sidebarOpen.update((v) => !v);
   }
 
+  toggleProfileMenu(): void {
+    this.profileMenuOpen.update((v) => !v);
+  }
+
   logout(): void {
     this.auth.logout();
+    this.profileMenuOpen.set(false);
     this.router.navigate([ROUTES.AUTH.LOGIN.ABSOLUTE]);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.profile-dropdown-wrap')) {
+      this.profileMenuOpen.set(false);
+    }
   }
 }

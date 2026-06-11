@@ -39,6 +39,7 @@ export class UserList implements OnInit, OnDestroy {
   totalCount = signal(0);
   pageNumber = signal(1);
   pageSize = signal(10);
+  readonly pageSizeOptions = [10, 20, 30];
   loading = signal(false);
   formLoading = signal(false);
 
@@ -130,6 +131,12 @@ export class UserList implements OnInit, OnDestroy {
   setStatusFilter(status: StatusFilter): void {
     if (this.statusFilter() === status) return;
     this.statusFilter.set(status);
+    this.pageNumber.set(1);
+    this.loadUsers();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
     this.pageNumber.set(1);
     this.loadUsers();
   }

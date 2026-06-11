@@ -382,3 +382,35 @@
     transform: translateY(0);
   }
 }
+
+// ── Pagination buttons ──────────────────────────────────────────────────────
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+
+  &:hover:not([disabled]):not(.page-btn--active) {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  &--active {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+    cursor: default;
+  }
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}

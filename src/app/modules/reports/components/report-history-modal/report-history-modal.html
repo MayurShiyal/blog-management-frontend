@@ -1,0 +1,69 @@
+@if (show()) {
+<div class="rh-modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true">
+  <div class="rh-modal">
+
+    <div class="rh-modal__header d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+      <div class="d-flex align-items-center gap-2">
+        <div class="rh-icon-wrap">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold fs-6">Report History</h5>
+          <p class="mb-0 text-muted" style="font-size: 0.7rem">
+            {{ contentType() === 'blog' ? 'Blog' : 'Comment' }}:
+            <span class="fw-semibold text-dark">{{ contentPreview() }}</span>
+          </p>
+        </div>
+      </div>
+      <button class="btn-close" (click)="closed.emit()" aria-label="Close"></button>
+    </div>
+
+    <div class="rh-modal__body px-4 py-3">
+      @if (loading()) {
+      <div class="d-flex flex-column align-items-center justify-content-center py-5 gap-2 text-muted">
+        <div class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></div>
+        <span class="small">Loading report history…</span>
+      </div>
+      } @else if (items().length === 0) {
+      <div class="d-flex flex-column align-items-center justify-content-center py-5 gap-2 text-muted">
+        <i class="bi bi-inbox display-5 opacity-25"></i>
+        <p class="mb-0 small text-center">No reports found for this content.</p>
+      </div>
+      } @else {
+      <div class="d-flex flex-column gap-3">
+        @for (item of items(); track item.reportId) {
+        <div class="rh-item">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div class="d-flex align-items-start gap-2 min-w-0">
+              <div class="rh-avatar flex-shrink-0">
+                {{ getInitials(item.reporterName) }}
+              </div>
+              <div class="min-w-0">
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                  <span class="fw-semibold text-dark small">{{ item.reporterName || 'Anonymous' }}</span>
+                  <span class="text-muted" style="font-size: 0.7rem">{{ formatDate(item.reportDate) }}</span>
+                </div>
+                <p class="mb-0 text-dark" style="font-size: 0.875rem; line-height: 1.55">
+                  {{ item.reason }}
+                </p>
+              </div>
+            </div>
+            <span class="rh-status-badge rh-status-badge--{{ getStatusClass(item.status) }} flex-shrink-0">
+              {{ getStatusLabel(item.status) }}
+            </span>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <div class="rh-modal__footer px-4 py-3 border-top bg-light-subtle d-flex justify-content-end">
+      <button type="button" class="btn btn-outline-secondary btn-sm px-4" (click)="closed.emit()">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+}
