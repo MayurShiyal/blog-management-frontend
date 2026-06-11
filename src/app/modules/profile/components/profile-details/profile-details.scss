@@ -1,80 +1,93 @@
 .profile-container {
   max-width: 1140px;
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .profile-info-card {
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid rgba(55, 48, 163, 0.04) !important;
+  background: var(--surface, #ffffff);
+  border: 1px solid rgba(55, 48, 163, 0.06) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-elevated);
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.075) !important;
   }
 }
 
 .profile-avatar-large {
-  width: 96px;
-  height: 96px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
-  font-size: 2.25rem;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+  font-size: 2rem;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
   user-select: none;
-  font-family: var(--font-display);
+  font-family: var(--font-display, inherit);
+}
+
+.meta-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  i {
+    font-size: 1rem;
+    color: #6c757d;
+  }
 }
 
 .profile-meta-item {
-  padding: 0.5rem 0;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
   label {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-muted);
+    color: #6c757d;
   }
 
   span {
-    font-size: 0.95rem;
-    color: var(--text-dark);
+    font-size: 0.92rem;
+    word-break: break-word;
   }
 }
 
 .badge {
   font-weight: 600;
   font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  padding: 0.5rem 1rem !important;
+  letter-spacing: 0.01em;
+  padding: 0.4rem 0.8rem;
 
   &.bg-primary-subtle {
-    background-color: var(--brand-light) !important;
-    color: var(--brand-primary) !important;
+    background-color: var(--brand-light, #e0e7ff) !important;
+    color: var(--brand-primary, #4f46e5) !important;
   }
 
   &.bg-success-subtle {
-    background-color: #f0fdf4 !important;
-    color: var(--success) !important;
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
   }
 }
 
 .card {
-  border: 1px solid rgba(55, 48, 163, 0.04) !important;
-  box-shadow: var(--shadow-card) !important;
+  border: 1px solid rgba(55, 48, 163, 0.06) !important;
+}
+
+.form-group-wrapper {
+  position: relative;
+}
+
+.btn-primary {
+  transition: all 0.2s ease;
+  &:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -82,8 +95,6 @@
   }
 }
 
-@media (max-width: 767.98px) {
-  .profile-container {
-    padding-top: 1.5rem !important;
-  }
+.animate-fade {
+  animation: fadeIn 0.25s ease-out;
 }

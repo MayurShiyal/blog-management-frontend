@@ -1,31 +1,60 @@
-<div class="profile-container container-xl py-5 px-3 px-md-4">
-  <div class="row g-4">
+<div class="profile-container container-xl py-4 py-md-5 px-3 px-md-4">
+  <div class="row g-4 align-items-stretch">
     <div class="col-12 col-md-5 col-lg-4">
-      <div class="card profile-info-card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
-        <div class="card-body p-4 text-center">
-          <div
-            class="profile-avatar-large mx-auto mb-3 d-flex align-items-center justify-content-center text-white fw-bold"
-          >
-            {{ user()?.firstName?.charAt(0) | uppercase }}
+      <div
+        class="card profile-info-card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white"
+      >
+        <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+          <div>
+            <div
+              class="profile-avatar-large mx-auto mb-3 d-flex align-items-center justify-content-center text-white fw-bold"
+            >
+              {{ user()?.firstName?.charAt(0) | uppercase }}
+            </div>
+            <h4 class="fw-bold text-dark mb-1">{{ user()?.firstName }} {{ user()?.lastName }}</h4>
+            <span class="badge bg-primary-subtle text-primary rounded-pill px-3 mb-4">
+              {{ user()?.role }}
+            </span>
           </div>
-          <h4 class="fw-bold text-dark mb-1">{{ user()?.firstName }} {{ user()?.lastName }}</h4>
-          <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 small mb-4">
-            {{ user()?.role }}
-          </span>
 
-          <div class="text-start border-top pt-4">
-            <div class="profile-meta-item mb-3">
-              <label class="text-muted small d-block mb-1">Email Address</label>
-              <span class="text-dark fw-medium">{{ user()?.email }}</span>
+          <div class="text-start border-top pt-4 mt-2">
+            <div class="profile-meta-item d-flex align-items-start gap-3 mb-3">
+              <div
+                class="meta-icon-wrapper rounded-3 bg-light text-secondary p-2 d-flex align-items-center justify-content-center"
+              >
+                <i class="bi bi-envelope"></i>
+              </div>
+              <div class="flex-grow-1">
+                <label class="text-muted small d-block mb-0">Email Address</label>
+                <span class="text-dark fw-medium">{{ user()?.email }}</span>
+              </div>
             </div>
-            <div class="profile-meta-item mb-3">
-              <label class="text-muted small d-block mb-1">Account Role</label>
-              <span class="text-dark fw-medium">{{ user()?.role }}</span>
+
+            <div class="profile-meta-item d-flex align-items-start gap-3 mb-3">
+              <div
+                class="meta-icon-wrapper rounded-3 bg-light text-secondary p-2 d-flex align-items-center justify-content-center"
+              >
+                <i class="bi bi-shield-lock"></i>
+              </div>
+              <div class="flex-grow-1">
+                <label class="text-muted small d-block mb-0">Account Role</label>
+                <span class="text-dark fw-medium text-capitalize">{{ user()?.role }}</span>
+              </div>
             </div>
-            <div class="profile-meta-item">
-              <label class="text-muted small d-block mb-1">Status</label>
-              <div>
-                <span class="badge bg-success-subtle text-success small">Active</span>
+
+            <div class="profile-meta-item d-flex align-items-start gap-3">
+              <div
+                class="meta-icon-wrapper rounded-3 bg-light text-secondary p-2 d-flex align-items-center justify-content-center"
+              >
+                <i class="bi bi-activity"></i>
+              </div>
+              <div class="flex-grow-1">
+                <label class="text-muted small d-block mb-1">Status</label>
+                <div>
+                  <span class="badge bg-success-subtle text-success py-1 px-2 rounded-2"
+                    >Active</span
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -34,26 +63,32 @@
     </div>
 
     <div class="col-12 col-md-7 col-lg-8">
-      <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-md-5">
-        <h3 class="fw-bold text-dark mb-2">Change Password</h3>
-        <p class="text-muted mb-4">Update your password to keep your account secure.</p>
+      <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-md-5 h-100">
+        <div class="mb-4">
+          <h3 class="fw-bold text-dark mb-1">Change Password</h3>
+          <p class="text-muted small mb-0">
+            Update your password regularly to maintain account security.
+          </p>
+        </div>
 
         @if (serverMsg(); as msg) {
         <div
-          class="alert alert-{{ msg.type }} rounded-3 d-flex align-items-center gap-2 mb-4"
+          class="alert alert-{{
+            msg.type
+          }} rounded-3 d-flex align-items-center gap-2 mb-4 animate-fade"
           role="alert"
         >
           <i
-            class="bi"
+            class="bi fs-5"
             [class.bi-check-circle-fill]="msg.type === 'success'"
             [class.bi-exclamation-triangle-fill]="msg.type === 'danger'"
           ></i>
-          <div>{{ msg.text }}</div>
+          <div class="small fw-medium">{{ msg.text }}</div>
         </div>
         }
 
         <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column gap-3">
-          <div>
+          <div class="form-group-wrapper">
             <app-password
               [control]="getFormControl('oldPassword')"
               label="Current Password"
@@ -62,7 +97,7 @@
             />
           </div>
 
-          <div>
+          <div class="form-group-wrapper">
             <app-password
               [control]="getFormControl('newPassword')"
               label="New Password"
@@ -71,12 +106,17 @@
             />
             @if (form.get('newPassword')?.touched) { @if
             (form.get('newPassword')?.hasError('required')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password is required.
+            </div>
             } @if (form.get('newPassword')?.hasError('minlength')) {
-            <div class="text-danger small mt-1">Password must be at least 8 characters.</div>
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password must be at least 8 characters.
+            </div>
             } }
           </div>
 
-          <div>
+          <div class="form-group-wrapper">
             <app-password
               [control]="getFormControl('confirmPassword')"
               label="Confirm New Password"
@@ -85,19 +125,28 @@
             />
             @if (form.get('confirmPassword')?.touched) { @if
             (form.get('confirmPassword')?.hasError('required')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Please confirm your password.
+            </div>
             } @if (form.get('confirmPassword')?.hasError('mismatch')) {
-            <div class="text-danger small mt-1">Passwords do not match.</div>
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Passwords do not match.
+            </div>
             } }
           </div>
 
-          <div class="d-flex justify-content-end mt-4">
+          <div class="d-flex justify-content-end mt-3">
             <button
-              class="btn btn-primary px-4 py-2.5 rounded-3 fw-semibold"
+              class="btn btn-primary px-4 py-2 rounded-3 fw-semibold shadow-sm d-inline-flex align-items-center justify-content-center"
               [disabled]="loading() || form.invalid"
               type="submit"
             >
               @if (loading()) {
-              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              <span
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
               } Save Changes
             </button>
           </div>

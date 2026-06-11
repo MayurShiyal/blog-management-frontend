@@ -1,22 +1,37 @@
 .visitor-footer {
+  .gap-25 {
+    gap: 0.65rem;
+  }
+
   .visitor-brand-mark {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
 
   .visitor-footer-link {
-    transition: color 0.15s;
+    transition: color 0.2s ease, transform 0.2s ease;
     background: none;
+    line-height: 1.5;
 
     &:hover {
       color: var(--brand-primary) !important;
+      transform: translateX(3px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--brand-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
     }
   }
 
   .tracking-wide {
     letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    opacity: 0.85;
   }
 }
