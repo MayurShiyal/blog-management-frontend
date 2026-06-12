@@ -12,6 +12,7 @@ import { ToastService } from '../../../../common/services/toast.service';
 import { DeleteModal } from '../../../../common/components/delete-modal/delete-modal';
 import { GetBlogByIdDto, BlogStatus, BlogStatusEnum } from '../../models/blog.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 @Component({
   selector: 'app-blog-detail',
@@ -263,10 +264,6 @@ export class BlogDetail implements OnInit, OnDestroy {
     if (e?.status === 404) {
       return 'Not Found: The requested article does not exist or has been deleted.';
     }
-    return (
-      e?.error?.message ??
-      e?.error?.title ??
-      'An unexpected error occurred while loading this article.'
-    );
+    return extractApiErrorMessage(err, 'An unexpected error occurred while loading this article.');
   }
 }

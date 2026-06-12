@@ -14,6 +14,7 @@ import { CategoryFormModal, ModalMode } from '../category-form-modal/category-fo
 import { CategoryDto, CreateCategoryRequest, UpdateCategoryRequest } from '../../models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
 import { CategoryStats } from '../category-stats/category-stats';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 export type StatusFilter = 'all' | 'active' | 'inactive';
 
@@ -289,7 +290,6 @@ export class CategoryList implements OnInit, OnDestroy {
   }
 
   private extractError(err: unknown): string {
-    const e = err as { error?: { message?: string; title?: string } };
-    return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
+    return extractApiErrorMessage(err);
   }
 }

@@ -96,13 +96,13 @@ export class ReportModalComponent implements OnDestroy {
         },
         error: (err) => {
           this.loading.set(false);
-          const e = err as { status?: number; error?: { message?: string } };
+          const e = err as { status?: number; error?: { detail?: string; message?: string } };
           if (e?.status === 409) {
-            this.toast.show('warning', `You have already reported this ${this.contentType()}.`);
+            this.toast.show('warning', e?.error?.detail ?? `You have already reported this ${this.contentType()}.`);
             this.resetState();
             this.cancelled.emit();
           } else {
-            this.toast.show('danger', e?.error?.message ?? 'An unexpected error occurred.');
+            this.toast.show('danger', e?.error?.detail ?? e?.error?.message ?? 'An unexpected error occurred.');
           }
         },
       });

@@ -35,19 +35,44 @@ export class ForgotPassword {
 
     const email = this.form.getRawValue().email!.trim().toLowerCase();
 
-    this.auth.forgotPassword({ email }).subscribe({
+    this.auth.checkEmailExists(email).subscribe({
       next: (res) => {
-        this.loading.set(false);
-        this.submitted.set(true);
-        this.serverMsg.set({
-          type: 'success',
-          text: res.message,
+        if (!res.exists) {
+          this.loading.set(false);
+          this.serverMsg.set({
+            type: 'danger',
+            text: 'This email address is not registered. Please create an account first.',
+          });
+          return;
+        }
+
+        this.auth.forgotPassword({ email }).subscribe({
+          next: (fpRes) => {
+            this.loading.set(false);
+            this.submitted.set(true);
+            this.serverMsg.set({
+              type: 'success',
+              text: fpRes.message,
+            });
+          },
+          error: (err) => {
+            this.loading.set(false);
+            const msg =
+              err?.error?.detail ??
+              err?.error?.message ??
+              err?.error?.title ??
+              'Something went wrong. Please try again.';
+            this.serverMsg.set({ type: 'danger', text: msg });
+          },
         });
       },
       error: (err) => {
         this.loading.set(false);
         const msg =
-          err?.error?.message ?? err?.error?.title ?? 'Something went wrong. Please try again.';
+          err?.error?.detail ??
+          err?.error?.message ??
+          err?.error?.title ??
+          'Something went wrong. Please try again.';
         this.serverMsg.set({ type: 'danger', text: msg });
       },
     });

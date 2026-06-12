@@ -54,8 +54,8 @@ export class ReportHistory implements OnInit, OnDestroy {
   items = signal<AllReportHistoryItemDto[]>([]);
   totalCount = signal(0);
   pageNumber = signal(1);
-  pageSize = signal(15);
-  readonly pageSizeOptions = [15, 30, 50];
+  pageSize = signal(10);
+  readonly pageSizeOptions = [10, 20, 30];
   loading = signal(false);
 
   statusFilter = signal<ReportStatus | null>(null);

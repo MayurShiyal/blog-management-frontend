@@ -73,7 +73,7 @@ export class ApiErrorHandlerService {
     const knownError = HTTP_ERROR_MESSAGES[error.status];
     if (knownError) {
       const serverMessage: string | undefined =
-        error.error?.message || error.error?.title || undefined;
+        error.error?.detail || error.error?.message || error.error?.title || undefined;
       return {
         ...knownError,
         detail: serverMessage,
@@ -98,7 +98,8 @@ export class ApiErrorHandlerService {
 
   handleWithToast(error: HttpErrorResponse, navigate = false): void {
     const apiError = this.getApiError(error);
-    this.toast.show('danger', apiError.message);
+    const displayMessage = apiError.detail ?? apiError.message;
+    this.toast.show('danger', displayMessage);
 
     if (navigate) {
       if (error.status === 401) {

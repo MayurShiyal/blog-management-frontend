@@ -17,21 +17,6 @@
         <span class="visitor-brand-name fw-bold text-dark">BlogSpace</span>
       </a>
 
-      <div class="visitor-search-wrap flex-grow-1 mx-3 d-none d-md-flex">
-        <div class="position-relative w-100" class="pl-search-wrap">
-          <i
-            class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"
-          ></i>
-          <input
-            type="text"
-            class="form-control visitor-search-input ps-5 w-100"
-            placeholder="Search articles, topics, authors..."
-            readonly
-           
-          />
-        </div>
-      </div>
-
       <div class="d-flex align-items-center gap-2 ms-auto ms-md-0">
         @if (isLoggedIn()) {
 
@@ -60,6 +45,15 @@
             <div class="px-3 py-2 border-bottom border-light-subtle">
               <div class="small fw-semibold text-dark">{{ getUserDisplayName() }}</div>
             </div>
+            <a
+              class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 small fw-medium"
+              [routerLink]="routes.PROFILE.ABSOLUTE"
+              (click)="profileMenuOpen.set(false)"
+            >
+              <i class="bi bi-person"></i>
+              My Profile
+            </a>
+            <hr class="dropdown-divider my-1 opacity-50" />
             <button
               class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-danger small fw-medium"
               (click)="logout()"
@@ -88,23 +82,6 @@
       </div>
     </div>
   </nav>
-
-  <div class="visitor-mobile-search bg-white border-bottom border-light-subtle py-2 px-3 d-md-none">
-    <div class="position-relative">
-      <i
-        class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 text-muted"
-        class="pl-search-icon-sm"
-      ></i>
-      <input
-        type="text"
-        class="form-control form-control-sm ps-5"
-        placeholder="Search articles..."
-        readonly
-        class="pl-mobile-search-input"
-      />
-    </div>
-  </div>
-
   <main class="flex-grow-1">
     <router-outlet />
   </main>
@@ -127,10 +104,7 @@
           </p>
         </div>
         <div class="col-6 col-md-2 offset-md-2">
-          <h6
-            class="fw-semibold text-dark mb-3 small text-uppercase"
-            class="pl-section-heading"
-          >
+          <h6 class="fw-semibold text-dark mb-3 small text-uppercase" class="pl-section-heading">
             Explore
           </h6>
           <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
@@ -144,10 +118,7 @@
           </ul>
         </div>
         <div class="col-6 col-md-2">
-          <h6
-            class="fw-semibold text-dark mb-3 small text-uppercase"
-            class="pl-section-heading"
-          >
+          <h6 class="fw-semibold text-dark mb-3 small text-uppercase" class="pl-section-heading">
             Account
           </h6>
           <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
@@ -168,6 +139,13 @@
             </li>
             } @else {
             <li>
+              <a
+                [routerLink]="routes.PROFILE.ABSOLUTE"
+                class="text-muted text-decoration-none small visitor-footer-link"
+                >My Profile</a
+              >
+            </li>
+            <li>
               <button
                 class="btn p-0 border-0 bg-transparent text-muted small visitor-footer-link"
                 (click)="logout()"
@@ -185,8 +163,7 @@
           &copy; {{ currentYear }} BlogSpace. All rights reserved.
         </p>
         <p class="text-muted small mb-0">
-          Built with <i class="bi bi-heart-fill text-danger" class="pl-heart-icon"></i> for
-          writers
+          Built with <i class="bi bi-heart-fill text-danger" class="pl-heart-icon"></i> for writers
         </p>
       </div>
     </div>

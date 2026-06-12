@@ -26,6 +26,17 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   return null;
 }
 
+function strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
+  const value: string = control.value ?? '';
+  if (!value) return null;
+  const errors: ValidationErrors = {};
+  if (!/[A-Z]/.test(value)) errors['noUppercase'] = true;
+  if (!/[a-z]/.test(value)) errors['noLowercase'] = true;
+  if (!/[0-9]/.test(value)) errors['noNumber'] = true;
+  if (!/[^A-Za-z0-9]/.test(value)) errors['noSpecialChar'] = true;
+  return Object.keys(errors).length ? errors : null;
+}
+
 @Component({
   selector: 'app-reset-password',
   imports: [CommonModule, ReactiveFormsModule, RouterLink, PasswordComponent],
@@ -44,12 +55,21 @@ export class ResetPassword implements OnInit {
   success = signal(false);
   serverMsg = signal<{ type: 'success' | 'danger'; text: string } | null>(null);
   invalidToken = signal(false);
+  expiredLink = signal(false);
 
   token = '';
 
   form = this.fb.group(
     {
-      newPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(100),
+          strongPasswordValidator,
+        ],
+      ],
       confirmPassword: ['', [Validators.required]],
     },
     { validators: passwordMatchValidator }
@@ -60,6 +80,14 @@ export class ResetPassword implements OnInit {
     if (!this.token) {
       this.invalidToken.set(true);
     }
+  }
+
+  get pwdCtrl() {
+    return this.form.controls.newPassword;
+  }
+
+  get confirmCtrl() {
+    return this.form.controls.confirmPassword;
   }
 
   submit() {
@@ -85,14 +113,29 @@ export class ResetPassword implements OnInit {
             this.serverMsg.set({ type: 'success', text: res.message });
             setTimeout(() => this.router.navigate([this.routes.AUTH.LOGIN.ABSOLUTE]), 3000);
           } else {
-            this.serverMsg.set({ type: 'danger', text: res.message });
+            const msg = res.message ?? '';
+            if (msg.toLowerCase().includes('expired')) {
+              this.expiredLink.set(true);
+            }
+            this.serverMsg.set({ type: 'danger', text: msg });
           }
         },
         error: (err) => {
           this.loading.set(false);
           const msg =
-            err?.error?.message ?? err?.error?.title ?? 'Password reset failed. Please try again.';
-          this.serverMsg.set({ type: 'danger', text: msg });
+            err?.error?.detail ??
+            err?.error?.message ??
+            err?.error?.title ??
+            'Password reset failed. Please try again.';
+          if (msg.toLowerCase().includes('expired')) {
+            this.expiredLink.set(true);
+            this.serverMsg.set({
+              type: 'danger',
+              text: 'Password reset link has expired. Please request a new reset link.',
+            });
+          } else {
+            this.serverMsg.set({ type: 'danger', text: msg });
+          }
         },
       });
   }

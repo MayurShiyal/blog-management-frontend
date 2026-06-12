@@ -22,6 +22,7 @@ import { ReportModalComponent } from '../../../reports/components/report-modal/r
 import { PublicBlogListItemDto } from '../../models/public-blog.models';
 import { CategoryDto } from '../../../categories/models/category.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 @Component({
   selector: 'app-public-blog-list',

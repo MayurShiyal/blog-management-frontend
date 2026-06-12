@@ -16,6 +16,7 @@ import {
   REPORT_STATUS_LABELS,
 } from '../../models/report.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 export interface StatusOption {
   value: ReportStatus;
@@ -310,7 +311,6 @@ export class AdminReports implements OnInit, OnDestroy {
   }
 
   private extractError(err: unknown): string {
-    const e = err as { error?: { message?: string; title?: string } };
-    return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
+    return extractApiErrorMessage(err);
   }
 }

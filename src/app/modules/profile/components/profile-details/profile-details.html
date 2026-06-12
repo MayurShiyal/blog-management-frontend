@@ -95,25 +95,59 @@
               placeholder="Enter current password"
               autocomplete="current-password"
             />
+            @if (form.get('oldPassword')?.touched && form.get('oldPassword')?.hasError('required'))
+            {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Current password is required.
+            </div>
+            }
           </div>
 
           <div class="form-group-wrapper">
             <app-password
               [control]="getFormControl('newPassword')"
               label="New Password"
-              placeholder="Enter new password"
+              placeholder="Min. 8 characters"
               autocomplete="new-password"
             />
             @if (form.get('newPassword')?.touched) { @if
             (form.get('newPassword')?.hasError('required')) {
             <div class="text-danger small mt-1">
-              <i class="bi bi-x-circle me-1"></i>Password is required.
+              <i class="bi bi-x-circle me-1"></i>New password is required.
+            </div>
+            } @else { @if (form.get('newPassword')?.hasError('sameAsOld')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>New password must be different from your current
+              password.
             </div>
             } @if (form.get('newPassword')?.hasError('minlength')) {
             <div class="text-danger small mt-1">
               <i class="bi bi-x-circle me-1"></i>Password must be at least 8 characters.
             </div>
-            } }
+            } @if (form.get('newPassword')?.hasError('maxlength')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password must not exceed 100 characters.
+            </div>
+            } @if (form.get('newPassword')?.hasError('noUppercase')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password must contain at least one uppercase
+              letter.
+            </div>
+            } @if (form.get('newPassword')?.hasError('noLowercase')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password must contain at least one lowercase
+              letter.
+            </div>
+            } @if (form.get('newPassword')?.hasError('noNumber')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password must contain at least one number.
+            </div>
+            } @if (form.get('newPassword')?.hasError('noSpecialChar')) {
+            <div class="text-danger small mt-1">
+              <i class="bi bi-x-circle me-1"></i>Password must contain at least one special
+              character (e.g. !&#64;#$%).
+            </div>
+            } } }
           </div>
 
           <div class="form-group-wrapper">
@@ -126,9 +160,9 @@
             @if (form.get('confirmPassword')?.touched) { @if
             (form.get('confirmPassword')?.hasError('required')) {
             <div class="text-danger small mt-1">
-              <i class="bi bi-x-circle me-1"></i>Please confirm your password.
+              <i class="bi bi-x-circle me-1"></i>Please confirm your new password.
             </div>
-            } @if (form.get('confirmPassword')?.hasError('mismatch')) {
+            } @else if (form.get('confirmPassword')?.hasError('mismatch')) {
             <div class="text-danger small mt-1">
               <i class="bi bi-x-circle me-1"></i>Passwords do not match.
             </div>

@@ -24,6 +24,7 @@ import { EmptyStateComponent } from '../../../../common/components/empty-state/e
 import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal';
 import { CommentDto } from '../../models/comment.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 @Component({
   selector: 'app-comment-dialog',
@@ -469,7 +470,6 @@ export class CommentDialogComponent implements OnInit, OnDestroy {
   }
 
   private extractError(err: unknown): string {
-    const e = err as { error?: { message?: string; title?: string } };
-    return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
+    return extractApiErrorMessage(err);
   }
 }

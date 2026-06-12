@@ -1,12 +1,35 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
+import {
+  FormBuilder,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
+  FormControl,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthStateService } from '../../../../common/services/auth-state.service';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { ToastService } from '../../../../common/services/toast.service';
 import { PasswordComponent } from '../../../../common/components/text-fields/password/password';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+
+function notSameAsOldValidator(control: AbstractControl): ValidationErrors | null {
+  const oldPassword = control.get('oldPassword');
+  const newPassword = control.get('newPassword');
+  if (oldPassword && newPassword && oldPassword.value && newPassword.value) {
+    if (oldPassword.value === newPassword.value) {
+      newPassword.setErrors({ sameAsOld: true });
+      return { sameAsOld: true };
+    }
+    if (newPassword.errors?.['sameAsOld']) {
+      const { sameAsOld, ...rest } = newPassword.errors;
+      newPassword.setErrors(Object.keys(rest).length ? rest : null);
+    }
+  }
+  return null;
+}
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('newPassword');
@@ -20,6 +43,17 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     confirm.setErrors(Object.keys(rest).length ? rest : null);
   }
   return null;
+}
+
+function strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
+  const value: string = control.value ?? '';
+  if (!value) return null;
+  const errors: ValidationErrors = {};
+  if (!/[A-Z]/.test(value)) errors['noUppercase'] = true;
+  if (!/[a-z]/.test(value)) errors['noLowercase'] = true;
+  if (!/[0-9]/.test(value)) errors['noNumber'] = true;
+  if (!/[^A-Za-z0-9]/.test(value)) errors['noSpecialChar'] = true;
+  return Object.keys(errors).length ? errors : null;
 }
 
 @Component({
@@ -42,10 +76,18 @@ export class ProfileDetails {
   form = this.fb.group(
     {
       oldPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(100),
+          strongPasswordValidator,
+        ],
+      ],
       confirmPassword: ['', [Validators.required]],
     },
-    { validators: passwordMatchValidator }
+    { validators: [notSameAsOldValidator, passwordMatchValidator] }
   );
 
   getFormControl(name: string): FormControl {
@@ -71,17 +113,27 @@ export class ProfileDetails {
         next: (res) => {
           this.loading.set(false);
           if (res.status) {
-            this.serverMsg.set({ type: 'success', text: res.message || 'Password changed successfully.' });
+            this.serverMsg.set({
+              type: 'success',
+              text: res.message || 'Password changed successfully.',
+            });
             this.form.reset();
             this.toast.show('success', 'Password updated successfully.');
           } else {
-            this.serverMsg.set({ type: 'danger', text: res.message || 'Failed to change password.' });
+            this.serverMsg.set({
+              type: 'danger',
+              text: res.message || 'Failed to change password.',
+            });
             this.toast.show('danger', res.message || 'Failed to change password.');
           }
         },
         error: (err) => {
           this.loading.set(false);
-          const msg = err?.error?.message ?? err?.error?.title ?? 'Failed to change password. Please try again.';
+          const msg =
+            err?.error?.detail ??
+            err?.error?.message ??
+            err?.error?.title ??
+            'Failed to change password. Please try again.';
           this.serverMsg.set({ type: 'danger', text: msg });
           this.toast.show('danger', msg);
         },

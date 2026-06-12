@@ -14,6 +14,7 @@ import { TextareaComponent } from '../../../../common/components/text-fields/tex
 import { CategoryDto } from '../../../categories/models/category.models';
 import { GetBlogByIdDto, BlogListItemDto, BlogStatusEnum } from '../../models/blog.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 @Component({
   selector: 'app-edit-blog',
@@ -361,7 +362,6 @@ export class EditBlog implements OnInit, OnDestroy {
   }
 
   private extractError(err: unknown): string {
-    const e = err as { error?: { message?: string; title?: string } };
-    return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
+    return extractApiErrorMessage(err);
   }
 }

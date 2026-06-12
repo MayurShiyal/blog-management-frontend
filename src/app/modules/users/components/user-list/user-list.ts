@@ -19,6 +19,7 @@ import {
   UserStatus,
 } from '../../models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 @Component({
   selector: 'app-user-list',
@@ -250,7 +251,6 @@ export class UserList implements OnInit, OnDestroy {
   }
 
   private extractError(err: unknown): string {
-    const e = err as { error?: { message?: string; title?: string } };
-    return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
+    return extractApiErrorMessage(err);
   }
 }

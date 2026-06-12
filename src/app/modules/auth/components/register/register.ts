@@ -134,7 +134,7 @@ export class Register implements OnDestroy {
         error: (err) => {
           this.loading.set(false);
           const msg =
-            err?.error?.message ?? err?.error?.title ?? 'Registration failed. Please try again.';
+            err?.error?.detail ?? err?.error?.message ?? err?.error?.title ?? 'Registration failed. Please try again.';
           this.serverMsg.set({ type: 'danger', text: msg });
         },
       });

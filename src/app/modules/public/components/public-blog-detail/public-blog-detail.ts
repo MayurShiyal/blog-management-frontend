@@ -12,6 +12,7 @@ import { CommentDialogComponent } from '../../../comments/components/comment-dia
 import { ReportModalComponent } from '../../../reports/components/report-modal/report-modal';
 import { PublicBlogDetailDto } from '../../models/public-blog.models';
 import { ROUTES } from '../../../../common/constants/routes.constants';
+import { extractApiErrorMessage } from '../../../../common/utils/error.utils';
 
 @Component({
   selector: 'app-public-blog-detail',
@@ -223,6 +224,6 @@ export class PublicBlogDetail implements OnInit, OnDestroy {
   private extractError(err: unknown): string {
     const e = err as { error?: { message?: string; title?: string }; status?: number };
     if (e?.status === 404) return 'This article was not found or has been removed.';
-    return e?.error?.message ?? e?.error?.title ?? 'An unexpected error occurred.';
+    return extractApiErrorMessage(err);
   }
 }
